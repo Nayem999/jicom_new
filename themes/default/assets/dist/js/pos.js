@@ -304,7 +304,8 @@ $(document).ready(function(){
         $('#row_id').val(row_id);
         $('#item_id').val(item_id);
         $('#nPrice').val(unit_price);
-        $('#nQuantity').val(item.row.qty);
+        if(item.row.qty > item.row.StockQty){ $('#nQuantity').val(0); }else{ $('#nQuantity').val(item.row.qty); }
+        // $('#nQuantity').val(item.row.qty);
         $('#nDiscount').val(ds);
         $('#qnty_type').val(item_qnty_type);
         $('#per_type_qnty').val(item_per_type_qnty);

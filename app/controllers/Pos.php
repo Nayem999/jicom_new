@@ -69,7 +69,7 @@ class Pos extends MY_Controller {
 
 		$this->form_validation->set_rules('customer', lang("customer"), 'trim|required');
 
-		$this->form_validation->set_rules('sequence[]', 'Sequence', 'trim|required');
+		// $this->form_validation->set_rules('sequence[]', 'Sequence', 'trim|required');
 
 		if ($this->form_validation->run() == true) {
 
@@ -94,12 +94,7 @@ class Pos extends MY_Controller {
         		$store_id = $this->session->userdata('store_id_pos') ;
         	}
 
-			$total = 0;
-			$product_tax = 0;
-			$order_tax = 0;
-			$product_discount = 0;
-			$order_discount = 0;
-			$collect_id = 0;
+			$total =  $product_tax =  $order_tax =  $product_discount =  $order_discount =  $collect_id = $total_item_quantity = 0;
 			$bank_chk=1;
 			$percentage = '%';
 			$i = isset($_POST['product_id']) ? sizeof($_POST['product_id']) : 0;
@@ -122,7 +117,7 @@ class Pos extends MY_Controller {
 				$item_qnty_type = isset($_POST['qnty_type'][$r]) ? $_POST['qnty_type'][$r] : 0;
 				$item_per_type_qnty = isset($_POST['per_type_qnty'][$r]) ? $_POST['per_type_qnty'][$r] : 0;
 
-				if (isset($item_id) && isset($real_unit_price) && isset($item_quantity)) {
+				if (isset($item_id) && isset($real_unit_price) && isset($item_quantity) && $item_quantity > 0) {
 					$product_details = $this->site->getProductByID($item_id);
 					// echo "<pre>".$item_id."</pre>";die;
 					// echo "<pre>".$product_details->id."</pre>";die;
@@ -184,8 +179,12 @@ class Pos extends MY_Controller {
 						);
 
 					$total += $item_net_price * $item_quantity;
-
+					$total_item_quantity+=$item_quantity;
 				}
+			}
+			if($total_item_quantity==0)
+			{
+				$this->session->set_flashdata('error', lang('Please Add Quantity'));
 			}
 			// print_r($products);die;
 			/*	$seq = isset($_POST['sequence']) ? sizeof($_POST['sequence']) : 0;
@@ -482,7 +481,7 @@ class Pos extends MY_Controller {
 		}
 
 
-		if ( $this->form_validation->run() == true && !empty($products) && $credit_over<=$customer_credit_limit && $bank_chk>0)
+		if ( $this->form_validation->run() == true && !empty($products) && $credit_over<=$customer_credit_limit && $bank_chk>0 && $total_item_quantity>0)
 		{
 			if($suspend) {
 				unset($data['status'], $data['rounding']);

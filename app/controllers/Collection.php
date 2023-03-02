@@ -41,8 +41,7 @@ class Collection extends MY_Controller
         $this->db->dbprefix('today_collection') . ".payment_amount, " .  
         $this->db->dbprefix('today_collection') . ".payment_note, " .  
         $this->db->dbprefix('payments') . ".paid_by , " .  
-        $this->db->dbprefix('bank_pending') . ".type , " .  
-        $this->db->dbprefix('today_collection') . ".payment_status", FALSE);
+        $this->db->dbprefix('bank_pending') . ".type , " , FALSE);
         $this->datatables->join('customers', 'customers.id=today_collection.customer_id');
         $this->datatables->join('stores', 'customers.store_id=stores.id'); 
         $this->datatables->join('payments', 'payments.collect_id=today_collection.today_collect_id');     
@@ -54,15 +53,13 @@ class Collection extends MY_Controller
           if($store_id) { $this->db->where('stores.id', $store_id); }
         }
         $this->datatables->add_column("Actions", "<div class='text-center'><div class='btn-group'>
-                
-          <a href='javascript:;' onClick='approveCollection($1)' title='Status Change' class='tip btn btn-primary btn-xs'><i class='fa fa-university'></i></a>
-
+        
          <a href='#' onClick=\"MyWindow=window.open('" . site_url('collection/view/$1/1') . "', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;\" title='".lang("view collection")."' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a>
 
          <a href='" . site_url('collection/collectdelete/$1') . "' onClick=\"return confirm('". lang('You are going to delete payment , please click ok to delete') ."')\" title='".lang("delete_payment")."' class='tip btn btn-danger btn-xs'><i class='fa fa-trash-o'></i></a>
 
          </div></div>", "id "); 
-        
+        // <a href='javascript:;' onClick='approveCollection($1)' title='Status Change' class='tip btn btn-primary btn-xs'><i class='fa fa-university'></i></a>
         $this->datatables->from('today_collection');     
 
         if($customer) { $this->datatables->where('customers.id', $customer); }
@@ -116,12 +113,12 @@ class Collection extends MY_Controller
         $query_data=$this->db->get()->result_array();
 
         $fileName = "collection_list_data_" . date('Y-m-d_h_i_s') . ".xls"; 			
-        $fields = array('Customar name', 'Store name', 'Date and Time', 'Amount', 'Note', 'Paid By', 'Cheque Status', 'Status');
+        $fields = array('Customar name', 'Store name', 'Date and Time', 'Amount', 'Note', 'Paid By', 'Cheque Status');
         $excelData = implode("\t", array_values($fields)) . "\n"; 
         
         if(count($query_data) > 0){ 
           foreach($query_data as $key => $result){ 
-            $lineData = array($result['name'], $result['storename'], $result['payment_date'], $result['payment_amount'], $result['payment_note'], $result['paid_by'], $result['type'], $result['payment_status']); 
+            $lineData = array($result['name'], $result['storename'], $result['payment_date'], $result['payment_amount'], $result['payment_note'], $result['paid_by'], $result['type']); 
             $excelData .= implode("\t", array_values($lineData)) . "\n"; 
           } 
         }else{ 
@@ -423,7 +420,11 @@ class Collection extends MY_Controller
                    $payAmount = $value->deu;
                    $bigAmount = $paidamount - $value->deu;
                    $odlNewPaid = $value->paid + $value->deu;
-                   
+                   if($value->grand_total == $odlNewPaid){
+                      $status = 'paid';
+                    } else {
+                        $status = 'partial';
+                    }
                    $data  = array(
                         'paid' => $odlNewPaid,
                         'status' => $status);
