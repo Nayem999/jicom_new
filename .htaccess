@@ -14,6 +14,6 @@ RewriteRule ^(.*)$ index.php/$1 [NC,L,QSA]
 
 </IfModule>
 
-<IfModule !mod_rewrite.c>
-    ErrorDocument 404 /theme/errors/html/error_404.php
-</IfModule> 
+# <IfModule !mod_rewrite.c>
+  #   ErrorDocument 404 /theme/errors/html/error_404.php
+# </IfModule> 
