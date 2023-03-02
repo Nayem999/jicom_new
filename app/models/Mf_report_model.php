@@ -49,6 +49,34 @@ class Mf_report_model extends CI_Model
 
        return $purchaseData->get()->result();
     }
+
+	public static function getProductionData($stDate=null,$endDate=null){
+		$ci =& get_instance();
+
+		$itemQuery = 
+        
+        $ci->db->select('mf_production_mst.batch_no as batch_no, mf_production_mst.target_qty as target_qty,mf_production_mst.actual_output as actual_output, mf_production_mst.total_cost as total_cost, mf_production_mst.status as status,products.name as product_name,categories.name as cat_name, mf_recipe_mst.name as recipe_name, mf_unit.name as unit_name');
+
+        $ci->db->from('mf_production_mst'); 
+
+        $ci->db->join('products','mf_production_mst.product_id=products.id'); 
+
+        $ci->db->join('mf_recipe_mst','mf_production_mst.recipe_id=mf_recipe_mst.id'); 
+
+        $ci->db->join('mf_unit','mf_unit.id=mf_production_mst.uom_id','left');
+        
+        $ci->db->join('categories','categories.id=products.category_id', 'left');
+
+		if($stDate ||  $endDate){
+
+            $ci->db->where('mf_production_mst.created_at >=', $stDate);
+
+            $ci->db->where('mf_production_mst.created_at <=', $endDate);
+        }
+
+		return $itemQuery->get()->result();
+	}
+	
 	
 }
 

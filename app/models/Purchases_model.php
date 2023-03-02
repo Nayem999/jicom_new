@@ -202,9 +202,9 @@ class Purchases_model extends CI_Model
             $purchase_id = $this->db->insert_id();
 
             foreach ($sqeno as $key => $sqid) {	 
-			$proID = $key;   
-		    $rtrimdata = rtrim($sqid,",");
-		    $psequence = explode(',',$rtrimdata); 
+				$proID = $key;   
+				$rtrimdata = rtrim($sqid,",");
+				$psequence = explode(',',$rtrimdata); 
 			    foreach ($psequence as $key => $sqvalue) {
 			    	$sqdata = array(
 						'purchases_id'=> $purchase_id,

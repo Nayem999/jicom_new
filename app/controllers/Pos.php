@@ -258,6 +258,7 @@ class Pos extends MY_Controller {
 			{
 				$totalDeu -= abs($totalPaymentSalesCustomers[0]->chk_amount + $totalPaymentSalesCustomers[0]->other_amount);
 			}
+			// echo $grandTotalSalesCustomers[0]->grand_total."__".$opening_blance."__".$totalPaymentSalesCustomers[0]->chk_amount."_".$totalPaymentSalesCustomers[0]->other_amount."__".$totalDeu;die;
 
 			$incDate = date("Y-m-d H:i:s",strtotime(date("Y-m-d H:i:s")." + 1 second"));
 			if(!$eid) {
@@ -275,6 +276,10 @@ class Pos extends MY_Controller {
 				}
 				if($customer_credit_limit==null){ $customer_credit_limit=0; }
 				// echo $status."__".$credit_over."__".$customer_credit_limit."_".$totalDeu;die;
+				if($this->input->post('paid_by') !='Cash')
+				{
+					$credit_over=$totalDeu + $grand_total;
+				}
 				if($credit_over>0){
 					if($credit_over>$customer_credit_limit){
 						$this->session->set_flashdata('error', lang('Credit Over'));

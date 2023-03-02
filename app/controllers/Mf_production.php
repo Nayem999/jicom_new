@@ -40,11 +40,13 @@ class Mf_production extends MY_Controller
 
         $this->load->library('datatables');
 
-         $this->datatables->select($this->db->dbprefix('mf_production_mst') . ".id as id, " .  
+         $this->datatables->select(
+            $this->db->dbprefix('mf_production_mst') . ".id as id, " .  
          	$this->db->dbprefix('mf_production_mst'). ".batch_no,".
          	$this->db->dbprefix('mf_recipe_mst'). ".name,".
          	$this->db->dbprefix('products'). ".name as product_name,".
-         	$this->db->dbprefix('mf_production_mst').".status,", FALSE); 
+         	$this->db->dbprefix('mf_production_mst').".status,", FALSE
+        ); 
         $this->datatables->from('mf_production_mst'); 
         $this->datatables->join('products','mf_production_mst.product_id=products.id'); 
         $this->datatables->join('mf_recipe_mst','mf_production_mst.recipe_id=mf_recipe_mst.id'); 

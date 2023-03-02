@@ -40,12 +40,11 @@ class Collection extends MY_Controller
         $this->db->dbprefix('today_collection') . ".payment_date as payment_date," . 
         $this->db->dbprefix('today_collection') . ".payment_amount, " .  
         $this->db->dbprefix('today_collection') . ".payment_note, " .  
-        $this->db->dbprefix('payments') . ".paid_by , " .  
+        $this->db->dbprefix('today_collection') . ".paid_by , " .  
         $this->db->dbprefix('bank_pending') . ".type , " , FALSE);
         $this->datatables->join('customers', 'customers.id=today_collection.customer_id');
-        $this->datatables->join('stores', 'customers.store_id=stores.id'); 
-        $this->datatables->join('payments', 'payments.collect_id=today_collection.today_collect_id');     
-        $this->datatables->join('bank_pending', 'bank_pending.collection_id=payments.collect_id and bank_pending.payment_type=1', 'left');	
+        $this->datatables->join('stores', 'customers.store_id=stores.id');     
+        $this->datatables->join('bank_pending', 'bank_pending.collection_id=today_collection.today_collect_id and bank_pending.payment_type=1', 'left');	
         if(!$this->Admin){
           $this->db->where('today_collection.store_id',$this->session->userdata('store_id'));
         }
@@ -70,7 +69,7 @@ class Collection extends MY_Controller
             $this->datatables->like('payment_date', $today);            
         }  
         // $this->datatables->add_column();   
-        $this->datatables->group_by('today_collection.today_collect_id, customers.name, stores.name, today_collection.payment_date, today_collection.payment_amount, today_collection.payment_note, payments.paid_by, bank_pending.type, today_collection.payment_status');   
+        // $this->datatables->group_by('today_collection.today_collect_id, customers.name, stores.name, today_collection.payment_date, today_collection.payment_amount, today_collection.payment_note, today_collection.paid_by, bank_pending.type, today_collection.payment_status');   
         $this->datatables->unset_column('id');   
         // echo $this->db->last_query();die;     
         echo $this->datatables->generate();              

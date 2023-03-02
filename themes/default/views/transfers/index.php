@@ -24,7 +24,7 @@
 
         <?php $this->tec->unset_data('remove_spo'); } ?>
 
-        function attach(x) {
+        /* function attach(x) {
 
             if(x !== null) {
 
@@ -62,7 +62,7 @@
 
             "aoColumns": [{"mRender":hrld}, null,  null, {"mRender":currencyFormat}, null, {"mRender":attach, "bSortable":false, "bSearchable": false},{"bSortable":false, "bSearchable": false}]
 
-        });
+        }); */
 
     });
 
@@ -103,7 +103,7 @@
 
                                 <th><?= lang('note'); ?></th>
 
-                                <th style="width:20px; padding-right:5px;"><i class="fa fa-chain"></i></th>
+                                <th >Status</th>
 
                                 <th style="width:125px;"><?= lang('actions'); ?></th>
 
@@ -113,11 +113,40 @@
 
                             <tbody>
 
-                                <tr>
+                                <?php
+                                    foreach($transfer_list as $key=>$val)
+                                    {
+                                        ?>
+                                            <tr>
+                                                <td><?php echo $val->date?></td>
+                                                <td><?php echo $val->to_warehouse_name?></td>
+                                                <td><?php echo $val->from_warehouse_name?></td>
+                                                <td><?php echo $val->total?></td>
+                                                <td><?php echo $val->note?></td>
+                                                <td><?php echo $val->status?></td>
+                                                <td><?php 
+                                                    if($val->status=="Pending")
+                                                    {
+                                                        echo "
+                                                        <a href='javascript:;' onClick='approveTransfer(1)' title='Status Change' class='tip btn btn-primary btn-xs'><i class='fa fa-university'></i></a>
+                                                        <a href='#' onClick=\"MyWindow=window.open('" . site_url('transfers/view/'.$val->id) . "', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;\" title='View Transfer' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a>
+                                                        <a href='" . site_url('transfers/edit/'.$val->id) . "' title='Edit Transfer' class='tip btn btn-warning btn-xs'><i class='fa fa-file-text-o'></i></a>  
+                                                        <a href='" . site_url('transfers/delete/'.$val->id) . "' onClick=\"return confirm('" . lang('alert_x_purchase') . "')\" title='" . lang("delete_purchase") . "' class='tip btn btn-danger btn-xs'><i class='fa fa-trash-o'></i></a>";
 
+                                                    }
+                                                    else
+                                                    {
+                                                        echo "<a href='#' onClick=\"MyWindow=window.open('" . site_url('transfers/view/'.$val->id) . "', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;\" title='View Transfer' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a>";
+                                                    }
+                                                ?></td>
+                                            </tr>
+                                        <?php
+                                    }
+                                ?>
+
+                                <!-- <tr>
                                     <td colspan="6" class="dataTables_empty"><?= lang('loading_data_from_server'); ?></td>
-
-                                </tr>
+                                </tr> -->
 
                             </tbody>
 
