@@ -207,190 +207,94 @@ class Transfers extends MY_Controller
 
         if ($this->form_validation->run() == true) {
 
-         $total = 0;
-            
-            $quantity = "quantity";
-            
-            $product_id = "product_id";
-            
-            $unit_cost = "cost"; 
-            
+            $total = 0;
             $i = isset($_POST['product_id']) ? sizeof($_POST['product_id']) : 0;            
             
             for ($r = 0; $r < $i; $r++) {
                 
                 $item_id = $_POST['product_id'][$r]; 
-
-                $sequenceStr = $_POST['sqtrans'][$r]; 
-
-                //$pid = $_POST['product_id'];
-
-                $sqno = $_POST['sqtrans']; 
-
-                //$sequence = array_combine($pid,$sqno); 
-
-                $sequence[] = array(
-                    'pro_id' =>$item_id ,
-                    'store_id' => $this->input->post('to_warehouse_id'),
-                    'sequence' => $_POST['sqtrans'][$r]
-                 );
-
-                $item_qty = $_POST['quantity'][$r];
-                
+                $item_qty = $_POST['quantity'][$r];                
                 $item_cost = $_POST['cost'][$r]; 
+                $display_item_cost = $_POST['display_cost'][$r]; 
                 
-                if ($item_id && $item_qty && $unit_cost && $sequence) { 
-                    
-                    if (!$this->site->getProductByID($item_id)) {
-                        
-                        $this->session->set_flashdata('error', $this->lang->line("product_not_found") . " ( " . $item_id . " ).");
-                        
-                        redirect('transfers/add');
-                        
-                    }
-               
-                $products[] = array(
-                    
-                    'product_id' => $item_id,
-                    
-                    'cost' => $item_cost,
-                    
-                    'quantity' => $item_qty,
+                if ($item_id && $item_qty) { 
 
-                    'transfers_id' =>  $id ,
-
-                    'sequence' => $sequenceStr , 
-                    
-                    'subtotal' => ($item_cost * $item_qty),
-                    
-                );                      
-                    
-                    $total += ($item_cost * $item_qty);
+                    $products[] = array(                    
+                        'product_id' => $item_id,                    
+                        'cost' => $item_cost,                    
+                        'quantity' => $item_qty,    
+                        'transfers_id' =>  $id ,               
+                        'display_cost' => $display_item_cost,                   
+                        'subtotal' => ($item_cost * $item_qty),                    
+                    );  
+                    $total += ($item_cost * $item_qty);  
                     
                 }
                 
-            }
-                        
+            }                        
             
-            if (!isset($products) || empty($products)) {
-                
-                $this->form_validation->set_rules('product', lang("order_items"), 'required');
-                
-            } else {
-                
-                krsort($products);
-                
+            if (!isset($products) || empty($products)) {                
+                $this->form_validation->set_rules('product', lang("order_items"), 'required');                
+            } else {                
+                krsort($products);                
             }
 
             $fromwarehouse = $this->input->post('from_warehouse_id');
             $towarehouse = $this->input->post('to_warehouse_id'); 
             
-            $data = array(
-                
-                'date' => $this->input->post('date'), 
-                
-                'note' => $this->input->post('note', TRUE),
-               
+            $data = array(                
+                'date' => $this->input->post('date'),                 
+                'note' => $this->input->post('note', TRUE),               
                 'total' => $total,
-
-                'reference' =>  $this->input->post('reference'),             
-                
+                'reference' =>  $this->input->post('reference'),
             ); 
             
-            if ($_FILES['userfile']['size'] > 0) {
-                
-                $this->load->library('upload');
-                
-                $config['upload_path'] = 'uploads/';
-                
-                $config['allowed_types'] = $this->allowed_types;
-                
-                $config['max_size'] = '2000';
-                
-                $config['overwrite'] = FALSE;
-                
-                $config['encrypt_name'] = TRUE;
-                
-                $this->upload->initialize($config);
-                
-                if (!$this->upload->do_upload()) {
-                    
-                    $error = $this->upload->display_errors();
-                    
-                    $this->upload->set_flashdata('error', $error);
-                    
-                    redirect("transfers/add");
-                    
-                }
-                
-                $data['attachment'] = $this->upload->file_name;
-                
-            }
-
-
         }
-        if ($this->form_validation->run() == true && $this->transfers_model->UpdateTransfers($id,$data, $products,$sequence,$fromwarehouse,$towarehouse)) { 
-
+        if ($this->form_validation->run() == true && $this->transfers_model->UpdateTransfers($id,$data, $products, $fromwarehouse,$towarehouse)) { 
             $this->session->set_userdata('remove_spo', 1);
-
-            $this->session->set_flashdata('message', lang('transfer_added'));
-            
-            redirect("transfers");
-            
+            $this->session->set_flashdata('message', lang('Product Transfer Successfully Updated'));            
+            redirect("transfers");        
         }
 
-            $this->data['transfer'] = $this->transfers_model->getTransfersByID($id);
+        $this->data['transfer'] = $this->transfers_model->getTransfersByID($id);        
+        $inv_items = $this->transfers_model->getAllTransfersItems($id); 
+
+        $c = rand(100000, 9999999);
+        
+        foreach ($inv_items as $item) {
+
+            $row = $this->site->getProductByID($item->product_id); 
+            $row->id = $item->product_id;
+            $row->qty = $item->quantity;            
+            $row->cost = $item->cost;
+            $row->store_qty = $item->store_qty;
+            $row->display_cost = $item->display_cost;
+            $ri = $this->Settings->item_addition ? $row->id : $c;
+        
+            $pr[$ri] = array(
+                'id' => $ri,
+                'item_id' => $item->product_id,
+                'label' => $row->name . " (" . $row->code . ")",
+                'row' => $row
+            );            
+            $c++;
             
-            $inv_items = $this->transfers_model->getAllTransfersItems($id); 
-
-            $c = rand(100000, 9999999);
-            
-            foreach ($inv_items as $item) {
-
-                $row = $this->site->getProductByID($item->product_id); 
-
-                $row->id = $item->product_id;
-
-                $row->qty = $item->quantity;
-                
-                $row->cost = $item->cost;
-
-                $row->sqtrans = $item->sequence;
-
-                $ri = $this->Settings->item_addition ? $row->id : $c;
-
-          
-                $pr[$ri] = array(
-                    'id' => $ri,
-                    'item_id' => $item->product_id,
-                    'label' => $row->name . " (" . $row->code . ")",
-                    'row' => $row
-                );
-                
-                $c++;
-                
-            }            
-            
-            $this->data['items'] = json_encode($pr);
-
-            $this->data['segment'] = $this->uri->segment(3);
-            
-            $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
-            
-            $this->data['suppliers'] = $this->site->getAllSuppliers();
-            
-            $this->data['page_title'] = lang('edit_purchase');
-            
-            $bc = array(
-                array(
-                    'link' => site_url('purchases'),
-                    'page' => lang('purchases')
-                ),
-                array(
-                    'link' => '#',
-                    'page' => lang('edit_purchase')
-                )
-            );
+        }            
+        
+        $this->data['items'] = json_encode($pr);
+        $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));            
+        $this->data['page_title'] = lang('edit_purchase');
+        
+        $bc = array(
+            array(
+                'link' => site_url('purchases'),
+                'page' => lang('purchases')
+            ),
+            array(
+                'link' => '#',
+                'page' => lang('edit_purchase')
+            )
+        );
             
       
         $meta = array(
@@ -402,17 +306,15 @@ class Transfers extends MY_Controller
     }
 
     public function delete($id){
-        $transfer = $this->transfers_model->getTransfersByID($id);
-
-        //print_r($transfer) ;
-        $to_warehouse_id = $transfer->to_warehouse_id ;
-        
-        $from_warehouse_id = $transfer->from_warehouse_id ;
-
-        $this->transfers_model->Delete($id ,$to_warehouse_id , $from_warehouse_id );
-
-        redirect('transfers');
-
+        if($this->transfers_model->Delete($id))
+        {
+            $this->session->set_flashdata('message', lang('Product Transfer Successfully Deleted'));            
+        }
+        else
+        {
+            $this->session->set_flashdata('error', lang('Product Transfer Failed Delete'));            
+        }
+        redirect("transfers");
     }
 
     function suggestions($id = NULL) {

@@ -192,79 +192,36 @@ class Transfers_model extends CI_Model
     }
 
 
-    public function UpdateTransfers($id, $data, $products, $sequence, $fromwarehouse, $towarehouse)
+    public function UpdateTransfers($id, $data, $products, $fromwarehouse, $towarehouse)
     {
 
         if ($this->db->update('transfers', $data, array('id' => $id))) {
 
-            $idem_pr = $this->db->get_where('transfers_items', array('transfers_id' => $id));
-
+           /*  $idem_pr = $this->db->get_where('transfers_items', array('transfers_id' => $id));
             $results = $idem_pr->result();
-
             foreach ($results as $key => $result) {
-                //print_r($result->);
-                $sequenceS =  $result->sequence;
-                $rtrimdata = rtrim($sequenceS, ",");
-                $psequence = explode(',', $sequenceS);
-                //$sqdata = array();
                 $this->storeProQtyDelete($result->product_id, $result->quantity, $towarehouse);
                 $this->storeProQtyUpdate($result->product_id, $result->quantity, $fromwarehouse);
-                foreach ($psequence as $key => $sequenceN) {
-                    $sqdata  = array('store_id' => $fromwarehouse);
-                    $this->db->update('pro_sequence', $sqdata, array('sequence' => $sequenceN));
-                }
-            }
+            } */
 
             $this->db->delete('transfers_items', array('transfers_id' => $id));
             foreach ($products as $product) {
                 $this->db->insert('transfers_items', $product);
-                $this->storeProQtyDelete($product['product_id'], $product['quantity'], $fromwarehouse);
-                $this->storeProQtyUpdate($product['product_id'], $product['quantity'], $towarehouse);
+                // $this->storeProQtyDelete($product['product_id'], $product['quantity'], $fromwarehouse);
+                // $this->storeProQtyUpdate($product['product_id'], $product['quantity'], $towarehouse);
             }
-            foreach ($sequence as $key => $seq) {
-
-                $sequence  = $seq['sequence'];
-                $rtrimdata = rtrim($sequence, ",");
-                $psequence = explode(',', $rtrimdata);
-
-                $sqdata = array();
-                foreach ($psequence as $key => $sqvalue) {
-                    $sqdata  = array(
-                        'pro_id' => $seq['pro_id'],
-                        'store_id' => $seq['store_id'],
-                        'status' => 0,
-                        'entry_date' => date('Y-m-d H:i:s')
-                    );
-                    $this->db->update('pro_sequence', $sqdata, array('sequence' => $sqvalue));
-                }
-            }
+            return TRUE;
         }
+        return FALSE;
     }
 
-    public function  Delete($id, $to_warehouse_id, $from_warehouse_id)
+    public function  Delete($id)
     {
-
-        $idem_pr = $this->db->get_where('transfers_items', array('transfers_id' => $id));
-
-        $results = $idem_pr->result();
-
-        foreach ($results as $key => $result) {
-            //print_r($result->);
-            $sequenceS =  $result->sequence;
-            $rtrimdata = rtrim($sequenceS, ",");
-            $psequence = explode(',', $sequenceS);
-            //$sqdata = array();
-            $this->storeProQtyDelete($result->product_id, $result->quantity, $to_warehouse_id);
-            $this->storeProQtyUpdate($result->product_id, $result->quantity, $from_warehouse_id);
-            foreach ($psequence as $key => $sequenceN) {
-                $sqdata  = array('store_id' => $from_warehouse_id);
-                $this->db->update('pro_sequence', $sqdata, array('sequence' => $sequenceN));
-            }
+        if($this->db->delete('transfers', array('id' => $id)) && $this->db->delete('transfers_items', array('transfers_id' => $id)))
+        {
+            return TRUE;
         }
-
-        $this->db->delete('transfers_items', array('transfers_id' => $id));
-
-        $this->db->delete('transfers', array('id' => $id));
+        return FALSE;
     }
 
     public function getSroteByID($id)
@@ -293,9 +250,12 @@ class Transfers_model extends CI_Model
     public function getAllTransfersItems($transfers_id)
     {
 
-        $this->db->select('transfers_items.*, products.code as product_code, products.name as product_name')
+        $this->db->select('transfers_items.*, products.code as product_code, products.name as product_name,  mf_finished_good_stock.quantity as store_qty')
 
             ->join('products', 'products.id=transfers_items.product_id', 'left')
+            ->join('transfers', 'transfers.id=transfers_items.transfers_id', 'left')
+            ->join('stores', 'transfers.from_warehouse_id =stores.id', 'left')
+            ->join('mf_finished_good_stock', 'mf_finished_good_stock.store_id=stores.id and products.id=mf_finished_good_stock.product_id', 'left')
 
             ->group_by('transfers_items.id')
 
@@ -303,16 +263,9 @@ class Transfers_model extends CI_Model
 
         $q = $this->db->get_where('transfers_items', array('transfers_id' => $transfers_id));
 
-        /* $purchases = $this->db->get_where('transfers', array('id' => $transfers_id));
-        if ($purchases->num_rows() > 0) {
-            foreach ($purchases->result() as $storeid)
-                $store_id = $storeid->store_id;
-        } */
-
         if ($q->num_rows() > 0) {
 
             foreach (($q->result()) as $row) {
-                // $row->store_id = $store_id;
                 $data[] = $row;
             }
 

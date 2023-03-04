@@ -280,6 +280,7 @@ $lang['click_to_add']                       = "Add to POS";
 $lang['alert_x_holded']                     = "You are going to delete opened bill, please click ok to delete.";
 $lang['reference']                          = "Reference";
 $lang['alert_x_purchase']                   = "You are going to delete purchase, please click ok to delete.";
+$lang['alert_x_transfer']                   = "You are going to delete transfer, please click ok to delete.";
 $lang['edit_purchase']                      = "Edit Purchase";
 $lang['delete_purchase']                    = "Delete Purchase";
 $lang['search_product_by_name_code']        = "Search product by code or name, you can scan barcode too";

@@ -121,7 +121,7 @@
                                                 <td><?php echo $val->date?></td>
                                                 <td><?php echo $val->to_warehouse_name?></td>
                                                 <td><?php echo $val->from_warehouse_name?></td>
-                                                <td><?php echo $val->total?></td>
+                                                <td><?php echo number_format($val->total,2)?></td>
                                                 <td><?php echo $val->note?></td>
                                                 <td><?php echo $val->status?></td>
                                                 <td><?php 
@@ -136,7 +136,7 @@
 
                                                         <a href='" . site_url('transfers/edit/'.$val->id) . "' title='Edit Transfer' class='tip btn btn-warning btn-xs'><i class='fa fa-file-text-o'></i></a>  
 
-                                                        <a href='" . site_url('transfers/delete/'.$val->id) . "' onClick=\"return confirm('" . lang('alert_x_purchase') . "')\" title='" . lang("delete_purchase") . "' class='tip btn btn-danger btn-xs'><i class='fa fa-trash-o'></i></a>";
+                                                        <a href='" . site_url('transfers/delete/'.$val->id) . "' onClick=\"return confirm('" . lang('alert_x_transfer') . "')\" title='Delete Transfer' class='tip btn btn-danger btn-xs'><i class='fa fa-trash-o'></i></a>";
 
                                                     }
                                                     else
