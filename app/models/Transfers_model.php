@@ -124,65 +124,6 @@ class Transfers_model extends CI_Model
                 /* $this->storeProQtyDelete($item['product_id'], $item['quantity'], $fromwarehouse);
                 $this->storeProQtyUpdate($item['product_id'], $item['quantity'], $towarehouse); */
             }
-
-           /*  if ($from_store_type == 2) {
-                if ($this->db->insert('purchases', $data)) {
-                    $purchase_id = $this->db->insert_id();
-                    foreach ($items as $item) {
-
-                        $item['purchase_id'] = $purchase_id;
-                        $item['store_id'] = $data['store_id'];
-
-                        if ($this->db->insert('purchase_items', $item)) {
-                            // Product stock insert in tec_product_store_qty table
-                            $incstoreqty = $this->getProductStoreQtyByPidAndStoreId($data['store_id'], $item['product_id']);
-
-                            if ($incstoreqty) {
-                                $upqtyinc = $incstoreqty->quantity + $item['quantity'];
-
-                                $incdata = array(
-                                    'quantity' => $upqtyinc,
-                                );
-                                $this->upadteProductQtyById($incstoreqty->id, $incdata);
-                            } else {
-
-                                $insertdata = array(
-                                    'product_id' => $item['product_id'],
-                                    'quantity' => $item['quantity'],
-                                    'store_id' => $data['store_id']
-                                );
-
-                                $this->db->insert('product_store_qty', $insertdata);
-                            }
-
-                            $product = $this->site->getProductByID($item['product_id']);
-
-                            $old_cost = $product->cost;
-                            $old_quantity = $product->quantity;
-
-                            $new_cost = $item['cost'];
-                            $new_qty = $item['quantity'];
-
-                            if ($old_quantity > 0) {
-                                $oldTPrice = $old_cost * $old_quantity;
-                                $newTPrice = $new_cost * $new_qty;
-                                $TotalPrice = $oldTPrice + $newTPrice;
-                                $TotalQty = $old_quantity + $new_qty;
-                                $coust_amount = $TotalPrice / $TotalQty;
-                            } else {
-                                $coust_amount = $new_cost;
-                            }
-
-                            $this->db->update('products', array('cost' => $coust_amount, 'quantity' => ($product->quantity + $item['quantity'])), array('id' => $product->id));
-                        }
-                        $this->session->unset_userdata('squNo');
-                    }
-
-                    return true;
-                }
-            } */
-
-
             $this->session->unset_userdata('from_warehouse');
 
             return true;
@@ -353,4 +294,66 @@ class Transfers_model extends CI_Model
 
         return FALSE;
     }
+
+    public function updateStatusApprove($id,$dataAppr,$data,$products) {
+
+        if($this->db->update('transfers', $dataAppr, array('id' => $id)) ) {
+
+            $this->db->insert('purchases', $data);
+            $purchase_id = $this->db->insert_id();
+            foreach ($products as $item) {
+
+                $item['purchase_id'] = $purchase_id;
+                $item['store_id'] = $data['store_id'];
+
+                if ($this->db->insert('purchase_items', $item)) {
+
+                    $incstoreqty = $this->getProductStoreQtyByPidAndStoreId($data['store_id'], $item['product_id']);
+
+                    if ($incstoreqty) {
+                        $upqtyinc = $incstoreqty->quantity + $item['quantity'];
+
+                        $incdata = array(
+                            'quantity' => $upqtyinc,
+                        );
+                        $this->upadteProductQtyById($incstoreqty->id, $incdata);
+                    } else {
+
+                        $insertdata = array(
+                            'product_id' => $item['product_id'],
+                            'quantity' => $item['quantity'],
+                            'store_id' => $data['store_id']
+                        );
+
+                        $this->db->insert('product_store_qty', $insertdata);
+                    }
+
+                    $product = $this->site->getProductByID($item['product_id']);
+
+                    $old_cost = $product->cost;
+                    $old_quantity = $product->quantity;
+
+                    $new_cost = $item['cost'];
+                    $new_qty = $item['quantity'];
+
+                    if ($old_quantity > 0) {
+                        $oldTPrice = $old_cost * $old_quantity;
+                        $newTPrice = $new_cost * $new_qty;
+                        $TotalPrice = $oldTPrice + $newTPrice;
+                        $TotalQty = $old_quantity + $new_qty;
+                        $coust_amount = $TotalPrice / $TotalQty;
+                    } else {
+                        $coust_amount = $new_cost;
+                    }
+
+                    $this->db->update('products', array('cost' => $coust_amount, 'quantity' => ($product->quantity + $item['quantity'])), array('id' => $product->id));
+                }
+
+            }
+            return true;
+        }
+        
+        return false;	
+    }
+
 }

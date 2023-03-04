@@ -417,6 +417,52 @@ class Transfers extends MY_Controller
         $this->load->view($this->theme.'transfers/approve', $this->data,$id);	
     }
 
+    public function approve($id){
+
+
+        $transfer_mst = $this->transfers_model->getTransfersByID($id);  
+        $transfer_dtls = $this->transfers_model->getAllTransfersItems($id); 
+
+        $total=0;
+        foreach($transfer_dtls as $key=>$val){
+            $products[] = array(                        
+                'product_id' => $val->product_id,                
+                'cost' => $val->cost,                
+                'quantity' => $val->quantity,    
+                'subtotal' => ($val->cost * $val->quantity),                
+            );                          
+            $total += ($val->cost * $val->quantity);
+        }
+
+        $data = array(
+            'date' => date('Y-m-d H:i:s'),            
+            'reference' => $transfer_mst->reference,             
+            'note' =>$transfer_mst->note,             
+            'supplier_id' => $transfer_mst->from_warehouse_id ,            
+            'received' => 1,            
+            'total' => $total,
+            'deu' => $total,
+            'purchase_type' => 2,
+            'transfer_id' => $id,
+            'created_by' => $this->session->userdata('user_id'),  
+            'store_id' => $transfer_mst->to_warehouse_id ,   
+        );  
+        $dataAppr = array( 'status' => $this->input->post('status') );  
+        
+        if($this->transfers_model->updateStatusApprove($id,$dataAppr,$data,$products))
+        {
+            $this->session->set_flashdata('message', lang('Updated successfully'));        
+            $this->index();
+        }
+        else
+        {
+            $this->session->set_flashdata('error', lang('Failed Updated'));        
+            $this->index();
+        }
+                
+    
+    }
+
     function view($id = NULL) { 
 
         $this->data['transfers_mst'] = $this->transfers_model->getTransfersByID($id);

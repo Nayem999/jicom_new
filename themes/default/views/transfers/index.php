@@ -90,27 +90,16 @@
                         <table id="purData" class="table table-striped table-bordered table-condensed table-hover" style="margin-bottom:5px;">
 
                             <thead>
-
-                            <tr class="active">
-
-                                <th class="col-xs-2"><?= lang('date'); ?></th>
-
-                                <th>from warehouse name</th>
-                                
-                                <th>to warehouse name</th>
-
-                                <th class="col-xs-1"><?= lang('total'); ?></th> 
-
-                                <th><?= lang('note'); ?></th>
-
-                                <th >Status</th>
-
-                                <th style="width:150px;"><?= lang('actions'); ?></th>
-
-                            </tr>
-
+                                <tr class="active">
+                                    <th class="col-xs-2"><?= lang('date'); ?></th>
+                                    <th>From warehouse name</th>                                
+                                    <th>To warehouse name</th>
+                                    <th class="col-xs-1"><?= lang('total'); ?></th> 
+                                    <th><?= lang('note'); ?></th>
+                                    <th >Status</th>
+                                    <th style="width:150px;"><?= lang('actions'); ?></th>
+                                </tr>
                             </thead>
-
                             <tbody>
 
                                 <?php

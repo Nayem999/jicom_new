@@ -18,9 +18,6 @@
                             <label>Status:</label> <br>
                             <input id="paid_by" name="status" type="radio" checked='checked' value='Approved' />
                             <label for="paid_by" class="">Approved</label>
-
-
-
                         </div>
                     </div>
                 </div>
