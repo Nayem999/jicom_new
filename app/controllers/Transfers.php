@@ -35,12 +35,12 @@ class Transfers extends MY_Controller
         $bc = array(
             array(
                 'link' => '#',
-                'page' => lang('transfers')
+                'page' => lang('Transfers')
             )
         );
         
         $meta = array(
-            'page_title' => lang('transfers'),
+            'page_title' => lang('Transfers'),
             'bc' => $bc
         );
         $this->data['transfer_list'] = $this->transfers_model->getAllTransfers();
@@ -133,7 +133,7 @@ class Transfers extends MY_Controller
                         $products[] = array(                    
                             'product_id' => $item_id,                    
                             'cost' => $item_cost,                    
-                            'quentity' => $item_qty,                   
+                            'quantity' => $item_qty,                   
                             'display_cost' => $display_item_cost,                   
                             'subtotal' => ($item_cost * $item_qty),                    
                         );  
@@ -255,7 +255,7 @@ class Transfers extends MY_Controller
                     
                     'cost' => $item_cost,
                     
-                    'quentity' => $item_qty,
+                    'quantity' => $item_qty,
 
                     'transfers_id' =>  $id ,
 
@@ -351,7 +351,7 @@ class Transfers extends MY_Controller
 
                 $row->id = $item->product_id;
 
-                $row->qty = $item->quentity;
+                $row->qty = $item->quantity;
                 
                 $row->cost = $item->cost;
 
@@ -490,26 +490,6 @@ class Transfers extends MY_Controller
         }
         
     } 
-    function squenceOut($row_no,$item_id,$item_qty,$store_id,$sequence = NULL){
-        $this->data['info'] = $this->transfers_model->getSequence($item_id,$store_id);
-        $this->data['title'] = 'Sequence';
-        $this->data['row_no'] = $row_no; 
-        $this->data['id'] = $item_id;
-        $this->data['item_qty'] = $item_qty;
-        $this->data['sequence'] = $sequence ;
-        $this->load->view($this->theme.'transfers/squenceout', $this->data,$id);
-    }
-
-    function squenceOutEdit($row_no,$item_id,$item_qty,$store_id,$sequence = NULL){
-        $this->data['info'] = $this->transfers_model->getSequence($item_id,$store_id);
-
-        $this->data['title'] = 'Sequence';
-        $this->data['row_no'] = $row_no; 
-        $this->data['id'] = $item_id;
-        $this->data['item_qty'] = $item_qty;
-        $this->data['sequence'] = $sequence ;
-        $this->load->view($this->theme.'transfers/squenceout', $this->data,$id);
-    }
 
     function selectFromWarehouse(){
         $this->form_validation->set_rules('warehouse', lang('warehouse'), 'required');
@@ -529,18 +509,33 @@ class Transfers extends MY_Controller
         $this->load->view($this->theme.'transfers/fromWarehouse', $this->data, $meta); 
     }
 
-    function testquery(){
-
-        $data = $this->transfers_model->getSroteByID(2);
-
-        print_r($data );
-    }
-
     public function approve_transfer($id){
-        echo "aa";die;
-        $this->data['title'] = 'Approve Production';
+        $this->data['title'] = 'Approve Transfer';
         $this->data['id'] = $id;
-        $this->load->view($this->theme.'mf_production/approve', $this->data,$id);	
+        $this->load->view($this->theme.'transfers/approve', $this->data,$id);	
     }
 
+    function view($id = NULL) { 
+
+        $this->data['transfers_mst'] = $this->transfers_model->getTransfersByID($id);
+        $this->data['transfers_dtls'] = $this->transfers_model->getAllTransfersItems($id);
+               
+        $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));        
+        $this->data['page_title'] = lang('View Production');
+        
+        $this->load->view($this->theme . 'transfers/view', $this->data);
+        
+    }
+
+    function chalan($id = NULL) { 
+
+        $this->data['transfers_mst'] = $this->transfers_model->getTransfersByID($id);
+        $this->data['transfers_dtls'] = $this->transfers_model->getAllTransfersItems($id);
+               
+        $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));        
+        $this->data['page_title'] = lang('Chalan Production');
+        
+        $this->load->view($this->theme . 'transfers/chalan', $this->data);
+        
+    }
 }

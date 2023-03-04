@@ -245,9 +245,8 @@
 	}
 
 	function approveTransfer(id) { 		 
-		alert(1);
-	//  var site_url = "<?php echo site_url('transfers/approve_transfer'); ?>/"+id; //append id at end
-	//  $("#paySalary").load(site_url);
+		var site_url = "<?php echo site_url('transfers/approve_transfer'); ?>/"+id; //append id at end
+		$("#paySalary").load(site_url);
 	}
     function setsequence(row_no){
             var sequence = $('#arry').val();

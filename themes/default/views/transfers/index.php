@@ -105,7 +105,7 @@
 
                                 <th >Status</th>
 
-                                <th style="width:125px;"><?= lang('actions'); ?></th>
+                                <th style="width:150px;"><?= lang('actions'); ?></th>
 
                             </tr>
 
@@ -128,15 +128,22 @@
                                                     if($val->status=="Pending")
                                                     {
                                                         echo "
-                                                        <a href='javascript:;' onClick='approveTransfer(1)' title='Status Change' class='tip btn btn-primary btn-xs'><i class='fa fa-university'></i></a>
+                                                        <a href='javascript:;' onClick='approveTransfer(".$val->id.")' title='Status Change' class='tip btn btn-primary btn-xs'><i class='fa fa-university'></i></a>
+
                                                         <a href='#' onClick=\"MyWindow=window.open('" . site_url('transfers/view/'.$val->id) . "', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;\" title='View Transfer' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a>
+
+                                                        <a href='#' onClick=\"MyWindow=window.open('" . site_url('transfers/chalan/'.$val->id) . "', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;\" title='Chalan Transfer' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a>
+
                                                         <a href='" . site_url('transfers/edit/'.$val->id) . "' title='Edit Transfer' class='tip btn btn-warning btn-xs'><i class='fa fa-file-text-o'></i></a>  
+
                                                         <a href='" . site_url('transfers/delete/'.$val->id) . "' onClick=\"return confirm('" . lang('alert_x_purchase') . "')\" title='" . lang("delete_purchase") . "' class='tip btn btn-danger btn-xs'><i class='fa fa-trash-o'></i></a>";
 
                                                     }
                                                     else
                                                     {
-                                                        echo "<a href='#' onClick=\"MyWindow=window.open('" . site_url('transfers/view/'.$val->id) . "', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;\" title='View Transfer' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a>";
+                                                        echo "<a href='#' onClick=\"MyWindow=window.open('" . site_url('transfers/view/'.$val->id) . "', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;\" title='View Transfer' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a>
+
+                                                        <a href='#' onClick=\"MyWindow=window.open('" . site_url('transfers/chalan/'.$val->id) . "', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;\" title='Chalan Transfer' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a>";
                                                     }
                                                 ?></td>
                                             </tr>

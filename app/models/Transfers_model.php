@@ -121,8 +121,8 @@ class Transfers_model extends CI_Model
                 $item['transfers_id'] = $transfers_id;
                 if ($this->db->insert('transfers_items', $item));
 
-                /* $this->storeProQtyDelete($item['product_id'], $item['quentity'], $fromwarehouse);
-                $this->storeProQtyUpdate($item['product_id'], $item['quentity'], $towarehouse); */
+                /* $this->storeProQtyDelete($item['product_id'], $item['quantity'], $fromwarehouse);
+                $this->storeProQtyUpdate($item['product_id'], $item['quantity'], $towarehouse); */
             }
 
            /*  if ($from_store_type == 2) {
@@ -207,8 +207,8 @@ class Transfers_model extends CI_Model
                 $rtrimdata = rtrim($sequenceS, ",");
                 $psequence = explode(',', $sequenceS);
                 //$sqdata = array();
-                $this->storeProQtyDelete($result->product_id, $result->quentity, $towarehouse);
-                $this->storeProQtyUpdate($result->product_id, $result->quentity, $fromwarehouse);
+                $this->storeProQtyDelete($result->product_id, $result->quantity, $towarehouse);
+                $this->storeProQtyUpdate($result->product_id, $result->quantity, $fromwarehouse);
                 foreach ($psequence as $key => $sequenceN) {
                     $sqdata  = array('store_id' => $fromwarehouse);
                     $this->db->update('pro_sequence', $sqdata, array('sequence' => $sequenceN));
@@ -218,8 +218,8 @@ class Transfers_model extends CI_Model
             $this->db->delete('transfers_items', array('transfers_id' => $id));
             foreach ($products as $product) {
                 $this->db->insert('transfers_items', $product);
-                $this->storeProQtyDelete($product['product_id'], $product['quentity'], $fromwarehouse);
-                $this->storeProQtyUpdate($product['product_id'], $product['quentity'], $towarehouse);
+                $this->storeProQtyDelete($product['product_id'], $product['quantity'], $fromwarehouse);
+                $this->storeProQtyUpdate($product['product_id'], $product['quantity'], $towarehouse);
             }
             foreach ($sequence as $key => $seq) {
 
@@ -254,8 +254,8 @@ class Transfers_model extends CI_Model
             $rtrimdata = rtrim($sequenceS, ",");
             $psequence = explode(',', $sequenceS);
             //$sqdata = array();
-            $this->storeProQtyDelete($result->product_id, $result->quentity, $to_warehouse_id);
-            $this->storeProQtyUpdate($result->product_id, $result->quentity, $from_warehouse_id);
+            $this->storeProQtyDelete($result->product_id, $result->quantity, $to_warehouse_id);
+            $this->storeProQtyUpdate($result->product_id, $result->quantity, $from_warehouse_id);
             foreach ($psequence as $key => $sequenceN) {
                 $sqdata  = array('store_id' => $from_warehouse_id);
                 $this->db->update('pro_sequence', $sqdata, array('sequence' => $sequenceN));
@@ -303,16 +303,16 @@ class Transfers_model extends CI_Model
 
         $q = $this->db->get_where('transfers_items', array('transfers_id' => $transfers_id));
 
-        $purchases = $this->db->get_where('transfers', array('id' => $transfers_id));
+        /* $purchases = $this->db->get_where('transfers', array('id' => $transfers_id));
         if ($purchases->num_rows() > 0) {
             foreach ($purchases->result() as $storeid)
                 $store_id = $storeid->store_id;
-        }
+        } */
 
         if ($q->num_rows() > 0) {
 
             foreach (($q->result()) as $row) {
-                $row->store_id = $store_id;
+                // $row->store_id = $store_id;
                 $data[] = $row;
             }
 
