@@ -111,7 +111,7 @@ class Transfers_model extends CI_Model
         return false;
     }
 
-    public function addtransfers($data, $items, $towarehouse, $fromwarehouse, $from_store_type)
+    public function addtransfers($data, $items)
     {
 
         if ($this->db->insert('transfers', $data)) {
@@ -120,12 +120,8 @@ class Transfers_model extends CI_Model
             foreach ($items as $item) {
                 $item['transfers_id'] = $transfers_id;
                 if ($this->db->insert('transfers_items', $item));
-
-                /* $this->storeProQtyDelete($item['product_id'], $item['quantity'], $fromwarehouse);
-                $this->storeProQtyUpdate($item['product_id'], $item['quantity'], $towarehouse); */
             }
             $this->session->unset_userdata('from_warehouse');
-
             return true;
         }
 
@@ -295,60 +291,88 @@ class Transfers_model extends CI_Model
         return FALSE;
     }
 
-    public function updateStatusApprove($id,$dataAppr,$data,$products) {
+    public function updateStatusApprove($id,$dataAppr,$data,$products,$sales_data,$sales_products) {
 
         if($this->db->update('transfers', $dataAppr, array('id' => $id)) ) {
 
-            $this->db->insert('purchases', $data);
-            $purchase_id = $this->db->insert_id();
-            foreach ($products as $item) {
-
-                $item['purchase_id'] = $purchase_id;
-                $item['store_id'] = $data['store_id'];
-
-                if ($this->db->insert('purchase_items', $item)) {
-
-                    $incstoreqty = $this->getProductStoreQtyByPidAndStoreId($data['store_id'], $item['product_id']);
-
-                    if ($incstoreqty) {
-                        $upqtyinc = $incstoreqty->quantity + $item['quantity'];
-
-                        $incdata = array(
-                            'quantity' => $upqtyinc,
-                        );
-                        $this->upadteProductQtyById($incstoreqty->id, $incdata);
-                    } else {
-
-                        $insertdata = array(
-                            'product_id' => $item['product_id'],
-                            'quantity' => $item['quantity'],
-                            'store_id' => $data['store_id']
-                        );
-
-                        $this->db->insert('product_store_qty', $insertdata);
+            if($this->db->insert('purchases', $data))
+            {
+                $purchase_id = $this->db->insert_id();
+                foreach ($products as $item) {
+    
+                    $item['purchase_id'] = $purchase_id;
+                    $item['store_id'] = $data['store_id'];
+    
+                    if ($this->db->insert('purchase_items', $item)) {
+    
+                        $incstoreqty = $this->getProductStoreQtyByPidAndStoreId($data['store_id'], $item['product_id']);
+    
+                        if ($incstoreqty) {
+                            $upqtyinc = $incstoreqty->quantity + $item['quantity'];
+    
+                            $incdata = array(
+                                'quantity' => $upqtyinc,
+                            );
+                            $this->upadteProductQtyById($incstoreqty->id, $incdata);
+                        } else {
+    
+                            $insertdata = array(
+                                'product_id' => $item['product_id'],
+                                'quantity' => $item['quantity'],
+                                'store_id' => $data['store_id']
+                            );
+    
+                            $this->db->insert('product_store_qty', $insertdata);
+                        }
+    
+                        $product = $this->site->getProductByID($item['product_id']);
+    
+                        $old_cost = $product->cost;
+                        $old_quantity = $product->quantity;
+    
+                        $new_cost = $item['cost'];
+                        $new_qty = $item['quantity'];
+    
+                        if ($old_quantity > 0) {
+                            $oldTPrice = $old_cost * $old_quantity;
+                            $newTPrice = $new_cost * $new_qty;
+                            $TotalPrice = $oldTPrice + $newTPrice;
+                            $TotalQty = $old_quantity + $new_qty;
+                            $coust_amount = $TotalPrice / $TotalQty;
+                        } else {
+                            $coust_amount = $new_cost;
+                        }
+    
+                        $this->db->update('products', array('cost' => $coust_amount, 'quantity' => ($product->quantity + $item['quantity'])), array('id' => $product->id));
                     }
-
-                    $product = $this->site->getProductByID($item['product_id']);
-
-                    $old_cost = $product->cost;
-                    $old_quantity = $product->quantity;
-
-                    $new_cost = $item['cost'];
-                    $new_qty = $item['quantity'];
-
-                    if ($old_quantity > 0) {
-                        $oldTPrice = $old_cost * $old_quantity;
-                        $newTPrice = $new_cost * $new_qty;
-                        $TotalPrice = $oldTPrice + $newTPrice;
-                        $TotalQty = $old_quantity + $new_qty;
-                        $coust_amount = $TotalPrice / $TotalQty;
-                    } else {
-                        $coust_amount = $new_cost;
-                    }
-
-                    $this->db->update('products', array('cost' => $coust_amount, 'quantity' => ($product->quantity + $item['quantity'])), array('id' => $product->id));
+    
                 }
+            }
 
+            if($this->db->insert('sales', $sales_data)) { 
+            
+                $sale_id = $this->db->insert_id();
+                $data['type'] = 'insert';
+                $data['sale_id'] = $sale_id;
+                $this->db->insert('sales_log', $sales_data);
+                $sale_log_id = $this->db->insert_id(); 
+    
+                foreach ($sales_products as $item) {
+        
+                    $item['sale_id'] = $sale_id;
+                    $item['store_id'] = $sales_data['store_id'];
+
+                    if($this->db->insert('sale_items', $item)) {
+                        $item['sale_log_id'] = $sale_log_id;
+                        $this->db->insert('sale_items_log', $item);
+
+                        $finished_goods = $this->site->getWhereDataByElement('mf_finished_good_stock', 'store_id', 'product_id', $sales_data['store_id'], $item['product_id']);
+                       
+
+                        $this->db->update('mf_finished_good_stock', array('quantity' => ($finished_goods[0]->quantity-$item['quantity'])), array('id' => $finished_goods[0]->id));
+                    }
+                }
+    
             }
             return true;
         }

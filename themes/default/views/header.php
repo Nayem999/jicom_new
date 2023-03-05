@@ -756,7 +756,7 @@
                     </li>
   
                     <li id="mf_report_raw_material_production"><a href="<?= site_url('mf_report/raw_material_production'); ?>">
-                      <i class="fa fa-circle-o"></i> Raw Material Production </a>
+                      <i class="fa fa-circle-o"></i> Production </a>
                     </li>
   
                     <li id="mf_report_finish_goods_stock"><a href="<?= site_url('mf_report/finish_goods_stock'); ?>">

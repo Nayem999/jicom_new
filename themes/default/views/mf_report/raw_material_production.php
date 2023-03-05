@@ -17,6 +17,20 @@ if (isset($_POST['start_date'])) {
                         <button type="button" style="width:120px; float:right; display:none;" class="btn btn-default btn-sm toggle_form pull-right" id="printWindow">Print</button>
                         <?= form_open(""); ?>
                         <div class="row">
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <?= lang('Factory', 'Factory'); ?>
+                                    <?php
+                                    $fw[0] = lang("select") . " " . lang("Factory Name");
+                                    foreach ($factory_stores as $factory) {
+                                        $fw[$factory->id] = $factory->name;
+                                    }
+                                    ?>
+                                    <?= form_dropdown('factory_id', $fw, set_value('factory_id'), 'class="form-control select2 tip" id="factory_id" required="required" style="width:100%;"'); ?>
+                                </div>
+                            </div>
+
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label class="control-label" for="start_date"><?= lang("start_date"); ?></label>
@@ -29,6 +43,8 @@ if (isset($_POST['start_date'])) {
                                     <?= form_input('end_date', $end_date, 'class="form-control datepicker" id="end_date"'); ?>
                                 </div>
                             </div>
+
+
 
                             <div class="col-sm-12">
                                 <button type="submit" class="btn btn-primary"><?= lang("submit"); ?></button>
@@ -47,6 +63,8 @@ if (isset($_POST['start_date'])) {
                                         <th> Batch No </th>
 
                                         <th> Recipe Name </th>
+
+                                        <th> Factory Name </th>
 
                                         <th> Product </th>
 
@@ -76,6 +94,8 @@ if (isset($_POST['start_date'])) {
                                                 <td><?= $material->batch_no; ?></td>
 
                                                 <td><?= $material->recipe_name; ?></td>
+                                                
+                                                <td><?= $material->store_name; ?></td>
 
                                                 <td><?= $material->product_name; ?></td>
 
@@ -118,7 +138,8 @@ if (isset($_POST['start_date'])) {
     $("#excelWindow").click(function() {
         let stDate = $("#start_date").val();
         let endDate = $("#end_date").val();
-        var url = '<?= site_url('mf_report/exp_material_production_report/'); ?>' + '/' + stDate + '/'+ endDate;
+        let factoryId = $("#factory_id").val();
+        var url = '<?= site_url('mf_report/exp_material_production_report/'); ?>' + '/' + stDate + '/'+ endDate + '/' + factoryId;;
         location.replace(url);
     });
 </script>

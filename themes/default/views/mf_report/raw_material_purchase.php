@@ -10,6 +10,19 @@
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
+                                    <?= lang('Factory', 'Factory'); ?>
+                                    <?php
+                                    $fw[0] = lang("select") . " " . lang("Factory Name");
+                                    foreach ($factory_stores as $factory) {
+                                        $fw[$factory->id] = $factory->name;
+                                    }
+                                    ?>
+                                    <?= form_dropdown('factory_id', $fw, set_value('factory_id'), 'class="form-control select2 tip" id="factory_id" required="required" style="width:100%;"'); ?>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
                                     <label class="control-label" for="start_date"><?= lang("start_date"); ?></label>
                                     <?= form_input('start_date', $start_date, 'class="form-control datepicker" id="start_date"'); ?>
                                 </div>
@@ -97,7 +110,8 @@
     $("#excelWindow").click(function() {
         let stDate = $("#start_date").val();
         let endDate = $("#end_date").val();
-        var url = '<?= site_url('mf_report/exp_material_purchase_report/'); ?>' + '/' + stDate + '/'+ endDate;
+        let factoryId = $("#factory_id").val();
+        var url = '<?= site_url('mf_report/exp_material_purchase_report/'); ?>' + '/' + stDate + '/'+ endDate + '/' + factoryId;
         location.replace(url);
     });
 </script>

@@ -101,6 +101,7 @@ class Expenses extends MY_Controller
 			$action.="<a href='" . site_url('expenses/delete_expense/$1') . "' onClick=\"return confirm('" . lang('alert_x_expense') . "')\" title='" . lang("delete_expense") . "' class='tip btn btn-danger btn-xs'><i class='fa fa-trash-o'></i></a>";
 		}
         $action.="<a onclick=\"window.open('" . site_url('expenses/expense_note/$1') . "', 'pos_popup', 'width=900,height=600,menubar=yes,scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#' title='" . lang('expense_note') . "' class='tip btn btn-primary btn-xs'><i class='fa fa-file-text-o'></i></a>";
+        
         $action.="</div></div>";
 
         $this->datatables->add_column("Actions",$action, "id");

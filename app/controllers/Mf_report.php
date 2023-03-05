@@ -50,22 +50,31 @@ class Mf_report extends MY_Controller
     public function raw_material()
     {
         $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('raw_material_report')));
+
         $meta = array('page_title' => lang('Raw material Report'), 'bc' => $bc);
 
         $this->data['end_date'] = $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');  
+
         $this->data['start_date'] =  $end_date = $this->input->post('end_date') ? $this->input->post('end_date') : date('Y-m-d');
 
         // all branch name query here
         $this->data["brands"] = $this->db->select("id,name")->from('mf_brands')->get()->result();
 
         $brandId = '';
+
+        $factoryId = '';
+
         if($this->input->server('REQUEST_METHOD') === "POST"){
+
             $brandId = $this->input->post('brand_id');
+
+            $factoryId = $this->input->post('factory_id');
+
         }
 
         $mfReportModal = new Mf_report_model();
 
-        $this->data["materials"] = $brandId?$mfReportModal::getMaterialData($brandId): $mfReportModal::getMaterialData();
+        $this->data["materials"] = $brandId || $factoryId ? $mfReportModal::getMaterialData($brandId,$factoryId) : $mfReportModal::getMaterialData();
 
         $this->page_construct('mf_report/raw_material',$this->data, $meta);
     }
@@ -126,17 +135,17 @@ class Mf_report extends MY_Controller
 
         $this->data['start_date'] =  $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');  
 
-        // echo $this->input->post('start_date');die;
-
         $mfPurchaseReportModal = new Mf_report_model();
 
-        $this->data["materials"] = $mfPurchaseReportModal::getPurchaseData($this->data['start_date'],$this->data['end_date']);
+        $factoryId = $this->input->post('factory_id') ? $this->input->post('factory_id') : '';
+
+        $this->data["materials"] = $mfPurchaseReportModal::getPurchaseData($this->data['start_date'],$this->data['end_date'],$factoryId);
 
         $this->page_construct('mf_report/raw_material_purchase',$this->data, $meta);
 
     }
 
-    public function exp_material_purchase_report($stDate=null, $endDate=null)  {
+    public function exp_material_purchase_report($stDate=null, $endDate=null, $factoryId = null)  {
 
         $fields = array('SL', 'SUPPLIER Name ', 'STORE NAME','TOTAL','PAID AMOUNT','DUE AMOUNT');
 
@@ -150,7 +159,7 @@ class Mf_report extends MY_Controller
 
         $mfPurchaseReportModal = new Mf_report_model();
 
-        $items = $mfPurchaseReportModal::getPurchaseData($start_date, $end_date);
+        $items = $mfPurchaseReportModal::getPurchaseData($start_date, $end_date, $factoryId);
 
         if(count($items) > 0 ):
             $i = 0;
@@ -195,7 +204,9 @@ class Mf_report extends MY_Controller
 
         $stockModel = new Mf_material_stock_model();
 
-        $this->data['matarial_items'] = $stockModel->getStockList($brandId); 
+        $factoryId = $this->input->post('factory_id') ? $this->input->post('factory_id') : '';
+
+        $this->data['matarial_items'] = $stockModel->getStockList($brandId , $factoryId); 
 
         $this->data["brands"] = $this->db->select("id,name")->from('mf_brands')->get()->result();
 
@@ -214,16 +225,17 @@ class Mf_report extends MY_Controller
 
         $this->data['end_date'] =  $this->input->post('end_date') ? $this->input->post('end_date') : date('Y-m-d');
 
+        $factoryId = $this->input->post('factory_id') ? $this->input->post('factory_id') : '';
 
         $mfReportModal = new Mf_report_model();
 
-        $this->data["materials"] = $mfReportModal::getProductionData($this->data['start_date'], $this->data['end_date']);
+        $this->data["materials"] = $mfReportModal::getProductionData($this->data['start_date'], $this->data['end_date'] , $factoryId);
 
         $this->page_construct('mf_report/raw_material_production',$this->data, $meta);
 
     }
 
-    public function exp_material_production_report($stDate=null, $endDate=null)  
+    public function exp_material_production_report($stDate=null, $endDate=null,$factoryId = null)  
     {
         $fields = array('SL', 'BATCH NO', 'RECIPE NAME','PRODUCT','CATEGORY','STATUS','TARGET QTY', 'ACTUAL QTY', 'TOTAL COST');
 
@@ -237,7 +249,7 @@ class Mf_report extends MY_Controller
 
         $mfPurchaseReportModal = new Mf_report_model();
 
-        $items = $mfPurchaseReportModal::getProductionData($start_date, $end_date);
+        $items = $mfPurchaseReportModal::getProductionData($start_date, $end_date, $factoryId);
 
         if(count($items) > 0 ):
             $i = 0;
@@ -278,12 +290,14 @@ class Mf_report extends MY_Controller
         
         $meta = array('page_title' => lang('Finish Goods Stock Report'), 'bc' => $bc);
 
-        $this->data['finish_good_list'] = $this->mf_finish_good_stock_model->getFinishStockList();
+        $factory_id = $this->input->post('factory_id') ? $this->input->post('factory_id') : ''; 
+
+        $this->data['finish_good_list'] = $this->mf_finish_good_stock_model->getFinishStockList($factory_id);
 
         $this->page_construct('mf_report/finish_goods_stock',$this->data, $meta);
     }
 
-    public function exp_finish_goods_stock_report()
+    public function exp_finish_goods_stock_report($factory_id = null)
     {
         $this->load->model('mf_finish_good_stock_model');
 
@@ -293,7 +307,7 @@ class Mf_report extends MY_Controller
 
         $excelData = implode("\t", array_values($fields)) . "\n"; 
 
-        $items = $this->mf_finish_good_stock_model->getFinishStockList();
+        $items = $this->mf_finish_good_stock_model->getFinishStockList($factory_id);
 
         if(count($items) > 0 ):
 
@@ -326,43 +340,22 @@ class Mf_report extends MY_Controller
 
     public function raw_material_expense()
     {
-        // stores
 
-        $this->load->model('categories_model');
-
-        $this->load->model('site');
+        $this->data['categories'] = $this->employee_model->getAllCategories();
 
         $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');  
 
         $end_date = $this->input->post('end_date') ? $this->input->post('end_date') : date('Y-m-d');  
         
-        $store_id = $this->input->post('store_id') ? $this->input->post('store_id') : 0;  
+        $store_id = $this->input->post('factory_id') ? $this->input->post('factory_id') : 0;  
 
-        $this->data['categories'] = $this->categories_model->getAllCategories();
-        
-        $this->db->select(
-            $this->db->dbprefix('expenses') . ".id as id, amount,".
-            $this->db->dbprefix('expens_category') . ".name as category_name, ".
-            $this->db->dbprefix('expens_category') . ".cat_id as category_id, ".
-            $this->db->dbprefix('expenses') . ".paid_by, " . 
-            $this->db->dbprefix('employee') . ".name as user " );
-        $this->db->from('expenses');
-        $this->db->join('expens_category', 'expens_category.cat_id=expenses.c_id'); 
-        $this->db->join('employee', 'employee.id=expenses.employee_id','left');
-        $this->db->group_by('expenses.id');
-        if($store_id) { $this->db->where('expenses.store_id', $store_id); }
-        if($start_date) { $this->db->where('expenses.date >=', $start_date.' 00:00:00'); }
-        if($end_date) { $this->db->where('expenses.date <=', $end_date.' 23:59:59'); } 
-        if($this->session->userdata('store_id') !=0){
-            $this->db->where('expenses.store_id', $this->session->userdata('store_id'));
-        } 
+        $mfPurchaseReportModal = new Mf_report_model();
 
-        $this->data['expensesData'] = $this->db->get()->result();
-        // echo $this->db->last_query();die;
-        $this->data['start_date'] = $start_date;
-        $this->data['end_date'] = $end_date;
+        $this->data["items"] = $mfPurchaseReportModal::getAllExpense($start_date, $end_date, $store_id);
 
-        $this->data['stores'] = $this->site->getAllStores(null, 2);
+        $this->data["start_date"] = $start_date;
+
+        $this->data["end_date"] = $end_date;
 
         $this->data['page_title'] = $this->lang->line("Expenses Report");
 
@@ -371,6 +364,13 @@ class Mf_report extends MY_Controller
         $meta = array('page_title' => lang('Expenses Report'), 'bc' => $bc);
 
         $this->page_construct('mf_report/raw_material_expense',$this->data, $meta);
+
+
+    }
+
+    public function exp_expense_report(Type $var = null)
+    {
+        # code...
     }
 
 

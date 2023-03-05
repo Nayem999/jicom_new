@@ -108,8 +108,8 @@
                                         ?>
                                             <tr>
                                                 <td><?php echo $val->date?></td>
-                                                <td><?php echo $val->to_warehouse_name?></td>
                                                 <td><?php echo $val->from_warehouse_name?></td>
+                                                <td><?php echo $val->to_warehouse_name?></td>
                                                 <td><?php echo number_format($val->total,2)?></td>
                                                 <td><?php echo $val->note?></td>
                                                 <td><?php echo $val->status?></td>
@@ -118,17 +118,17 @@
                                                     {
                                                         echo "
                                                         <a href='javascript:;' onClick='approveTransfer(".$val->id.")' title='Status Change' class='tip btn btn-primary btn-xs'><i class='fa fa-university'></i></a>";
-                                                        if($this->site->permission('transfers_view'))
+                                                        if($this->site->route_permission('transfers_view'))
                                                         {
                                                             echo "<a href='#' onClick=\"MyWindow=window.open('" . site_url('transfers/view/'.$val->id) . "', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;\" title='View Transfer' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a>
 
                                                             <a href='#' onClick=\"MyWindow=window.open('" . site_url('transfers/chalan/'.$val->id) . "', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;\" title='Chalan Transfer' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a>";
                                                         }
-                                                        if($this->site->permission('transfers_edit'))
+                                                        if($this->site->route_permission('transfers_edit'))
                                                         {
                                                             echo "<a href='" . site_url('transfers/edit/'.$val->id) . "' title='Edit Transfer' class='tip btn btn-warning btn-xs'><i class='fa fa-file-text-o'></i></a>  ";
                                                         }
-                                                        if($this->site->permission('transfers_delete'))
+                                                        if($this->site->route_permission('transfers_delete'))
                                                         {
                                                             echo "<a href='" . site_url('transfers/delete/'.$val->id) . "' onClick=\"return confirm('" . lang('alert_x_transfer') . "')\" title='Delete Transfer' class='tip btn btn-danger btn-xs'><i class='fa fa-trash-o'></i></a> ";
                                                         }
@@ -136,7 +136,7 @@
                                                     }
                                                     else
                                                     {
-                                                        if($this->site->permission('transfers_view'))
+                                                        if($this->site->route_permission('transfers_view'))
                                                         {
                                                             echo "<a href='#' onClick=\"MyWindow=window.open('" . site_url('transfers/view/'.$val->id) . "', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;\" title='View Transfer' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a>
 

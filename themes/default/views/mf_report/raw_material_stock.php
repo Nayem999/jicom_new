@@ -21,6 +21,19 @@
                                 </div>
                             </div>
 
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <?= lang('Factory', 'Factory'); ?>
+                                    <?php
+                                    $fw[0] = lang("select") . " " . lang("Factory Name");
+                                    foreach ($factory_stores as $factory) {
+                                        $fw[$factory->id] = $factory->name;
+                                    }
+                                    ?>
+                                    <?= form_dropdown('factory_id', $fw, set_value('factory_id'), 'class="form-control select2 tip" id="factory_id" required="required" style="width:100%;"'); ?>
+                                </div>
+                            </div>
+
                             <div class="col-sm-12">
                                 <button type="submit" class="btn btn-primary"><?= lang("submit"); ?></button>
                             </div>
@@ -72,7 +85,8 @@
 
     $("#excelWindow").click(function() {
         let brandId = $("#brand_id").val();
-        var url = '<?= site_url('mf_material_stock/excel_stock_list/'); ?>'+ '/'+brandId;
+        let factoryId = $("#factory_id").val();
+        var url = '<?= site_url('mf_material_stock/excel_stock_list/'); ?>'+ '/'+brandId + '/' + factoryId;
         location.replace(url);
         location.replace(url);
     });

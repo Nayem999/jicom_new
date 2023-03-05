@@ -106,7 +106,7 @@ class Transfers extends MY_Controller
             }
             $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));       
             $this->data['page_title'] = lang('Products Transfers');
-            $this->data['warehouses'] = $this->site->getAllStores(); 
+            // $this->data['warehouses'] = $this->site->getAllStores(); 
             $this->data['warehouses'] = $this->site->getAllFactoryStores();
             $this->load->view($this->theme.'transfers/fromWarehouse', $this->data, $meta); 
         } else {
@@ -173,11 +173,14 @@ class Transfers extends MY_Controller
                 'status' => 'Pending',
                 'reference' =>  $this->input->post('reference'), 
                 'created_by' => $this->session->userdata('user_id'), 
+                'customer_id' => $this->input->post('customer_id'),  
+                'supplier_id' => $this->input->post('supplier_id'),  
             ); 
                                  
         }
+        // print_r($data);die;
 
-        if ($this->form_validation->run() == true && $this->transfers_model->addtransfers($data, $products, $towarehouseID, $fromwarehouseID, $from_store_info->store_type)) { 
+        if ($this->form_validation->run() == true && $this->transfers_model->addtransfers($data, $products)) { 
             $this->session->set_userdata('remove_spo', 1);
             $this->session->set_flashdata('message', lang('transfer_added'));            
             redirect("transfers"); 
@@ -188,6 +191,7 @@ class Transfers extends MY_Controller
             
             $this->data['suppliers'] = $this->site->getAllSuppliers();
             $this->data['warehouses'] = $this->site->getAllStores();             
+            $this->data['customers'] = $this->site->whereRows('customers','store_id',$this->session->userdata('from_warehouse'));             
             $this->data['page_title'] = lang('Add Transfers');
             
             $bc = array(
@@ -209,6 +213,27 @@ class Transfers extends MY_Controller
         }
         
     } 
+
+    public function fn_supplierInfo($id){
+
+        $returnData = '';
+        if($id)
+        {
+            $SupPro =  $this->site->whereRows('suppliers','store_id',$id); 
+            $sr[''] = lang("select") . " " . lang("supplier");
+            foreach ($SupPro as $supplier_arr) {
+                $sr[$supplier_arr->id] = $supplier_arr->name;
+            }
+            $returnData .= '<div class="form-group"><label for="supplier_id">Supplier</label>'.form_dropdown('supplier_id', $sr, set_value('supplier_id'), 'class="form-control select2" id="supplier_id" style="width:100%;" required="required"').'</div>';
+
+        }
+        else
+        {
+            $sr[''] = lang("select") . " " . lang("supplier");
+            $returnData .= '<div class="form-group"><label>Supplier</label>'.form_dropdown('supplier_id', $sr, set_value('supplier_id'), 'class="form-control select2" id="supplier_id" style="width:100%;" required="required"').'</div>';
+        }  
+        echo $returnData;  
+    }
 
     function edit($id){
         if(!$this->site->route_permission('transfers_edit'))
@@ -442,7 +467,7 @@ class Transfers extends MY_Controller
         $transfer_mst = $this->transfers_model->getTransfersByID($id);  
         $transfer_dtls = $this->transfers_model->getAllTransfersItems($id); 
 
-        $total=0;
+        $total=$sales_total=$i=0;
         foreach($transfer_dtls as $key=>$val){
             $products[] = array(                        
                 'product_id' => $val->product_id,                
@@ -451,13 +476,30 @@ class Transfers extends MY_Controller
                 'subtotal' => ($val->cost * $val->quantity),                
             );                          
             $total += ($val->cost * $val->quantity);
+
+            $product_details = $this->site->getWhereDataByElement('mf_finished_good_stock','store_id','product_id',$transfer_mst->from_warehouse_id, $val->product_id);
+
+  
+            $sales_products[] = array(
+                'product_id' => $val->product_id,
+                'quantity' => $val->quantity,
+                'unit_price' => $val->cost,
+                'net_unit_price' => $val->cost,
+                'subtotal' => ($val->cost * $val->quantity),
+                'real_unit_price' => $val->cost,
+                'cost' => $product_details[0]->cost,
+                'store_id' => $transfer_mst->from_warehouse_id ,
+            );
+            $sales_total += $val->cost * $val->quantity;
+            $i++;
         }
+        // print_r($sales_products);die;
 
         $data = array(
             'date' => date('Y-m-d H:i:s'),            
             'reference' => $transfer_mst->reference,             
             'note' =>$transfer_mst->note,             
-            'supplier_id' => $transfer_mst->from_warehouse_id ,            
+            'supplier_id' => $transfer_mst->supplier_id,            
             'received' => 1,            
             'total' => $total,
             'deu' => $total,
@@ -465,10 +507,33 @@ class Transfers extends MY_Controller
             'transfer_id' => $id,
             'created_by' => $this->session->userdata('user_id'),  
             'store_id' => $transfer_mst->to_warehouse_id ,   
+
         );  
         $dataAppr = array( 'status' => $this->input->post('status') );  
+
+        $customer_details = $this->site->whereRow('customers','id',$transfer_mst->customer_id);
+
+        $sales_data = array(
+            'date' => date('Y-m-d H:i:s'),
+            'customer_id' => $transfer_mst->customer_id,
+            'customer_name' => $customer_details->name,
+            'total' => $this->tec->formatDecimal($sales_total),
+            'grand_total' => $sales_total,
+            'total_items' => $i,
+            'total_quantity' => $this->input->post('total_quantity'),
+            'paid' => 0,
+            'paid_by' => 'Credit',
+            'created_by' => $this->session->userdata('user_id'),
+            'store_id' => $transfer_mst->from_warehouse_id,
+            'collection_id' => 0,
+            'delivery_date' => date('Y-m-d'),
+            'payment_status' => 3,
+            'status' => 'due',
+            'sale_type'=> 2,
+            'transfer_id' => $id,
+        );
         
-        if($this->transfers_model->updateStatusApprove($id,$dataAppr,$data,$products))
+        if($this->transfers_model->updateStatusApprove($id,$dataAppr,$data,$products,$sales_data,$sales_products))
         {
             $this->session->set_flashdata('message', lang('Updated successfully'));        
             $this->index();
