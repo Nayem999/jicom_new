@@ -7,9 +7,9 @@ function add_invoice_item(item) {
         return;
     }
 
-    console.log(item); return false;
-
     var item_id = Settings.item_addition == 1 ? item.item_id : item.id;
+
+    // console.log(item_id);// return false;
     if (spositems[item_id]) {
         spositems[item_id].row.qty = parseFloat(spositems[item_id].row.qty) + 1;
     } else {
@@ -66,13 +66,15 @@ function loadItems() {
         }
         spositems = JSON.parse(get('spositems'));
 
+        // console.log(spositems);
+
         $.each(spositems, function () {
 
             var item = this;
             var item_id = Settings.item_addition == 1 ? item.item_id : item.id;
             spositems[item_id] = item;
 
-            console.log(item.row.seq)
+            // console.log(item.row.seq);
             //alert(item.row.seq);
 
             var product_id = item.row.id, StockQty = item.row.StockQty , item_type = item.row.type, item_war = item.row.war ,  item_seq = item.row.seq , item_tax_method = parseFloat(item.row.tax_method), combo_items = item.combo_items, item_qty = item.row.qty, sQty = parseFloat(item.row.sQty), item_aqty = parseFloat(item.row.quantity), item_type = item.row.type, item_ds = item.row.discount, item_qnty_type = item.row.qnty_type, item_per_type_qnty = item.row.per_type_qnty, item_code = item.row.code, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
@@ -138,17 +140,21 @@ function loadItems() {
             $('#list-table-div').scrollTop(0);
 
 
+            // console.log(sQty);
+            var arrayCount
              if(sQty > 0){
                  if( item_seq == '') {
 
-                    var arrayCount =  0; 
+                    arrayCount =  0; 
 
                  }else{
 
                     var array  = item_seq.split(","); 
          
-                    var arrayCount = array.length;
+                    arrayCount = array.length;
                  }
+
+                // console.log(arrayCount);
 
                  if(Number(arrayCount) == Number(item_qty)){
 
@@ -165,8 +171,7 @@ function loadItems() {
                     
                  }
              }
-                
-          
+      
 
             if(item_type == 'standard' && item_qty > item_aqty) {
                 var acCurrentQty = item_aqty;

@@ -115,6 +115,8 @@ class Permission extends MY_Controller
                 'mf_recipe' => $this->input->post('mf_recipe'),
                 'mf_production' => $this->input->post('mf_production'),
                 'mf_finish_good_stock' => $this->input->post('mf_finish_good_stock'),
+                'transfers' => $this->input->post('transfers'),
+                'mf_collection' => $this->input->post('mf_collection'),
                 'mf_report' => $this->input->post('mf_report'),
             );
 
@@ -225,6 +227,14 @@ class Permission extends MY_Controller
                 'mf_production_delete' => $this->input->post('mf_production_delete'),
                 'mf_finish_good_stock_view' => $this->input->post('mf_finish_good_stock_view'),
                 'mf_finish_good_stock_edit' => $this->input->post('mf_finish_good_stock_edit'),
+                'transfers_view' => $this->input->post('transfers_view'),
+                'transfers_add' => $this->input->post('transfers_add'),
+                'transfers_edit' => $this->input->post('transfers_edit'),
+                'transfers_delete' => $this->input->post('transfers_delete'),
+                'mf_collection_view' => $this->input->post('mf_collection_view'),
+                'mf_collection_add' => $this->input->post('mf_collection_add'),
+                'mf_collection_edit' => $this->input->post('mf_collection_edit'),
+                'mf_collection_delete' => $this->input->post('mf_collection_delete'),
                 'mf_report_view' => $this->input->post('mf_report_view'),
             );
             // print_r($data);

@@ -697,67 +697,87 @@
           <?php
           }
 
-          // Manufacture Report MODULE
-          if ($this->site->permission('mf_report')) {
-          ?>
-            <li class="treeview mm_mf_report"> <a href="#"> <i class="fa fa-folder"></i> <span>
-                  <?= lang('mf_report'); ?>
-                </span> <i class="fa fa-angle-left pull-right"></i> </a>
-              <ul class="treeview-menu">
-                <?php if ($this->site->route_permission('mf_report_view')) {?>
-
-                  <li id="mf_report_raw_material"><a href="<?= site_url('mf_report/raw_material'); ?>">
-                    <i class="fa fa-circle-o"></i>Raw Material</a>
-                  </li>
-
-                  <li id="mf_report_raw_material_purchase"><a href="<?= site_url('mf_report/raw_material_purchase'); ?>">
-                    <i class="fa fa-circle-o"></i>Raw Material Purchase</a>
-                  </li>
-
-                  <li id="mf_report_raw_material_stock"><a href="<?= site_url('mf_report/raw_material_stock'); ?>">
-                    <i class="fa fa-circle-o"></i>Raw Material Stock</a>
-                  </li>
-
-                  <li id="mf_report_raw_material_production"><a href="<?= site_url('mf_report/raw_material_production'); ?>">
-                    <i class="fa fa-circle-o"></i> Raw Material Production </a>
-                  </li>
-
-                  <li id="mf_report_finish_goods_stock"><a href="<?= site_url('mf_report/finish_goods_stock'); ?>">
-                    <i class="fa fa-circle-o"></i> Finish Goods Stock </a>
-                  </li>
-                  
-                  <li id="mf_report_raw_material_expense"><a href="<?= site_url('mf_report/raw_material_expense'); ?>">
-                    <i class="fa fa-circle-o"></i> Raw Material Expenses </a>
-                  </li>
-             
-                  <li id="mf_report_raw_material_transfer"><a href="<?= site_url('mf_report/raw_material_transfer'); ?>">
-                    <i class="fa fa-circle-o"></i> Raw Material Transfer </a>
-                  </li>
-
-                  <!-- <li id="mf_report_index"><a href="<?= site_url('mf_report'); ?>"><i class="fa fa-circle-o"></i>Raw Material Report</a></li> -->
-                <?php } ?>   
-                <li class="divider"></li>
-              </ul>
-            </li>
-          <?php
-          }
 
           
           // TRANSFERS MODULE
-          // if ($this->site->permission('mf_transfers')) {
+          if ($this->site->permission('transfers')) {
           ?>
             <li class="treeview mm_transfers"> <a href="#"> <i class="fa fa-folder"></i> <span>
                   <?= lang('Transfers'); ?>
                 </span> <i class="fa fa-angle-left pull-right"></i> </a>
               <ul class="treeview-menu">
-                <li id="transfers_index"><a href="<?= site_url('transfers'); ?>"><i class="fa fa-circle-o"></i>
-                    <?= lang('Transfers'); ?>
-                  </a></li>
+                <?php if ($this->site->route_permission('transfers_view')) {?>
+                <li id="transfers_index"><a href="<?= site_url('transfers'); ?>"><i class="fa fa-circle-o"></i><?= lang('Transfers'); ?></a></li>
+                <?php }
+                if ($this->site->route_permission('transfers_add')) {?>
                 <li id="transfers_add"><a href="javascript:;" onClick="productsTransfer()"><i class="fa fa-circle-o"></i> Add Transfers</a></li>
+                <?php }?>
               </ul>
             </li>
           <?php
-          // }
+          }
+          // Factory Collection MODULE
+          if ($this->site->permission('mf_collection')) {
+          ?>
+            <li class="treeview mm_mf_collection"> <a href="#"> <i class="fa fa-folder"></i> <span>
+                  Factory Collection
+                </span> <i class="fa fa-angle-left pull-right"></i> </a>
+              <ul class="treeview-menu">
+                <?php if ($this->site->route_permission('mf_collection_view')) {?>
+                <li id="mf_collection_index"><a href="<?= site_url('mf_collection'); ?>"><i class="fa fa-circle-o"></i>collection List</a></li>
+                <?php }
+                if ($this->site->route_permission('mf_collection_add')) {?>
+                <li id="mf_collection_add"><a  href="<?= site_url('mf_collection_add'); ?>" ><i class="fa fa-circle-o"></i> Add Collection</a></li>
+                <?php }?>
+              </ul>
+            </li>
+          <?php
+          }
+          
+          // Manufacture Report MODULE
+          if ($this->site->permission('mf_report')) {
+            ?>
+              <li class="treeview mm_mf_report"> <a href="#"> <i class="fa fa-folder"></i> <span>
+                    <?= lang('mf_report'); ?>
+                  </span> <i class="fa fa-angle-left pull-right"></i> </a>
+                <ul class="treeview-menu">
+                  <?php if ($this->site->route_permission('mf_report_view')) {?>
+  
+                    <li id="mf_report_raw_material"><a href="<?= site_url('mf_report/raw_material'); ?>">
+                      <i class="fa fa-circle-o"></i>Raw Material</a>
+                    </li>
+  
+                    <li id="mf_report_raw_material_purchase"><a href="<?= site_url('mf_report/raw_material_purchase'); ?>">
+                      <i class="fa fa-circle-o"></i>Raw Material Purchase</a>
+                    </li>
+  
+                    <li id="mf_report_raw_material_stock"><a href="<?= site_url('mf_report/raw_material_stock'); ?>">
+                      <i class="fa fa-circle-o"></i>Raw Material Stock</a>
+                    </li>
+  
+                    <li id="mf_report_raw_material_production"><a href="<?= site_url('mf_report/raw_material_production'); ?>">
+                      <i class="fa fa-circle-o"></i> Raw Material Production </a>
+                    </li>
+  
+                    <li id="mf_report_finish_goods_stock"><a href="<?= site_url('mf_report/finish_goods_stock'); ?>">
+                      <i class="fa fa-circle-o"></i> Finish Goods Stock </a>
+                    </li>
+                    
+                    <li id="mf_report_raw_material_expense"><a href="<?= site_url('mf_report/raw_material_expense'); ?>">
+                      <i class="fa fa-circle-o"></i> Raw Material Expenses </a>
+                    </li>
+               
+                    <li id="mf_report_raw_material_transfer"><a href="<?= site_url('mf_report/raw_material_transfer'); ?>">
+                      <i class="fa fa-circle-o"></i> Raw Material Transfer </a>
+                    </li>
+  
+                    <!-- <li id="mf_report_index"><a href="<?= site_url('mf_report'); ?>"><i class="fa fa-circle-o"></i>Raw Material Report</a></li> -->
+                  <?php } ?>   
+                  <li class="divider"></li>
+                </ul>
+              </li>
+            <?php
+            }
 
           ?>
 

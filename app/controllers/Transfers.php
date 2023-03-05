@@ -8,10 +8,14 @@ class Transfers extends MY_Controller
         
         parent::__construct();
         
-        if (!$this->loggedIn) {
-            
-            redirect('login');
-            
+        if (!$this->loggedIn) {            
+            redirect('login');            
+        }
+
+        if(!$this->site->permission('transfers'))
+        {
+          $this->session->set_flashdata('error', lang('access_denied'));
+          redirect();
         }
         
         $this->load->library('form_validation');
@@ -84,6 +88,11 @@ class Transfers extends MY_Controller
     }
 
     function add() {
+        if(!$this->site->permission('transfers_add'))
+        {
+          $this->session->set_flashdata('error', lang('access_denied'));
+          redirect();
+        }
         if(!$this->session->userdata('from_warehouse')){
             $this->form_validation->set_rules('warehouse', lang('warehouse'), 'required');
             if ($this->form_validation->run() == true) {
@@ -202,6 +211,11 @@ class Transfers extends MY_Controller
     } 
 
     function edit($id){
+        if(!$this->site->permission('transfers_edit'))
+        {
+          $this->session->set_flashdata('error', lang('access_denied'));
+          redirect();
+        }
 
         $this->form_validation->set_rules('date', lang('date'), 'required');
 
@@ -306,6 +320,11 @@ class Transfers extends MY_Controller
     }
 
     public function delete($id){
+        if(!$this->site->permission('transfers_delete'))
+        {
+          $this->session->set_flashdata('error', lang('access_denied'));
+          redirect();
+        }
         if($this->transfers_model->Delete($id))
         {
             $this->session->set_flashdata('message', lang('Product Transfer Successfully Deleted'));            
@@ -464,6 +483,11 @@ class Transfers extends MY_Controller
     }
 
     function view($id = NULL) { 
+        if(!$this->site->permission('transfers_view'))
+        {
+          $this->session->set_flashdata('error', lang('access_denied'));
+          redirect();
+        }
 
         $this->data['transfers_mst'] = $this->transfers_model->getTransfersByID($id);
         $this->data['transfers_dtls'] = $this->transfers_model->getAllTransfersItems($id);
