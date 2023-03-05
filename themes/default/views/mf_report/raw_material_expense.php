@@ -115,7 +115,7 @@
         let stDate = $("#start_date").val();
         let endDate = $("#end_date").val();
         let factoryId = $("#factory_id").val();
-        var url = '<?= site_url('mf_report/exp_material_purchase_report/'); ?>' + '/' + stDate + '/'+ endDate + '/' + factoryId;
+        var url = '<?= site_url('mf_report/exp_expense_report/'); ?>' + '/' + stDate + '/'+ endDate + '/' + factoryId;
         location.replace(url);
     });
 </script>

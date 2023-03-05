@@ -341,7 +341,7 @@ class Mf_report extends MY_Controller
     public function raw_material_expense()
     {
 
-        $this->data['categories'] = $this->employee_model->getAllCategories();
+        // $this->data['categories'] = $this->employee_model->getAllCategories();
 
         $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');  
 
@@ -368,9 +368,53 @@ class Mf_report extends MY_Controller
 
     }
 
-    public function exp_expense_report(Type $var = null)
+    public function exp_expense_report($start_date = null , $end_date= null , $storeId = null)
     {
-        # code...
+        $fields = array('SL', 'DATE ', 'REFERENCE','AMOUNT', 'CATEGORY', 'PAID BY');
+
+        $fileName = "expense_report_" . date('Y-m-d_h_i_s') . ".xls"; 
+
+        $excelData = implode("\t", array_values($fields)) . "\n"; 
+
+        $mfPurchaseReportModal = new Mf_report_model();
+
+        $items =  $mfPurchaseReportModal::getAllExpense($start_date, $end_date, $storeId);
+
+        if(count($items) > 0 ):
+
+            $i = 0;
+
+            foreach ($items as $key => $item):
+
+                $lineData = 
+                [
+                    ++$i,
+
+                    $item->date,
+
+                    $item->ref,
+
+                    $item->amount,
+
+                    $item->cat_name,
+
+                    $item->paid_by,
+
+                ];
+
+                $excelData .= implode("\t", array_values($lineData)) . "\n"; 
+
+            endforeach;
+
+        else:
+            $excelData = implode("\t", array_values(["No data found"])) . "\n"; 
+        endif;
+
+        header("Content-Type: application/vnd.ms-excel"); 
+
+        header("Content-Disposition: attachment; filename=\"$fileName\""); 
+
+        echo $excelData;
     }
 
 
