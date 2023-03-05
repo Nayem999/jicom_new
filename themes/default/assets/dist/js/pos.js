@@ -1,5 +1,7 @@
 function add_invoice_item(item) {
 
+    console.log(item);
+
     if (count == 1) {
         spositems = {};
     }
@@ -70,7 +72,8 @@ function loadItems() {
             var item_id = Settings.item_addition == 1 ? item.item_id : item.id;
             spositems[item_id] = item;
 
-           // alert(item.row.seq);
+            console.log(item.row.seq)
+            //alert(item.row.seq);
 
             var product_id = item.row.id, StockQty = item.row.StockQty , item_type = item.row.type, item_war = item.row.war ,  item_seq = item.row.seq , item_tax_method = parseFloat(item.row.tax_method), combo_items = item.combo_items, item_qty = item.row.qty, sQty = parseFloat(item.row.sQty), item_aqty = parseFloat(item.row.quantity), item_type = item.row.type, item_ds = item.row.discount, item_qnty_type = item.row.qnty_type, item_per_type_qnty = item.row.per_type_qnty, item_code = item.row.code, item_name = item.row.name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
             if(item_qty>StockQty){ item_qty=0 }
@@ -344,11 +347,13 @@ $(document).ready(function(){
 
     $(document).on('change', '#qnty_type', function () {
         var qnty_type_id = $('#qnty_type').val();
-        if(qnty_type_id==1){ $('#per_type_qnty').val(20); }
-        else if(qnty_type_id==2){ $('#per_type_qnty').val(6); }
-        else if(qnty_type_id==3){ $('#per_type_qnty').val(10); }
-        else if(qnty_type_id==4){ $('#per_type_qnty').val(25); }
-        else{ $('#per_type_qnty').val(0); }
+        var item_qnty = parseFloat($('#nQuantity').val());
+        var per_type_qnty=0;
+        if(qnty_type_id==1){ per_type_qnty=parseFloat(item_qnty/20).toFixed(2); }
+        else if(qnty_type_id==2){ per_type_qnty=parseFloat(item_qnty/6).toFixed(2); }
+        else if(qnty_type_id==3){ per_type_qnty=parseFloat(item_qnty/10).toFixed(2); }
+        else if(qnty_type_id==4){ per_type_qnty=parseFloat(item_qnty/25).toFixed(2); }
+        $('#per_type_qnty').val(per_type_qnty);
     });
 
     /* =============================
@@ -572,6 +577,7 @@ $(document).ready(function(){
             dataType: "json",
             success: function (data) {
                 if (data !== null) {
+                    console.log(data);return false;
                     add_invoice_item(data);
                 } else {
                     bootbox.alert(lang.no_match_found);

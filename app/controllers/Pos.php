@@ -661,7 +661,7 @@ class Pos extends MY_Controller {
 
 
 	function get_product($code = NULL) {
-// echo $this->input->get('code');die;
+		// echo $this->input->get('code');die;
 		if($this->input->get('code')) { $code = $this->input->get('code'); }
 		$combo_items = FALSE;
 		if($product = $this->pos_model->getProductByCode($code)) {
@@ -911,7 +911,7 @@ class Pos extends MY_Controller {
 		$this->data['customer'] = $this->pos_model->getCustomerByID($inv->customer_id);
 		$this->data['store_info'] = $this->site->getAllStores($inv->store_id);
 
-		$this->data['life_sales_customer'] = $this->sales_model->salesAmountByCustomer('grand_total',$inv->customer_id);
+		$this->data['life_sales_customer'] = $this->data['customer']->opening_blance + $this->sales_model->salesAmountByCustomer('grand_total',$inv->customer_id);
 		$this->data['life_payment_customer'] = $this->pos_model->payment_by_customer($inv->customer_id);
 
 		$cID = $this->site->findMergeIdbycp('customer_id',$inv->customer_id);

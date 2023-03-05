@@ -1543,13 +1543,24 @@ public function checkProductQty($product_id) {
     {
         $total=0;
         if($id){
-            $this->db->select('payments.amount');    
+            /* $this->db->select('payments.amount');    
             $this->db->from('payments');    
             $q = $this->db->where('customer_id', $id )->get(); 
             if($q->num_rows() > 0) {    
                 foreach (($q->result()) as $row) {    
                     $total += $row->amount;    
                 }    
+            } */
+            $this->db->select("sum(if((paid_by='TT' || paid_by='Cheque') && type='Approved',today_collection.payment_amount,0)) as chk_amount, sum(if( (paid_by='Cash' || paid_by='Deposit' || paid_by='Credit'), today_collection.payment_amount ,0)) as other_amount ");
+            $this->db->from('today_collection');
+            $this->db->join('bank_pending',"today_collection.today_collect_id=bank_pending.collection_id and bank_pending.customer_id =$id",'left');
+            $this->db->where('today_collection.customer_id', $id);
+            $q =$this->db->get();
+            
+            if( $q->num_rows() > 0 ) {
+                foreach (($q->result()) as $row) {    
+                    $total += $row->chk_amount + $row->other_amount;    
+                }
             }
         }
         return $total;

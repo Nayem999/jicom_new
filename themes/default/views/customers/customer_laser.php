@@ -43,7 +43,7 @@
 
                                     <th class="col-xs-1">Sl. No</th>
 
-                                    <th class="col-xs-2">Date & Time </th>
+                                    <th class="col-xs-2">Description </th>
 
                                     <th class="col-xs-2">Type</th>
                                     
@@ -62,13 +62,44 @@
                             <tbody>
 
                                 <?php 
-
+                                $sales_collection_id=array();
+                                foreach ($results as $key => $value) {
+                                    if(($value['type'] == 'sale')){
+                                        if(isset($value['collection_id']))
+                                        {
+                                            $sales_collection_id[$value['collection_id']]=$value['id'];
+                                        }
+                                    }
+                                }
+                                // print_r($sales_collection_id);
                                 foreach ($results as $key => $value) {
                                     $i++;
+                                    // $this->tec->hrld($value['datetime'])
                                     $gtotal = $gtotal;
                                      echo '<tr>' ;
                                      echo '<td class="center">'.$i .'</td>' ;
-                                     echo '<td class="center">'.$this->tec->hrld($value['datetime']) .'</td>' ;
+                                    //  echo '<td class="center">'.$this->tec->hrld($value['datetime']) .'</td>' ;
+                                    if(($value['type'] == 'sale')){
+                                        echo '<td class="center"> INVOICE NO: '.$value['id'].'</td>' ;
+                                    }
+                                    else
+                                    {
+                                        if(($value['type'] == 'collection')){
+                                            if(array_key_exists($value['id'],$sales_collection_id))
+                                            {
+                                                echo '<td class="center"> INVOICE NO: '.$sales_collection_id[$value['id']].'</td>' ;
+                                            }
+                                            else
+                                            {
+                                                echo '<td class="center"> DC</td>' ;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            echo '<td class="center"> </td>' ;
+                                        }
+                                    }
+
                                      if(($value['type']=='collection') || ($value['type'] =='Advance Collection') || ($value['type'] =='Advance Payment')){
                                         if(($value['type']=='collection')){
                                             $url = base_url('collection/view'); 

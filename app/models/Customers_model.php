@@ -149,13 +149,14 @@ public function getCustomerLaserByCid($cusromer){
                     }
                 } 
   
-        $this->db->select('sales.id, sales.date as datetime, sales.grand_total');
+        $this->db->select('sales.id, sales.date as datetime, sales.grand_total,sales.collection_id ');
         $q = $this->db->get_where('sales', array('customer_id' => $cusromer,'sales_type'=>'sale'));
         if($q->num_rows() > 0) {
             foreach (($q->result()) as $row) {
                 $rows['datetime'] = $row->datetime ;
                 $rows['total'] = $row->grand_total ;
                 $rows['sgtotal'] = $row->grand_total ;
+                $rows['collection_id'] = $row->collection_id ;
                 $rows['sale'] = '0.00' ;
                 $rows['type'] = 'sale' ;
                 $rows['id'] = $row->id;
