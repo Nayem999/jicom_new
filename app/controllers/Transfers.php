@@ -88,7 +88,7 @@ class Transfers extends MY_Controller
     }
 
     function add() {
-        if(!$this->site->permission('transfers_add'))
+        if(!$this->site->route_permission('transfers_add'))
         {
           $this->session->set_flashdata('error', lang('access_denied'));
           redirect();
@@ -211,7 +211,7 @@ class Transfers extends MY_Controller
     } 
 
     function edit($id){
-        if(!$this->site->permission('transfers_edit'))
+        if(!$this->site->route_permission('transfers_edit'))
         {
           $this->session->set_flashdata('error', lang('access_denied'));
           redirect();
@@ -320,7 +320,7 @@ class Transfers extends MY_Controller
     }
 
     public function delete($id){
-        if(!$this->site->permission('transfers_delete'))
+        if(!$this->site->route_permission('transfers_delete'))
         {
           $this->session->set_flashdata('error', lang('access_denied'));
           redirect();
@@ -483,7 +483,7 @@ class Transfers extends MY_Controller
     }
 
     function view($id = NULL) { 
-        if(!$this->site->permission('transfers_view'))
+        if(!$this->site->route_permission('transfers_view'))
         {
           $this->session->set_flashdata('error', lang('access_denied'));
           redirect();
