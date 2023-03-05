@@ -42,15 +42,11 @@
                                 <tr class="active">
 
                                     <th class="col-xs-1">Sl. No</th>
-
+                                    <th class="col-xs-2">Date </th>
                                     <th class="col-xs-2">Description </th>
-
-                                    <th class="col-xs-2">Type</th>
-                                    
+                                    <th class="col-xs-1">Type</th>                                    
                                     <th class="col-xs-2">Dr</th>
-
-                                    <th class="col-xs-3">Cr</th>
-
+                                    <th class="col-xs-2">Cr</th>
                                     <th class="col-xs-2">Balance</th>
 
                                 </tr>
@@ -78,7 +74,7 @@
                                     $gtotal = $gtotal;
                                      echo '<tr>' ;
                                      echo '<td class="center">'.$i .'</td>' ;
-                                    //  echo '<td class="center">'.$this->tec->hrld($value['datetime']) .'</td>' ;
+                                     echo '<td class="center">'.$this->tec->hrld($value['datetime']) .'</td>' ;
                                     if(($value['type'] == 'sale')){
                                         echo '<td class="center"> INVOICE NO: '.$value['id'].'</td>' ;
                                     }

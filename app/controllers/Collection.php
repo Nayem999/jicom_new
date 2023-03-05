@@ -185,6 +185,7 @@ class Collection extends MY_Controller
         
         $this->page_construct('collection/collection_payment', $this->data, $meta);
     }
+    
     public function customerInfo($id){
       //  $customers = $this->sales_model->getAllCustomers($id);
       //  echo "<pre>".print_r($customers);
@@ -217,7 +218,10 @@ class Collection extends MY_Controller
            $paid = $paid+ $value->paid;
        } */
 
-      $tpaid = $PaidSales + $totalAdAmount;
+      // $tpaid = $PaidSales + $totalAdAmount;
+      $total_paid = $this->sales_model->getCustomerAmountWithBankApproved($id);
+      $tpaid = $total_paid[0]->chk_amount +  $total_paid[0]->other_amount;
+      
         
 
       $todyPaid = $todayPaidSales + $todayAdAmount;
@@ -319,7 +323,7 @@ class Collection extends MY_Controller
                 <tbody>
                   <tr>
                     <th class="col-xs-5">Total Sales  Amount</th>
-                    <th class="col-xs-7">'.$this->tec->formatMoney($this->sales_model->salesAmountByCustomer('grand_total',$id)-$ReturnDue).'</th>
+                    <th class="col-xs-7">'.$this->tec->formatMoney($SupPro->opening_blance+$this->sales_model->salesAmountByCustomer('grand_total',$id)-$ReturnDue).'</th>
                   </tr>
                   <tr>
                     <th class="col-xs-5">Total Collection Amount</th>
@@ -327,7 +331,7 @@ class Collection extends MY_Controller
                   </tr> 
                    <tr>
                     <th class="col-xs-5">Total Balance</th>
-                    <th class="col-xs-7">'.$this->tec->formatMoney($tAdAmount + $SupPro->opening_blance-$ReturnDue).'</th>
+                    <th class="col-xs-7">'.$this->tec->formatMoney($this->sales_model->salesAmountByCustomer('grand_total',$id) + $SupPro->opening_blance - $tpaid - $ReturnDue).'</th>
                   </tr>
                 </tbody>
               </table>
@@ -336,6 +340,7 @@ class Collection extends MY_Controller
             echo $returnData;
 
     }
+
     public function todayCollectionPayment(){
         $paidamount = $this->input->post('colAmount');
         $customerid = $this->input->post('customer');

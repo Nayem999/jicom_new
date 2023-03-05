@@ -1,13 +1,13 @@
 function add_invoice_item(item) {
 
-    console.log(item);
-
     if (count == 1) {
         spositems = {};
     }
     if (item == null) {
         return;
     }
+
+    console.log(item); return false;
 
     var item_id = Settings.item_addition == 1 ? item.item_id : item.id;
     if (spositems[item_id]) {
@@ -577,7 +577,6 @@ $(document).ready(function(){
             dataType: "json",
             success: function (data) {
                 if (data !== null) {
-                    console.log(data);return false;
                     add_invoice_item(data);
                 } else {
                     bootbox.alert(lang.no_match_found);
