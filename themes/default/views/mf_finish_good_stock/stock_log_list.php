@@ -12,6 +12,7 @@
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
+                                        <th class="text-center"> Date</th>      
                                         <th class="text-center"> Name</th>      
                                         <th class="text-center"> Reason</th>          
                                         <th class="text-center"> Adj. Qty Type</th>
@@ -21,6 +22,7 @@
                                     foreach ($finish_goods_stock_adjust_list as $key => $result) {
                                         ?>
                                         <tr>
+                                            <td><?= date("d-m-Y" , strtotime($result->created_at)) ?></td>
                                             <td><?=$result->product_name; ?></td>
                                             <td><?=$result->note; ?></td>
                                             <td><?=($result->adjust_type==1)?'Increase':'Decrease'; ?></td>

@@ -104,6 +104,14 @@ class Suppliers extends MY_Controller
 
 		if ($this->form_validation->run() == true) { 
 
+			if(preg_match('/[^0-9]/',$this->input->post('opening_blance'))==false && $this->input->post('opening_blance')!='')
+			{
+				$opening_blance=$this->input->post('opening_blance');
+			}
+			else
+			{
+				$opening_blance=0;
+			}
 			$data = array('name' => $this->input->post('name'),
 
 				'email' => $this->input->post('email'),
@@ -114,7 +122,7 @@ class Suppliers extends MY_Controller
 
 				'cf2' => $this->input->post('cf2'), 
 
-				'opening_blance' => $this->input->post('opening_blance')
+				'opening_blance' => $opening_blance
 
 			);
 			if(($this->session->userdata('store_id') !=0) && ($this->session->userdata('store_id') !='')){

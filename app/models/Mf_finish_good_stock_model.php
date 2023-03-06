@@ -71,7 +71,7 @@ class Mf_finish_good_stock_model extends CI_Model
 
 	public function getStockLogList(){
 
-        $this->db->select('mf_finished_good_stock.id, mf_finished_good_stock_log.quantity, products.name as product_name, mf_finished_good_stock_log.note,mf_finished_good_stock_log.adjust_type'); 
+        $this->db->select('mf_finished_good_stock.id, mf_finished_good_stock_log.quantity, products.name as product_name, mf_finished_good_stock_log.note,mf_finished_good_stock_log.adjust_type,mf_finished_good_stock_log.created_at as created_at'); 
         $this->db->from('mf_finished_good_stock');  
 		$this->db->join('products','mf_finished_good_stock.product_id=products.id');
 		$this->db->join('mf_finished_good_stock_log','mf_finished_good_stock_log.product_id=products.id and mf_finished_good_stock_log.store_id=mf_finished_good_stock.store_id');

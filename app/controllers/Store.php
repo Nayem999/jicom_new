@@ -99,16 +99,15 @@ class Store extends MY_Controller
 				'email' => $this->input->post('email'),
 				'phone' => $this->input->post('phone'),
 				'address1' => $this->input->post('address1'),
-				'address2' => $this->input->post('address1'),
-				'city' => $this->input->post('city'),
-				'state' => $this->input->post('state'),
-				'postal_code' => $this->input->post('postal_code'),
-				'country' => $this->input->post('country'),
-				'currency_code' => $this->input->post('currency_code'),
-				'receipt_header' => $this->input->post('receipt_header'),
-				'receipt_footer' => $this->input->post('receipt_footer'), 	
+				'address2' => $this->input->post('address1'),				
 			); 
-			 
+			/* 'city' => $this->input->post('city'),
+			'state' => $this->input->post('state'),
+			'postal_code' => $this->input->post('postal_code'),
+			'country' => $this->input->post('country'),
+			'currency_code' => $this->input->post('currency_code'),
+			'receipt_header' => $this->input->post('receipt_header'),
+			'receipt_footer' => $this->input->post('receipt_footer'), 	 */
 		}
 
 		if ( $this->form_validation->run() == true) { 
@@ -153,15 +152,15 @@ class Store extends MY_Controller
 				'email' => $this->input->post('email'),
 				'phone' => $this->input->post('phone'),
 				'address1' => $this->input->post('address1'),
-				'address2' => $this->input->post('address1'),
-				'city' => $this->input->post('city'),
+				'address2' => $this->input->post('address1')					
+			); 
+			/* 'city' => $this->input->post('city'),
 				'state' => $this->input->post('state'),
 				'postal_code' => $this->input->post('postal_code'),
 				'country' => $this->input->post('country'),
 				'currency_code' => $this->input->post('currency_code'),
 				'receipt_header' => $this->input->post('receipt_header'),
-				'receipt_footer' => $this->input->post('receipt_footer'), 	
-			); 
+				'receipt_footer' => $this->input->post('receipt_footer'),  */
 			 
 		}
 

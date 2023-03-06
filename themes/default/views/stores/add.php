@@ -40,12 +40,12 @@
 							<label class="control-label" for="address2"><?= $this->lang->line("Address2"); ?></label>
 							<?= form_input('address2', set_value('address2'), 'class="form-control input-sm" id="address2"'); ?>
 						</div>
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label class="control-label" for="receipt_header"><?= $this->lang->line("Bill Header"); ?></label>
 							<?= form_textarea('receipt_header', set_value('receipt_header'), 'class="form-control redactor" id="receipt_header"'); ?>
-						</div>
+						</div> -->
 					</div>
-					<div class="col-md-6">
+					<!-- <div class="col-md-6">
 						<div class="form-group">
 							<label class="control-label" for="city"><?= $this->lang->line("City"); ?></label>
 							<?= form_input('city', set_value('city'), 'class="form-control input-sm" id="city"'); ?>
@@ -70,7 +70,7 @@
 							<label class="control-label" for="receipt_footer"><?= $this->lang->line("Bill Footer"); ?></label>
 							<?= form_textarea('receipt_footer', set_value('receipt_footer'), 'class="form-control redactor" id="receipt_footer"'); ?>
 						</div>
-					</div>
+					</div> -->
 					<div class="col-md-12">
 						<div class="form-group">
 							<?php echo form_submit('add_store', $this->lang->line("Add_Store"), 'class="btn btn-primary"'); ?>

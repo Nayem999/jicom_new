@@ -211,7 +211,7 @@
 
             recipe_items = JSON.parse(get('recipe_items'));
 
-            console.log(recipe_items);
+            // console.log(recipe_items);
             // console.log(all_brand);
 
             $.each(recipe_items, function() {
@@ -260,10 +260,20 @@
         }
     }
 
-    function add_order_item(item) {
-        var item_id = Settings.item_addition == 1 ? item.item_id : item.material_stock_id;
+    $(document).on("keyup",".rquantity",function(){
+        $('.rquantity').each(function(i, obj) {
+            let item_id = $(this).attr('data-item');
+            recipe_items[item_id].row.qty = parseFloat($(this).val());
+        });
+    })
 
-        // console.log(parseFloat(recipe_items[item_id].row.qty));
+    
+
+
+    function add_order_item(item) {
+        // console.log(item.item_id)
+        // return false;
+        var item_id = Settings.item_addition == 1 ? item.item_id : item.material_stock_id;
 
         if (recipe_items[item_id]) {
             recipe_items[item_id].row.qty = parseFloat(recipe_items[item_id].row.qty) + 1;
@@ -271,9 +281,10 @@
         } else {
             recipe_items[item_id] = item;
             recipe_items[item_id].row.qty = 0;
-            store('recipe_items', JSON.stringify(recipe_items));
+           
         }
 
+        store('recipe_items', JSON.stringify(recipe_items));
         
 
         load_recipe_items(item_id);
@@ -281,11 +292,9 @@
     }
 
     function pRemove(id, prd_id) {
-        //console.log(recipe_items);
+        delete recipe_items[prd_id];
         $("#" + id).remove();
-
-        recipe_items.splice(index, prd_id);
         store('recipe_items', JSON.stringify(recipe_items));
-        load_recipe_items(prid);
+        load_recipe_items(prd_id);
     }
 </script>

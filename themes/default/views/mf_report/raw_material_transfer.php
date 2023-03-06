@@ -45,9 +45,9 @@
 
                                 <th class="col-xs-2"><?= lang('date'); ?></th>
 
-                                <th>from warehouse name</th>
+                                <th>From warehouse name</th>
                                 
-                                <th>to warehouse name</th>
+                                <th>To warehouse name</th>
 
                                 <th class="col-xs-1"><?= lang('total'); ?></th> 
 
@@ -68,8 +68,8 @@
                                         ?>
                                             <tr>
                                                 <td><?php echo $val->date?></td>
-                                                <td><?php echo $val->to_warehouse_name?></td>
                                                 <td><?php echo $val->from_warehouse_name?></td>
+                                                <td><?php echo $val->to_warehouse_name?></td>
                                                 <td><?php echo $val->total?></td>
                                                 <td><?php echo $val->note?></td>
                                                 <td><?php echo $val->status?></td>

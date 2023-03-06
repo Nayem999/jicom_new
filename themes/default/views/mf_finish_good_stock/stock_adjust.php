@@ -10,6 +10,7 @@
                                 <tbody>
                                     <tr>
                                         <th class="text-center"> Product Name</th>           
+                                        <th class="text-center"> Store Name</th>           
                                         <th class="text-center"> Quantity</th>
                                         <th class="text-center"> Action</th>
                                     </tr>
@@ -18,6 +19,7 @@
                                         ?>
                                         <tr>
                                             <td><?=$result->product_name; ?></td>
+                                            <td><?=$result->store_name; ?></td>
                                             <td><?=$result->qty; ?></td>
                                             <td><a href='javascript:;' onClick="finishGoodStockAdjust(<?=$result->id;?>)" title='Adjust' class='tip btn btn-primary btn-xs'><i class='fa fa-edit'></i></a></td>
                                         </tr>

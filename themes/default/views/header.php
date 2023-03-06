@@ -108,8 +108,8 @@
                   <?php if ($this->site->route_permission('products_add')) {?>
                       <li id="products_add"><a href="<?= site_url('products/add'); ?>"><i class="fa fa-circle-o"></i>
                           <?= lang('add_product'); ?></a></li>
-                      <li id="products_import"><a href="<?= site_url('products/import'); ?>"><i class="fa fa-circle-o"></i>
-                          <?= lang('import_products'); ?></a></li>
+                      <!-- <li id="products_import"><a href="<?= site_url('products/import'); ?>"><i class="fa fa-circle-o"></i>
+                          <?= lang('import_products'); ?></a></li> -->
                   <?php } ?>
                 <li id="products_print_barcodes"><a onclick="window.open('<?= site_url('products/print_barcodes'); ?>', 'pos_popup', 'width=900,height=600,menubar=yes,scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;" href="#"><i class="fa fa-circle-o"></i>
                     <?= lang('print_barcodes'); ?>
@@ -137,8 +137,8 @@
                   <?php if ($this->site->route_permission('categories_add')) {?>
                     <li id="categories_add"><a href="<?= site_url('categories/add'); ?>"><i class="fa fa-circle-o"></i>
                         <?= lang('add_category'); ?></a></li>
-                    <li id="categories_import"><a href="<?= site_url('categories/import'); ?>"><i class="fa fa-circle-o"></i>
-                        <?= lang('import_categories'); ?></a></li>
+                    <!-- <li id="categories_import"><a href="<?= site_url('categories/import'); ?>"><i class="fa fa-circle-o"></i>
+                        <?= lang('import_categories'); ?></a></li> -->
                   <?php } ?>
                 <li id="categories_index"><a href="<?= site_url('categories/available_cat'); ?>"><i class="fa fa-circle-o"></i>
                     <?= lang('Available Cat Qty'); ?>
@@ -770,8 +770,12 @@
                     <li id="mf_report_raw_material_transfer"><a href="<?= site_url('mf_report/raw_material_transfer'); ?>">
                       <i class="fa fa-circle-o"></i> Raw Material Transfer </a>
                     </li>
-  
-                    <!-- <li id="mf_report_index"><a href="<?= site_url('mf_report'); ?>"><i class="fa fa-circle-o"></i>Raw Material Report</a></li> -->
+                    <li id="mf_report_collection_rpt"><a href="<?= site_url('mf_report/collection_rpt'); ?>">
+                      <i class="fa fa-circle-o"></i> Collection Report </a>
+                    </li>
+                    <li id="mf_report_profit_n_loss_rpt"><a href="<?= site_url('mf_report/profit_n_loss_rpt'); ?>">
+                      <i class="fa fa-circle-o"></i> Profit and Loss Report </a>
+                    </li>
                   <?php } ?>   
                   <li class="divider"></li>
                 </ul>

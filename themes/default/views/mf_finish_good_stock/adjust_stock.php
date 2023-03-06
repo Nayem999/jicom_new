@@ -21,7 +21,7 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-4 text-right">
-                        <label>Stock Qnty </label>
+                        <label>Stock Qty </label>
                     </div>
                     <div class="col-sm-1">:</div>
                     <div class="col-sm-7">
@@ -44,7 +44,7 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-4 text-right">
-                        <label>Adj. Qnty </label>
+                        <label>Adj. Qty </label>
                     </div>
                     <div class="col-sm-1">:</div>
                     <div class="col-sm-7">

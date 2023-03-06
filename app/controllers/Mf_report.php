@@ -13,7 +13,7 @@ class Mf_report extends MY_Controller
           $this->session->set_flashdata('error', lang('access_denied'));
           redirect();
         }
-        $this->load->model('Mf_report_model');
+        $this->load->model('mf_report_model');
         $this->load->library('form_validation');
  
         
@@ -92,11 +92,11 @@ class Mf_report extends MY_Controller
 
         $items = $brandId?$mfReportModal::getMaterialData($brandId): $mfReportModal::getMaterialData();
 
-        if($brandId){
+     /*    if($brandId){
             if(isset($_GET['brand_name'])):
             $excelData .= implode("\t", array_values([$_GET['brand_name']])) . "\n"; 
             endif;
-        }
+        } */
 
         if(count($items) > 0 ):
             $i = 0;
@@ -147,7 +147,7 @@ class Mf_report extends MY_Controller
 
     public function exp_material_purchase_report($stDate=null, $endDate=null, $factoryId = null)  {
 
-        $fields = array('SL', 'SUPPLIER Name ', 'STORE NAME','TOTAL','PAID AMOUNT','DUE AMOUNT');
+        $fields = array('SL','DATE', 'MATERIAL NAME', 'SUPPLIER Name ', 'STORE NAME','TOTAL','PAID AMOUNT','DUE AMOUNT');
 
         $start_date = $stDate ? $stDate : date('Y-m-d');  
 
@@ -168,6 +168,8 @@ class Mf_report extends MY_Controller
                 $lineData = 
                 [
                     ++$i,
+                    date("d-m-Y", strtotime($item->date)),
+                    $item->material_name,
                     $item->supplier_name,
                     $item->store_name,
                     $item->total,
@@ -217,9 +219,9 @@ class Mf_report extends MY_Controller
     public function raw_material_production()
     {
 
-        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('raw_material_production_report')));
+        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('production_report')));
         
-        $meta = array('page_title' => lang('Raw material Production Report'), 'bc' => $bc);
+        $meta = array('page_title' => lang('Production Report'), 'bc' => $bc);
 
         $this->data['start_date'] = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');  
 
@@ -459,17 +461,11 @@ class Mf_report extends MY_Controller
                 $lineData = 
                 [
                     ++$i,
-
                     $item->date,
-
-                    $item->to_warehouse_name,
-
                     $item->from_warehouse_name,
-
+                    $item->to_warehouse_name,
                     $item->total,
-
                     $item->note,
-
                     $item->status,
 
                 ];
@@ -489,6 +485,66 @@ class Mf_report extends MY_Controller
         echo $excelData;
     }
 
+    public function collection_rpt()
+    {        
+        $this->data['start_date'] = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');  
+        $this->data['end_date'] =  $this->input->post('end_date') ? $this->input->post('end_date') : date('Y-m-d');
 
+        $this->data['collection_list'] = $this->mf_report_model->getCollection($this->data['start_date'],$this->data['end_date']);
+
+        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('collection_rpt')));
+        $meta = array('page_title' => lang('Collection Report'), 'bc' => $bc);
+
+        $this->page_construct('mf_report/collection_rpt',$this->data, $meta);
+    }
+
+
+    public function exp_collection_rpt($startDate = null, $endDate = null)
+    {
+
+        $fields = array( 'Start Date ',$startDate,'End Date', $endDate );
+        $excelData = implode("\t", array_values($fields)) . "\n";  
+
+        $fields = array( 'DATE ', 'CUSTOMER NAME','STORE NAME', 'AMOUNT', 'NOTE', 'PAID BY');
+
+        $fileName = "maufacture_collection_report_" . date('Y-m-d_h_i_s') . ".xls"; 
+        
+        $excelData .= implode("\t", array_values($fields)) . "\n"; 
+
+        $collection_list = $this->mf_report_model->getCollection($startDate,$endDate);
+
+        if(count($collection_list) > 0 ):
+            foreach ($collection_list as $key => $val):
+
+                $lineData = 
+                [
+                    $this->tec->hrsd($val->payment_date),  $val->customer_name, $val->store_name, $val->payment_amount, $val->payment_note, $val->paid_by
+
+                ];
+
+                $excelData .= implode("\t", array_values($lineData)) . "\n"; 
+
+            endforeach;
+
+        else:
+            $excelData = implode("\t", array_values(["No data found"])) . "\n"; 
+        endif;
+
+        header("Content-Type: application/vnd.ms-excel"); 
+
+        header("Content-Disposition: attachment; filename=\"$fileName\""); 
+
+        echo $excelData;
+    }
+
+    public function profit_n_loss_rpt()
+    {        
+        $this->data['profit_n_loss'] = $this->mf_report_model->profit_n_loss();
+
+        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('profit_n_loss')));
+        $meta = array('page_title' => lang('Profit and Loss Report'), 'bc' => $bc);
+
+        $this->page_construct('mf_report/profit_n_loss',$this->data, $meta);
+    }
 
 }

@@ -47,11 +47,17 @@ class Mf_report_model extends CI_Model
 
         $purchaseData =
         
-        $ci->db->select('mf_purchases.* , mf_suppliers.name as supplier_name, mf_suppliers.phone as supplier_phone, mf_suppliers.address as supplier_address,  stores.name as store_name');
+        $ci->db->select('mf_purchases.* , mf_suppliers.name as supplier_name, mf_suppliers.phone as supplier_phone, mf_suppliers.address as supplier_address,  stores.name as store_name, mf_material.name as material_name,mf_unit.name as unit_name');
 
         $ci->db->from('mf_purchases');
 
         $ci->db->join('mf_suppliers', 'mf_suppliers.id=mf_purchases.supplier_id','left');
+
+		$ci->db->join('mf_purchase_material', 'mf_purchase_material.purchase_id=mf_purchases.id');
+		
+		$ci->db->join('mf_material', 'mf_purchase_material.material_id=mf_material.id');
+
+		$ci->db->join('mf_unit', 'mf_material.uom_id=mf_unit.id','left');
 
         $ci->db->join('stores', 'stores.id=mf_purchases.store_id');
 
@@ -131,6 +137,71 @@ class Mf_report_model extends CI_Model
 
 	}
 	
+	public function getCollection($start_date=NULL,$end_date=NULL,$store_id=0){
+
+        $this->db->select('today_collection.*, customers.name as customer_name, stores.name as store_name ');  
+        $this->db->from('today_collection');  
+        
+        $this->db->join('customers','customers.id=today_collection.customer_id');  
+        $this->db->join('stores','stores.id=today_collection.store_id');  
+		if($start_date && $end_date){ 
+            $this->db->where('today_collection.payment_date >=', $start_date.' 00:00:00'); 
+            $this->db->where('today_collection.payment_date <=', $end_date.' 23:59:59');   
+        }
+        else if($start_date){ 
+            $this->db->like('today_collection.payment_date', $start_date);
+        }else{ 
+            $this->db->like('today_collection.payment_date', date('Y-m-d'));
+        } 
+        if($store_id){$this->db->where('today_collection.store_id', $store_id); }
+		$this->db->where('stores.store_type', 2); 
+        $query = $this->db->get();
+		// echo $this->db->last_query();die;
+        return $query->result(); 
+    }
+
+	public function profit_n_loss(){
+		$data=array();
+        $this->db->select('today_collection.payment_amount as payment');  
+        $this->db->from('today_collection');           
+        $this->db->join('stores','stores.id=today_collection.store_id');  
+		$this->db->where('stores.store_type', 2); 
+
+        $collection_data = $this->db->get()->result();
+		$collection=0;
+		foreach($collection_data as $key=>$val)
+		{
+			$collection+=$val->payment;
+		}
+		$data['collection']=$collection;
+
+		$this->db->select('mf_purchases.total as total');  
+        $this->db->from('mf_purchases');           
+        $this->db->join('stores','stores.id=mf_purchases.store_id');  
+
+		$purchase_data = $this->db->get()->result();
+		$purchase=0;
+		foreach($purchase_data as $key=>$val)
+		{
+			$purchase+=$val->total;
+		}
+		$data['purchase']=$purchase;
+
+		$this->db->select('expenses.amount as amount');  
+        $this->db->from('expenses');           
+        $this->db->join('stores','stores.id=expenses.store_id');  
+		$this->db->where('stores.store_type', 2); 
+		
+		$expenses_data = $this->db->get()->result();
+		$expenses=0;
+		foreach($expenses_data as $key=>$val)
+		{
+			$expenses+=$val->amount;
+		}
+		$data['expenses']=$expenses;
+		// echo $this->db->last_query();die;
+        return $data; 
+    }
 	
 }
 

@@ -48,6 +48,10 @@
 
                                         <th> SL </th>
 
+                                        <th> Date </th>
+
+                                        <th> Material Name </th>
+
                                         <th> S.Name </th>
 
                                         <th> Store Name </th>
@@ -69,8 +73,12 @@
                                         ?>
                                             <tr style="">
 
-                                                <td><?= ++$i ?></td>
+                                                 <td><?= ++$i ?></td>
 
+                                                <td><?= date("d-m-Y", strtotime($material->date)) ?></td>
+
+                                                <td><?= $material->material_name; ?></td>
+                                                
                                                 <td><?= $material->supplier_name; ?></td>
 
                                                 <td><?= $material->store_name; ?></td>

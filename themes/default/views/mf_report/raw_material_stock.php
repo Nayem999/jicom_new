@@ -42,14 +42,16 @@
                     </div>
                     <div class="table-responsive" id="print_content">
                         <div class="col-xs-12">
-                            <table class="table table-bordered">
-                                <tbody>
+                            <table class="table table-bordered" id="purData">
+                                <thead>
                                     <tr>
                                         <th class="text-center"> Name</th>      
                                         <th class="text-center"> Brand</th>      
                                         <th class="text-center"> Store</th>      
                                         <th class="text-center"> Quantity</th>
                                     </tr>
+                                </thead>
+                                    <tbody>
                                     <?php
                                     foreach ($matarial_items as $key => $result) {
                                         ?>
@@ -91,3 +93,14 @@
         location.replace(url);
     });
 </script>
+
+<!-- <script>
+    $(document).ready(function() {
+        $('#purData').dataTable({
+            "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, '<?= lang('all'); ?>']],
+            "aaSorting": [[ 2, "desc" ]],
+            "iDisplayLength": <?= $Settings->rows_per_page ?>,
+            'bProcessing': false,
+        });
+    });
+</script> -->

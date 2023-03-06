@@ -32,9 +32,13 @@ class Mf_finish_good_stock extends MY_Controller
 		}
         $this->data['finish_good_list'] = $this->mf_finish_good_stock_model->getFinishStockList();   
 
-        $this->data['page_title'] = $this->lang->line("stock_list");
-        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('stock_list')));
-        $meta = array('page_title' => lang('stock_list'), 'bc' => $bc);
+        // echo "<pre>";
+        // print_r( $this->data['finish_good_list']);
+        // die;
+
+        $this->data['page_title'] = $this->lang->line("finish_goods");
+        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('finish_goods')));
+        $meta = array('page_title' => lang('finish_goods'), 'bc' => $bc);
         $this->page_construct('mf_finish_good_stock/stock_list', $this->data, $meta);
 
     }
@@ -74,9 +78,9 @@ class Mf_finish_good_stock extends MY_Controller
 		}
 
         $this->data['finish_good_list'] = $this->mf_finish_good_stock_model->getFinishStockList();   
-        $this->data['page_title'] = $this->lang->line("stock_list");
-        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('stock_list')));
-        $meta = array('page_title' => lang('stock_list'), 'bc' => $bc);
+        $this->data['page_title'] = $this->lang->line("stock_adjustment");
+        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('stock_adjustment')));
+        $meta = array('page_title' => lang('stock_adjustment'), 'bc' => $bc);
         $this->page_construct('mf_finish_good_stock/stock_adjust', $this->data, $meta);
 
     }
@@ -141,7 +145,10 @@ class Mf_finish_good_stock extends MY_Controller
 	}
 
     public function adjust_log_list()  {
-        $this->data['finish_goods_stock_adjust_list'] = $this->mf_finish_good_stock_model->getStockLogList();   
+        $this->data['finish_goods_stock_adjust_list'] = $this->mf_finish_good_stock_model->getStockLogList(); 
+        
+        // echo "<pre>";
+        // print_r($this->data['finish_goods_stock_adjust_list']);die;
 
         $this->data['page_title'] = $this->lang->line("adjust_log");
         $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('adjust_log')));
