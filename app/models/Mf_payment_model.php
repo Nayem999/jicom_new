@@ -668,7 +668,7 @@ class Mf_payment_model extends CI_Model
 	public function deleteTodayPurPay($id)
 	{
 
-		if ($this->db->delete('mf_payment', array('today_payment_id' => $id))) {
+		if ($this->db->delete('mf_payment', array('id' => $id))) {
 
 			return true;
 		}
@@ -678,7 +678,7 @@ class Mf_payment_model extends CI_Model
 	public function deleteAdvSupPay($id)
 	{
 
-		if ($this->db->delete('mf_adv_payment', array('today_payment_id' => $id))) {
+		if ($this->db->delete('mf_adv_payment', array('mf_payment_id' => $id))) {
 
 			return true;
 		}

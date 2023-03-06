@@ -461,6 +461,6 @@ class Mf_payment extends MY_Controller
       } 
       $this->mf_payment_model->deleteAdvSupPay($id);
       $this->mf_payment_model->deleteExp($id);
-      redirect('mf_payment/paymentList/');
+      $this->index();
     }
 }

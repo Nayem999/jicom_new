@@ -262,7 +262,7 @@
 
     function add_order_item(item) {
         var item_id = Settings.item_addition == 1 ? item.item_id : item.material_stock_id;
-        
+
         // console.log(parseFloat(recipe_items[item_id].row.qty));
 
         if (recipe_items[item_id]) {
@@ -271,9 +271,11 @@
         } else {
             recipe_items[item_id] = item;
             recipe_items[item_id].row.qty = 0;
+            store('recipe_items', JSON.stringify(recipe_items));
         }
 
-        store('recipe_items', JSON.stringify(recipe_items));
+        
+
         load_recipe_items(item_id);
         return true;
     }
