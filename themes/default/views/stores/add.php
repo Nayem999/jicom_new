@@ -10,13 +10,13 @@
 
 					<div class="col-md-6">
 						<div class="form-group">
-							<label class="control-label" for="name"><?= $this->lang->line("name"); ?></label>
+							<label class="control-label" for="name"><?= $this->lang->line("name"); ?> <span class="text-danger"> *</span> </label>
 							<?= form_input('name', set_value('name'), 'class="form-control input-sm" id="name"'); ?>
 						</div>
 						
 						<div class="form-group">
 							<div class="form-group">
-								<label class="control-label" for="store_type"><?= lang('Store Type', 'Store Type'); ?></label>
+								<label class="control-label" for="store_type"><?= lang('Store Type', 'Store Type'); ?><span class="text-danger"> *</span></label>
 								<?php $store_type=array(''=>"Select Type",1=>"OUTLET",2=>"FACTORY"); ?>
 								<?= form_dropdown('store_type', $store_type, set_value('store_type'), 'class="form-control" id="store_type" required="required" style="width:100%;"'); ?>
 							</div>

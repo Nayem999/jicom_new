@@ -25,9 +25,14 @@ class Auth extends MY_Controller {
         if (!$this->loggedIn) {
             redirect('login');
         } 
-        if (!$this->Admin) {
+        /* if (!$this->Admin) {
             $this->session->set_flashdata('warning', lang("access_denied"));
             redirect($_SERVER["HTTP_REFERER"]);
+        } */
+
+        if(!$this->site->route_permission('user_view')) {
+            $this->session->set_flashdata('error', lang('access_denied'));
+            redirect();
         }
 
         $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
@@ -415,9 +420,13 @@ class Auth extends MY_Controller {
     }
 
     function create_user() {
-        if (!$this->Admin) {
+        /* if (!$this->Admin) {
             $this->session->set_flashdata('warning', lang("access_denied"));
             redirect($_SERVER["HTTP_REFERER"]);
+        } */
+        if(!$this->site->route_permission('user_add')) {
+            $this->session->set_flashdata('error', lang('access_denied'));
+            redirect();
         }
 
         $this->data['title'] = lang('add_user');

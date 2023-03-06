@@ -16,6 +16,9 @@
         else if(n==5){
             return 'Salary Payment';
         }
+        else if(n==6){
+            return 'Raw Material Payment';
+        }
         else{
             return '';
         }

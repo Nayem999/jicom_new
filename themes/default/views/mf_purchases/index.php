@@ -128,9 +128,11 @@
                                 <?= lang('Factory', 'Factory'); ?>
                                 <?php
                                 $wr[0] = lang("select") . " " . lang("Factory");
-                                foreach ($stores as $store) {
-                                    $wr[$store->id] = $store->name;
-                                }
+                                if(is_array($factory_stores)):
+                                    foreach ($factory_stores as $store) {
+                                        $wr[$store->id] = $store->name;
+                                    }
+                                endif;
                                 ?>
                                 <?= form_dropdown('store_id', $wr, set_value('store_id'), 'class="form-control select2 tip" id="store_id" required="required" style="width:100%;"'); ?>
                             </div>

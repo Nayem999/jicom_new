@@ -518,7 +518,7 @@
                 <?php } ?> 
                 <?php if ($this->site->route_permission('mf_categories_add')) {?>
                   <li id="mf_categories_add"><a href="<?= site_url('mf_categories/add'); ?>"><i class="fa fa-circle-o"></i> <?= lang('add_category'); ?></a></li>
-                  <li id="mf_categories_import"><a href="<?= site_url('mf_categories/import'); ?>"><i class="fa fa-circle-o"></i> <?= lang('import_categories'); ?> </a></li>
+                  <!-- <li id="mf_categories_import"><a href="<?= site_url('mf_categories/import'); ?>"><i class="fa fa-circle-o"></i> <?= lang('import_categories'); ?> </a></li> -->
                 <?php } ?> 
               </ul>
             </li>
@@ -587,7 +587,7 @@
                 </span> <i class="fa fa-angle-left pull-right"></i> </a>
               <ul class="treeview-menu">
                 <?php if ($this->site->route_permission('mf_suppliers_view')) {?>
-                  <li id="mf_suppliers_index"><a href="<?= site_url('mf_suppliers'); ?>"><i class="fa fa-circle-o"></i><?= lang('list_supplier'); ?></a></li>
+                  <li id="mf_suppliers_index"><a href="<?= site_url('mf_suppliers'); ?>"><i class="fa fa-circle-o"></i><?= lang('list_suppliers'); ?></a></li>
                 <?php } ?>
                 <?php if ($this->site->route_permission('mf_suppliers_add')) {?>
                   <li id="mf_suppliers_add"><a href="<?= site_url('mf_suppliers/add'); ?>"><i class="fa fa-circle-o"></i>
@@ -727,7 +727,7 @@
                 <li id="mf_payment_index"><a href="<?= site_url('mf_payment'); ?>"><i class="fa fa-circle-o"></i>Payment List</a></li>
                 <?php }
                 if ($this->site->route_permission('mf_payment_add')) {?>
-                <li id="mf_payment_add"><a  href="<?= site_url('mf_payment_add'); ?>" ><i class="fa fa-circle-o"></i> Add Payment</a></li>
+                <li id="mf_payment_add"><a  href="<?= site_url('mf_payment/add'); ?>" ><i class="fa fa-circle-o"></i> Add Payment</a></li>
                 <?php }?>
               </ul>
             </li>
@@ -763,9 +763,9 @@
                       <i class="fa fa-circle-o"></i> Finish Goods Stock </a>
                     </li>
                     
-                    <li id="mf_report_raw_material_expense"><a href="<?= site_url('mf_report/raw_material_expense'); ?>">
+                    <!-- <li id="mf_report_raw_material_expense"><a href="<?= site_url('mf_report/raw_material_expense'); ?>">
                       <i class="fa fa-circle-o"></i> Raw Material Expenses </a>
-                    </li>
+                    </li> -->
                
                     <li id="mf_report_raw_material_transfer"><a href="<?= site_url('mf_report/raw_material_transfer'); ?>">
                       <i class="fa fa-circle-o"></i> Raw Material Transfer </a>

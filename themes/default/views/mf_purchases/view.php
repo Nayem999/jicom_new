@@ -66,6 +66,7 @@
                             <tr class="active">
                               <th><?= lang('product'); ?></th>
                               <th class="col-xs-2"><?= lang('quantity'); ?></th>
+                              <th class="col-xs-2"><?= lang('unit'); ?></th>
                               <th class="col-xs-2"><?= lang('Store Name'); ?></th>
                               <th class="col-xs-2"><?= lang('unit_cost'); ?></th>
                               <th class="col-xs-2"><?= lang('subtotal'); ?></th>
@@ -89,6 +90,8 @@
 
                               echo '<td class="text-center">'.str_replace('.00','',$item->quantity).'</td>';
 
+                              echo '<td class="text-center">'.@$item->unit_name.'</td>';
+
                               echo '<td class="text-center">'. $this->site->findeNameByID('stores','id',$item->store_id)->name.'</td>';
 
                               echo '<td class="text-right">'.$item->cost.'</td>';
@@ -105,34 +108,34 @@
                           </tbody>
                           <thead>
                             <tr class="active">
-                              <th class="col-xs-2" colspan="3"></th> 
+                              <th class="col-xs-2" colspan="4"></th> 
                               <th style="text-align:right"><?= lang('Quantity'); ?>
                                 </th>
                               <th class="col-xs-2 text-right" style="text-align:right"><?php echo $ProQty; ?></th>
                             </tr>
                             <tr class="active">
-                              <th class="col-xs-2" colspan="3"></th>
+                              <th class="col-xs-2" colspan="4"></th>
                               <th style="text-align:right"><?= lang('total'); ?>
                                 </th>
                               <th class="col-xs-2 text-right" style="text-align:right"><?= number_format($mf_purchase->total-$mf_purchase->transport_cost,2);?></th>
                             </tr>
                             <tr class="active">
-                              <th class="col-xs-2" colspan="3"></th>
+                              <th class="col-xs-2" colspan="4"></th>
                               <th style="text-align:right">Transport Cost</th>
                               <th class="col-xs-2 text-right" style="text-align:right"><?= number_format($mf_purchase->transport_cost,2);?></th>
                             </tr>
                             <tr class="active">
-                              <th class="col-xs-2" colspan="3"></th>
+                              <th class="col-xs-2" colspan="4"></th>
                               <th style="text-align:right">Grand Total</th>
                               <th class="col-xs-2 text-right" style="text-align:right"><?= number_format($mf_purchase->total,2);?></th>
                             </tr>
                             <tr class="active">
-                              <th class="col-xs-2" colspan="3"></th>
+                              <th class="col-xs-2" colspan="4"></th>
                               <th style="text-align:right">Paid Amount</strong></th>
                               <th class="col-xs-2 text-right" style="text-align:right"> <?php echo number_format($paid_amount,2) ; ?></th>
                             </tr>
                             <tr class="active">
-                              <th class="col-xs-2" colspan="3"></th>
+                              <th class="col-xs-2" colspan="4"></th>
                               <th style="text-align:right">Due Amount</strong></th>
                               <th class="col-xs-2 text-right" style="text-align:right"><?php echo number_format($due_amount,2) ; ?></th>
                             </tr>

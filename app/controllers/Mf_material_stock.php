@@ -28,10 +28,12 @@ class Mf_material_stock extends MY_Controller
   
     
     public function index()  {
+
         if(!$this->site->route_permission('mf_material_stock_view')) {
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
 		}
+
         $this->data['matarial_list'] = $this->mf_material_stock_model->getStockList();   
 
         $this->data['page_title'] = $this->lang->line("stock_list");
@@ -41,6 +43,95 @@ class Mf_material_stock extends MY_Controller
 
     }
 
+    public function get_all_material_stock($brandId = null, $factory = null, $action=false)
+    {
+        $this->load->library('datatables');
+        
+        $this->datatables->select(
+
+            $this->db->dbprefix('mf_material_store_qty') . ".id as id, " . 
+
+            $this->db->dbprefix('mf_material') . ".name as material_name, " .
+
+            $this->db->dbprefix('mf_brands') . ".name as brand_name, " .
+
+            $this->db->dbprefix('stores') . ".name as store_name, " .
+
+            $this->db->dbprefix('mf_material_store_qty') . ".quantity as qty, " .
+
+            $this->db->dbprefix('mf_unit') . ".name as unit_name", FALSE);
+        
+        $this->datatables->join('mf_material','mf_material_store_qty.material_id=mf_material.id');
+
+        $this->datatables->join('stores','mf_material_store_qty.store_id=stores.id');
+
+        $this->datatables->join('mf_unit','mf_material.uom_id=mf_unit.id','left');
+
+        $this->datatables->join('mf_brands','mf_material_store_qty.brand_id=mf_brands.id','left');
+
+        $this->datatables->from('mf_material_store_qty');  
+
+        if($brandId){
+            $this->datatables->where('mf_material_store_qty.brand_id',$brandId);
+        }
+
+        if($factory):
+			$this->datatables->where('mf_material_store_qty.store_id', intval($factory));
+		endif;
+        
+        $i = 1;
+
+        if($action){
+            $actionData = "<a href='javascript:;' onClick='stockAdjust($1)' title='Adjust' class='tip btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>";
+
+            $this->datatables->add_column("Actions",$actionData, "id");
+        }
+        
+        $this->datatables->unset_column('id');
+        
+        echo $this->datatables->generate();
+    }
+
+
+    public function get_adjustment_log()
+    {
+        $this->load->library('datatables');
+        
+        $this->datatables->select(
+
+            $this->db->dbprefix('mf_material_store_qty') . ".id as id, " . 
+
+            $this->db->dbprefix('mf_material') . ".name as material_name, " .
+
+            $this->db->dbprefix('mf_brands') . ".name as brand_name, " .
+
+            $this->db->dbprefix('stores') . ".name as store_name, " .
+
+            $this->db->dbprefix('mf_material_adjust') . ".adjust_qty as adjust_qty, " .
+
+            $this->db->dbprefix('mf_material_adjust') . ".adjust_type as adjust_type, " .
+
+            $this->db->dbprefix('mf_unit') . ".name as unit_name", FALSE);
+
+        $this->datatables->join('mf_material_store_qty','mf_material_store_qty.id=mf_material_adjust.material_stock_id');  
+
+		$this->datatables->join('mf_material','mf_material_store_qty.material_id=mf_material.id');
+
+		$this->datatables->join('stores','mf_material_store_qty.store_id=stores.id');
+
+        $this->datatables->join('mf_unit','mf_material.uom_id=mf_unit.id','left');
+
+		$this->datatables->join('mf_brands','mf_material_store_qty.brand_id=mf_brands.id','left');
+
+        $this->datatables->from('mf_material_adjust');
+
+        $this->datatables->unset_column('id');
+        
+        echo $this->datatables->generate();
+    }
+
+
+
 
     function excel_stock_list($brand = null, $factory = null )  {
 
@@ -48,12 +139,12 @@ class Mf_material_stock extends MY_Controller
 
         $fileName = "raw_material_stock_list_" . date('Y-m-d_h_i_s') . ".xls"; 
 
-        $fields = array('Name','Brand','Store','Quantity');
+        $fields = array('Name','Brand','Store','Quantity', 'Unit' );
         $excelData = implode("\t", array_values($fields)) . "\n"; 
 
         if(count($matarial_list) > 0){ 
             foreach($matarial_list as $result){ 
-                $lineData=array($result->material_name,$result->brand_name,$result->store_name,$result->quantity);
+                $lineData=array($result->material_name,$result->brand_name,$result->store_name,$result->quantity,$result->unit_name);
                 $excelData .= implode("\t", array_values($lineData)) . "\n"; 
             }            
         }else{ 
@@ -76,9 +167,10 @@ class Mf_material_stock extends MY_Controller
 		}
 
         $this->data['matarial_list'] = $this->mf_material_stock_model->getStockList();   
-        $this->data['page_title'] = $this->lang->line("stock_list");
-        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('stock_list')));
-        $meta = array('page_title' => lang('stock_list'), 'bc' => $bc);
+       
+        $this->data['page_title'] = $this->lang->line("stock_adjust");
+        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('stock_adjust')));
+        $meta = array('page_title' => lang('stock_adjust'), 'bc' => $bc);
         $this->page_construct('mf_material_stock/stock_adjust', $this->data, $meta);
 
     }

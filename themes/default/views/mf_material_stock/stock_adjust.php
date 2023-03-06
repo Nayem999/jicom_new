@@ -7,14 +7,18 @@
                     <div class="table-responsive" id="print_content">
                         <div class="col-xs-12">
                             <table class="table table-bordered">
-                                <tbody>
+                                <thead>
                                     <tr>
-                                        <th class="col-xs-3 text-center"> Name</th>      
-                                        <th class="col-xs-3 text-center"> Brand</th>      
-                                        <th class="col-xs-3 text-center"> Store</th>      
-                                        <th class="col-xs-2 text-center"> Quantity</th>
-                                        <th class="col-xs-1 text-center"> Action</th>
+                                        <th class="text-center"> Name</th>      
+                                        <th class="text-center"> Brand</th>      
+                                        <th class="text-center"> Store</th>      
+                                        <th class="text-center"> Quantity</th>
+                                        <th class="text-center"> Reason</th>
+                                        <th class="text-center"> Action</th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                    
                                     <?php
                                     foreach ($matarial_list as $key => $result) {
                                         ?>
@@ -23,6 +27,7 @@
                                             <td><?=$result->brand_name; ?></td>
                                             <td><?=$result->store_name; ?></td>
                                             <td><?=$result->quantity.' '.$result->unit_name; ?></td>
+                                            <td><?=$result->reason ?></td>
                                             <td><a href='javascript:;' onClick="stockAdjust(<?=$result->id;?>)" title='Adjust' class='tip btn btn-primary btn-xs'><i class='fa fa-edit'></i></a></td>
                                         </tr>
                                         <?php

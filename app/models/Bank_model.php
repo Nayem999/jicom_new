@@ -38,14 +38,10 @@ class Bank_model extends CI_Model
 	}
 
 	public function bankPendingTranjection($data)
-
 	{
 	
-	   if($this->db->insert('bank_pending', $data)) {
-		   
-		
+	   	if($this->db->insert('bank_pending', $data)) {
 			return $this->db->insert_id();
-			
 		}
 		
 		return false;

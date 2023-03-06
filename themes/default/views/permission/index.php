@@ -588,19 +588,19 @@
                     <hr>
                     <div class="row" >
                         <div class="col-sm-4">
-                            <input type="checkbox" name="mf_collection" id="mf_collection" value="<?=isset($permissiion_module->mf_collection)?$permissiion_module->mf_collection:0;?>" <?=(isset($permissiion_module->mf_collection) && $permissiion_module->mf_collection==1)?'checked':'';?> onclick="fn_change_val('mf_collection')" > Factory Collection 
+                            <input type="checkbox" name="mf_payment" id="mf_payment" value="<?=isset($permissiion_module->mf_payment)?$permissiion_module->mf_payment:0;?>" <?=(isset($permissiion_module->mf_payment) && $permissiion_module->mf_payment==1)?'checked':'';?> onclick="fn_change_val('mf_payment')" > Raw Material Payment 
                         </div>
                         <div class="col-sm-2">
-                            <input type="checkbox" name="mf_collection_view" id="mf_collection_view"  value="<?=isset($permission_route->mf_collection_view)?$permission_route->mf_collection_view:0;?>" <?=(isset($permission_route->mf_collection_view) && $permission_route->mf_collection_view==1)?'checked':'';?> onclick="fn_change_val('mf_collection_view')">
+                            <input type="checkbox" name="mf_payment_view" id="mf_payment_view"  value="<?=isset($permission_route->mf_payment_view)?$permission_route->mf_payment_view:0;?>" <?=(isset($permission_route->mf_payment_view) && $permission_route->mf_payment_view==1)?'checked':'';?> onclick="fn_change_val('mf_payment_view')">
                         </div>
                         <div class="col-sm-2"> 
-                            <input type="checkbox" name="mf_collection_add" id="mf_collection_add"  value="<?=isset($permission_route->mf_collection_add)?$permission_route->mf_collection_add:0;?>" <?=(isset($permission_route->mf_collection_add) && $permission_route->mf_collection_add==1)?'checked':'';?> onclick="fn_change_val('mf_collection_add')">
+                            <input type="checkbox" name="mf_payment_add" id="mf_payment_add"  value="<?=isset($permission_route->mf_payment_add)?$permission_route->mf_payment_add:0;?>" <?=(isset($permission_route->mf_payment_add) && $permission_route->mf_payment_add==1)?'checked':'';?> onclick="fn_change_val('mf_payment_add')">
                         </div>
                         <div class="col-sm-2">
-                            <input type="checkbox" name="mf_collection_edit" id="mf_collection_edit"  value="<?=isset($permission_route->mf_collection_edit)?$permission_route->mf_collection_edit:0;?>" <?=(isset($permission_route->mf_collection_edit) && $permission_route->mf_collection_edit==1)?'checked':'';?> onclick="fn_change_val('mf_collection_edit')">
+                            <input type="checkbox" name="mf_payment_edit" id="mf_payment_edit"  value="<?=isset($permission_route->mf_payment_edit)?$permission_route->mf_payment_edit:0;?>" <?=(isset($permission_route->mf_payment_edit) && $permission_route->mf_payment_edit==1)?'checked':'';?> onclick="fn_change_val('mf_payment_edit')">
                          </div>
                         <div class="col-sm-2"> 
-                            <input type="checkbox" name="mf_collection_delete" id="mf_collection_delete"  value="<?=isset($permission_route->mf_collection_delete)?$permission_route->mf_collection_delete:0;?>" <?=(isset($permission_route->mf_collection_delete) && $permission_route->mf_collection_delete==1)?'checked':'';?> onclick="fn_change_val('mf_collection_delete')">
+                            <input type="checkbox" name="mf_payment_delete" id="mf_payment_delete"  value="<?=isset($permission_route->mf_payment_delete)?$permission_route->mf_payment_delete:0;?>" <?=(isset($permission_route->mf_payment_delete) && $permission_route->mf_payment_delete==1)?'checked':'';?> onclick="fn_change_val('mf_payment_delete')">
                         </div>
                     </div>
                     <hr>

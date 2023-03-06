@@ -1,3 +1,22 @@
+<script>
+    $(document).ready(function () {
+        $('#stockTable').dataTable({
+            "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, '<?= lang('all'); ?>']],
+            "aaSorting": [[ 0, "desc" ]], "iDisplayLength": <?= $Settings->rows_per_page ?>,
+            'bProcessing': true, 'bServerSide': true,
+            'sAjaxSource': '<?= site_url('mf_material_stock/get_all_material_stock') ?>',
+            'fnServerData': function (sSource, aoData, fnCallback) {
+                aoData.push({
+                    "name": "<?= $this->security->get_csrf_token_name() ?>",
+                    "value": "<?= $this->security->get_csrf_hash() ?>"
+                });
+                $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
+            },
+            "aoColumns": [null, null, null, {"bSortable":false, "bSearchable": false}]
+        });
+    });
+</script>
+
 
 <section class="content">
     <div class="row">
@@ -9,26 +28,19 @@
                     </div>
                     <div class="table-responsive" id="print_content">
                         <div class="col-xs-12">
-                            <table class="table table-bordered">
-                                <tbody>
+                            <table class="table table-bordered" id="stockTable">
+                                <thead>
                                     <tr>
                                         <th class="text-center"> Name</th>      
                                         <th class="text-center"> Brand</th>      
                                         <th class="text-center"> Store</th>      
                                         <th class="text-center"> Quantity</th>
                                     </tr>
-                                    <?php
-                                    foreach ($matarial_list as $key => $result) {
-                                        ?>
-                                        <tr>
-                                            <td><?=$result->material_name; ?></td>
-                                            <td><?=$result->brand_name; ?></td>
-                                            <td><?=$result->store_name; ?></td>
-                                            <td><?=$result->quantity.' '.$result->unit_name; ?></td>
-                                        </tr>
-                                        <?php
-                                    }
-                                    ?>
+                                </thead>
+
+                                <tbody>
+                                    
+                                  
                                 </tbody>
                             </table>
                         </div>

@@ -152,6 +152,7 @@ $lang['quick_links']                        = "Quick Links";
 $lang['select']                             = "Select";
 $lang['customer']                           = "Customer";
 $lang['search__scan']                       = "Search product by code or name, you can scan barcode too";
+$lang['search_material_by_name_or_code']   = "Search material by code or name, you can scan barcode too";
 $lang['product']                            = "Product";
 $lang['price']                              = "Price";
 $lang['qty']                                = "Qty";

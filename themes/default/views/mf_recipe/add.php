@@ -73,7 +73,7 @@
 
                         <div class="form-group">
 
-                            <input type="text" placeholder="<?= lang('search_product_by_name_code'); ?>" autocomplete="add_item" id="add_item" class="form-control">
+                            <input type="text" placeholder="<?= lang('search_material_by_name_or_code'); ?>" autocomplete="add_item" id="add_item" class="form-control">
 
                         </div>
                         <div class="row">
@@ -262,6 +262,8 @@
 
     function add_order_item(item) {
         var item_id = Settings.item_addition == 1 ? item.item_id : item.material_stock_id;
+        
+        // console.log(parseFloat(recipe_items[item_id].row.qty));
 
         if (recipe_items[item_id]) {
             recipe_items[item_id].row.qty = parseFloat(recipe_items[item_id].row.qty) + 1;

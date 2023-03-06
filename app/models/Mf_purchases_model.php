@@ -138,9 +138,11 @@ class Mf_purchases_model extends CI_Model
 
     public function getAllPurchaseItems($purchase_id) { 
 
-        $this->db->select('mf_purchase_material.*, mf_material.name as product_name')
+        $this->db->select('mf_purchase_material.*, mf_material.name as product_name, mf_unit.name as unit_name')
 
             ->join('mf_material', 'mf_material.id=mf_purchase_material.material_id', 'left')
+
+            ->join('mf_unit', 'mf_unit.id=mf_material.uom_id', 'left')
 
             ->group_by('mf_purchase_material.id')
 

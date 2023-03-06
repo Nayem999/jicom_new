@@ -356,7 +356,7 @@ class Supplierpayment extends MY_Controller
         $todayPurchasePayment = $this->purchases_model->payPayment($payPaymentdata);
 
         foreach ($suppliers as $key => $value) {
-           $purchase = $value->purchase_id;
+           $purchase = $value->id;
            $total = $value->total;
            $deu = $value->deu;
            $paid = $value->paid; 
@@ -491,15 +491,15 @@ class Supplierpayment extends MY_Controller
 
        $this->data['suppliers'] = $this->site->getAllSuppliers();    
        $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));        
-       $this->data['page_title'] = 'Suppliers Payemnt List';        
+       $this->data['page_title'] = 'Suppliers Payment List';        
         $bc = array(
             array(
                 'link' => '#',
-                'page' => 'Suppliers Payemnt List'
+                'page' => 'Suppliers Payment List'
             )
         );        
         $meta = array(
-            'page_title' => 'Suppliers Payemnt List',
+            'page_title' => 'Suppliers Payment List',
             'bc' => $bc
         );    
         $this->page_construct('supplierpayment/purchasesPayemntList', $this->data, $meta);

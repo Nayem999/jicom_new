@@ -83,12 +83,12 @@ class Store extends MY_Controller
             redirect('pos');
         } */
 		$this->form_validation->set_rules('name', $this->lang->line("name"), 'required');
-		$this->form_validation->set_rules('email', $this->lang->line("email_address"), 'required|valid_email|trim|is_unique[stores.email]');
+		/* $this->form_validation->set_rules('email', $this->lang->line("email_address"), 'required|valid_email|trim|is_unique[stores.email]');
 		$this->form_validation->set_rules('phone', $this->lang->line("phone"), 'required');
 		$this->form_validation->set_rules('city', $this->lang->line("city"), 'required');
 		$this->form_validation->set_rules('state', $this->lang->line("state"), 'required');
 		$this->form_validation->set_rules('postal_code', $this->lang->line("postal_code"), 'required');
-		$this->form_validation->set_rules('country', $this->lang->line("country"), 'required'); 
+		$this->form_validation->set_rules('country', $this->lang->line("country"), 'required');  */
 		$this->form_validation->set_rules('store_type', $this->lang->line("Store Type"), 'required'); 
 
 		if ($this->form_validation->run() == true) {

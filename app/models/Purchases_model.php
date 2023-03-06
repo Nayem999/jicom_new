@@ -22,26 +22,28 @@ class Purchases_model extends CI_Model
         return FALSE;
 
     }
+
 	public function purchasesAmount($type, $id =NULL,$date=null,$store_id=NULL){		
-		 $total = 0;
-		 $this->db->select('purchases.*');
-		 $this->db->from('purchases');
-		 if( $id !=''){ $this->db->where('supplier_id', $id);}
-		 if( $date !=''){ $data = $this->db->like('date', $date); }
-		 if($store_id !=NULL){ $this->db->where('store_id',$store_id);}
-		 if(!$this->Admin){
-            $this->db->where('store_id', $this->session->userdata('store_id'));
-         }
-	     $query = $this->db->get(); 
+		$total = 0;
+		$this->db->select('purchases.*');
+		$this->db->from('purchases');
+		if( $id !=''){ $this->db->where('supplier_id', $id);}
+		if( $date !=''){ $data = $this->db->like('date', $date); }
+		if($store_id !=NULL){ $this->db->where('store_id',$store_id);}
+		if(!$this->Admin){
+		$this->db->where('store_id', $this->session->userdata('store_id'));
+		}
+		$query = $this->db->get(); 
+	
+		$results = $query->result();
 		
-		  $results = $query->result();
-		  
-		  foreach ($results as $result){
-			 $total = $total + $result->$type ;
-			}
+		foreach ($results as $result){
+			$total = $total + $result->$type ;
+		}
 		return $total ;
 		
-		}
+	}
+	
 	public function advPayAmount($type, $id =NULL,$date=null,$store_id=NULL){
 		 $total = 0;
 		 if(!$this->Admin){

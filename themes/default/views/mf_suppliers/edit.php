@@ -16,6 +16,17 @@
             </div>
 
             <div class="form-group">
+							<label class="control-label" for="store_id"><?= $this->lang->line("Store"); ?> <span class="text-danger">*</span></label>
+	              <?php
+								$str_arr[0] = lang("select")." ".lang("Store");
+								foreach($factory_stores as $str_val) {
+									$str_arr[$str_val->id] = $str_val->name;
+								}
+                ?>
+                <?= form_dropdown('store_id', $str_arr, set_value('store_id', $supplier->store_id), 'class="form-control select2 " id="store_id" required="required" style="width:100%;"'); ?> 
+						</div>
+
+            <div class="form-group">
 							<label class="control-label" for="phone"><?= $this->lang->line("phone"); ?> <span class="text-danger">*</span></label>
 							<?= form_input('phone', set_value('phone', $supplier->phone), 'class="form-control input-sm" required id="phone"');?>
 						</div>

@@ -91,6 +91,7 @@ class Mf_suppliers extends MY_Controller
 		
 		if ($this->form_validation->run() == true) { 
 			$data = array('name' => $this->input->post('name'),
+				'store_id' => $this->input->post('store_id'),
 				'email' => $this->input->post('email'),
 				'phone' => $this->input->post('phone'),
 				'address' => $this->input->post('address'),
@@ -141,6 +142,7 @@ class Mf_suppliers extends MY_Controller
 		if ($this->form_validation->run() == true) {
 			
 			$data = array('name' => $this->input->post('name'),
+				'store_id' => $this->input->post('store_id'),
 				'email' => $this->input->post('email'),
 				'phone' => $this->input->post('phone'),
 				'address' => $this->input->post('address'),
