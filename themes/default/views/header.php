@@ -720,7 +720,7 @@
           if ($this->site->permission('mf_payment')) {
           ?>
             <li class="treeview mm_mf_payment"> <a href="#"> <i class="fa fa-folder"></i> <span>
-                Raw Material payment
+                Raw Material Payment
                 </span> <i class="fa fa-angle-left pull-right"></i> </a>
               <ul class="treeview-menu">
                 <?php if ($this->site->route_permission('mf_payment_view')) {?>
