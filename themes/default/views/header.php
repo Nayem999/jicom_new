@@ -716,18 +716,18 @@
             </li>
           <?php
           }
-          // Factory Collection MODULE
-          if ($this->site->permission('mf_collection')) {
+          // Raw Material Payment MODULE
+          if ($this->site->permission('mf_payment')) {
           ?>
-            <li class="treeview mm_mf_collection"> <a href="#"> <i class="fa fa-folder"></i> <span>
-                  Factory Collection
+            <li class="treeview mm_mf_payment"> <a href="#"> <i class="fa fa-folder"></i> <span>
+                Raw Material payment
                 </span> <i class="fa fa-angle-left pull-right"></i> </a>
               <ul class="treeview-menu">
-                <?php if ($this->site->route_permission('mf_collection_view')) {?>
-                <li id="mf_collection_index"><a href="<?= site_url('mf_collection'); ?>"><i class="fa fa-circle-o"></i>collection List</a></li>
+                <?php if ($this->site->route_permission('mf_payment_view')) {?>
+                <li id="mf_payment_index"><a href="<?= site_url('mf_payment'); ?>"><i class="fa fa-circle-o"></i>Payment List</a></li>
                 <?php }
-                if ($this->site->route_permission('mf_collection_add')) {?>
-                <li id="mf_collection_add"><a  href="<?= site_url('mf_collection_add'); ?>" ><i class="fa fa-circle-o"></i> Add Collection</a></li>
+                if ($this->site->route_permission('mf_payment_add')) {?>
+                <li id="mf_payment_add"><a  href="<?= site_url('mf_payment_add'); ?>" ><i class="fa fa-circle-o"></i> Add Payment</a></li>
                 <?php }?>
               </ul>
             </li>
