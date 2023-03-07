@@ -110,7 +110,7 @@
                             <div class="col-md-3">Actual Output </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <?= form_input('actual_output', set_value('actual_output'), 'class="form-control tip" id="actual_output" '); ?>
+                                    <?= form_input('actual_output', set_value('actual_output'), 'class="form-control tip" id="actual_output" required="required" '); ?>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -127,7 +127,7 @@
                             <div class="col-md-3">Wasted </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <?= form_input('wasted', set_value('wasted'), 'class="form-control tip" id="wasted"'); ?>
+                                    <?= form_input('wasted', set_value('wasted'), 'class="form-control tip" id="wasted" readonly'); ?>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -218,4 +218,14 @@
             $("#cost_" + index).val(hidden_cost);
         });
     }
+
+    $(document).ready(function(){
+        var actual_output, target_qty
+        $(document).on('keyup','#actual_output, #target_qty',function(){
+            target_qty=$("#target_qty").val();
+            actual_output=$("#actual_output").val();
+            $("#wasted").val(target_qty-actual_output);
+
+        })
+    })
 </script>

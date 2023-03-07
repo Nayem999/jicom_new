@@ -215,6 +215,7 @@ class Mf_purchases_model extends CI_Model
                 if($this->db->insert('mf_purchase_material', $item)) {
 					// Product stock insert in tec_mf_material_store_qty table
 					$incstoreqty = $this->getProductStoreQtyByPidAndStoreId($item['store_id'],$item['material_id'],$item['brand_id']);
+					
 					$new_cost = $item['cost'];
 					$new_qty = $item['quantity'];
 
@@ -229,7 +230,6 @@ class Mf_purchases_model extends CI_Model
 							'cost' => $coust_amount,
 						);
 						$this->upadteProductQtyById($incstoreqty->id, $incdata);
-
 					} else { 
 
 						$insertdata = array(

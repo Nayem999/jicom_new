@@ -9,7 +9,7 @@ class Mf_finish_good_stock_model extends CI_Model
 
 	public function getFinishStockList($store_id = null){
 
-        $this->db->select('mf_finished_good_stock.id, mf_finished_good_stock.quantity as qty, products.name as product_name, stores.name as store_name'); 
+        $this->db->select('mf_finished_good_stock.id, mf_finished_good_stock.quantity as qty,mf_finished_good_stock.cost as cost, products.name as product_name, stores.name as store_name'); 
         $this->db->from('mf_finished_good_stock');  
 		$this->db->join('products','mf_finished_good_stock.product_id=products.id');
 		$this->db->join('stores','stores.id=mf_finished_good_stock.store_id', 'left');

@@ -1,4 +1,5 @@
 
+
 <section class="content">
     <div class="row">
         <div class="col-sm-12">
@@ -9,15 +10,19 @@
                     </div>
                     <div class="table-responsive" id="print_content">
                         <div class="col-xs-12">
-                            <table class="table table-bordered">
-                                <tbody>
+                            <table class="table table-bordered" id="stockLogList">
+                                <thead>
                                     <tr>
                                         <th class="text-center"> Date</th>      
+                                        <th class="text-center"> Store</th>      
                                         <th class="text-center"> Name</th>      
                                         <th class="text-center"> Reason</th>          
                                         <th class="text-center"> Adj. Qty Type</th>
                                         <th class="text-center"> Adj. Qty</th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                   
                                     <?php
                                     foreach ($finish_goods_stock_adjust_list as $key => $result) {
                                         ?>
@@ -47,4 +52,56 @@
         var url = '<?= site_url('mf_material_stock/excel_stock_log_list/'); ?>';
         location.replace(url);
     });
+
+    let defaultUrl =  '<?= site_url('mf_finish_good_stock/get_adjustment_log') ?>';
+
+    $(document).ready(function() {
+        tableData(defaultUrl);
+    })
+
+
+    function tableData(url)  {
+        $('#stockLogList').dataTable( {
+
+            "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, '<?= lang('all'); ?>']],
+
+            "aaSorting": [[ 1, "asc" ]], "iDisplayLength": <?= $Settings->rows_per_page ?>,
+
+            'bProcessing': true, 'bServerSide': true,
+
+            'sAjaxSource': url,
+
+            'fnServerData': function (sSource, aoData, fnCallback) {
+
+                aoData.push({
+
+                    "name": "<?= $this->security->get_csrf_token_name() ?>",
+
+                    "value": "<?= $this->security->get_csrf_hash() ?>"
+
+                });
+
+                $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
+
+            },
+
+            "aoColumns": [null, null,  null,null,{"mRender":reason},null]
+
+        });
+    }
+
+    function reason(n){
+        if(n == 1){
+            return "Increase";
+        }else{
+            return "Decrease"
+        }
+    }
+
+
+    $(document).on("change","#factory_id",function(){
+        let newUrl = defaultUrl + '/' +$(this).val();
+        tableData(newUrl);
+    })
+
 </script>

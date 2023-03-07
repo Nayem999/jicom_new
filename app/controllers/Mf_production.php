@@ -291,7 +291,7 @@ class Mf_production extends MY_Controller
             'production_id' =>  $id, 
             'store_id' =>  $info->store_id, 
             'product_id' =>  $info->product_id, 
-            'quantity' =>  $info->target_qty, 
+            'quantity' =>  $info->actual_output, 
             'status' => $this->input->post('status'),  
             'type' =>  1,  
             'created_by' => $this->session->userdata('user_id'),               

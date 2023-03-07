@@ -74,7 +74,7 @@
                                                     <input type="hidden" name="material_stock_id[]" id="material_stock_id_<?=$i;?>" value="<?=$val->material_stock_id?>"> 
                                                     <input type="hidden" name="recipe_dtls_id[]" id="recipe_dtls_id_<?=$i;?>" value="<?=$val->recipe_dtls_id?>"> 
                                                     <input type="hidden" name="hidden_qty[]" id="hidden_qty_<?=$i;?>" value="<?=$val->qty?>" readonly> 
-                                                    <input type="hidden" name="hidden_cost[]" id="hidden_cost_<?=$i;?>" value="<?=$val->stock_cost?>" readonly>
+                                                    <input type="hidden" name="hidden_cost[]" id="hidden_cost_<?=$i;?>" value="<?=$val->stock_cost*$val->qty?>" readonly>
                                                     <input type="hidden" name="recipe_id[]" id="recipe_id_<?=$i;?>" value="<?=$val->recipe_id?>" readonly>
 
                                                 </tr>
@@ -158,4 +158,14 @@
             $("#cost_" + index).val(hidden_cost);
         });
     }
+    
+    $(document).ready(function(){
+        var actual_output, target_qty
+        $(document).on('keyup','#actual_output, #target_qty',function(){
+            target_qty=$("#target_qty").val();
+            actual_output=$("#actual_output").val();
+            $("#wasted").val(target_qty-actual_output);
+
+        })
+    })
 </script>

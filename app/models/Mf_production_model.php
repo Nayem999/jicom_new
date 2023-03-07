@@ -150,6 +150,7 @@ class Mf_production_model extends CI_Model
     }
 
     public function updateStatusApprove($id,$dataAppr,$data,$info,$status) {
+
         $q = $this->db->get_where('mf_finished_good_stock', array('mf_finished_good_stock.product_id' => $info->product_id,'mf_finished_good_stock.store_id' => $info->store_id), 1);
 
         if( $q->num_rows() > 0 ) {
@@ -157,20 +158,20 @@ class Mf_production_model extends CI_Model
             if($status=='Approved')
             {
                 $oldTPrice = $finished_good_stock->cost*$finished_good_stock->quantity;
-                $newTPrice = $info->total_cost*$info->target_qty;
+                $newTPrice = $info->total_cost;
                 $TotalPrice = $oldTPrice+$newTPrice;
-                $TotalQty = $finished_good_stock->quantity+$info->target_qty;
+                $TotalQty = $finished_good_stock->quantity+$info->actual_output;
                 $coust_amount = $TotalPrice/$TotalQty;
 
                 $this->db->update('mf_finished_good_stock',array('quantity' => $TotalQty,'cost' => $coust_amount), array('product_id' => $info->product_id));
             }
             else
             {
-                $new_qty= $finished_good_stock->quantity-$info->target_qty;
+                $new_qty= $finished_good_stock->quantity-$info->actual_output;
                 $oldTPrice = $finished_good_stock->cost*$finished_good_stock->quantity;
-                $newTPrice = $info->total_cost*$info->target_qty;
+                $newTPrice = $info->total_cost;
                 $TotalPrice = $oldTPrice-$newTPrice;
-                $TotalQty = $finished_good_stock->quantity-$info->target_qty;
+                $TotalQty = $finished_good_stock->quantity-$info->actual_output;
                 $coust_amount = $TotalPrice/$TotalQty;
 
                 $this->db->update('mf_finished_good_stock', array('quantity' => $new_qty,'cost' => $coust_amount), array('product_id' => $info->product_id));
@@ -178,13 +179,35 @@ class Mf_production_model extends CI_Model
         }
         else
         {
+            $coust_amount = $info->total_cost/$info->actual_output;
             $finished_good_data=array(
                 'store_id' => $info->store_id,
                 'product_id' => $info->product_id,
-                'quantity' => $info->target_qty,
-                'cost' => $info->total_cost
+                'quantity' => $info->actual_output,
+                'cost' => $coust_amount
             );
             $this->db->insert('mf_finished_good_stock',$finished_good_data );
+        }
+
+        $q = $this->db->get_where('mf_production_dtls', array('mf_production_dtls.production_id'=>$id, 'mf_production_dtls.active_status'=>1));
+
+        if( $q->num_rows() > 0 ) {
+            $finished_good_stock_arr = $q->result();
+            foreach($finished_good_stock_arr as $key=>$val)
+            {
+                $material_store_qty=$this->db->get_where('mf_material_store_qty', array('mf_material_store_qty.id'=>$val->material_stock_id))->row();
+                if($status=='Approved')
+                {
+                    $TotalQty = $material_store_qty->quantity-$val->quantity;
+                    $this->db->update('mf_material_store_qty',array('quantity' => $TotalQty), array('id' => $val->material_stock_id));
+                }
+                else
+                {
+                    $TotalQty = $material_store_qty->quantity+$val->quantity;    
+                    $this->db->update('mf_material_store_qty', array('quantity' => $TotalQty), array('id' => $val->material_stock_id));
+                }
+            }
+            
         }
 
         if($this->db->update('mf_production_mst', $dataAppr, array('id' => $id)) && $this->db->insert('mf_finished_good_stock_log', $data)) {
