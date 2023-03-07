@@ -36,21 +36,29 @@ class Mf_production extends MY_Controller
 
     } 
 
-    function get_production() {
+    function get_production($store_id = null) {
 
         $this->load->library('datatables');
 
          $this->datatables->select(
             $this->db->dbprefix('mf_production_mst') . ".id as id, " .  
          	$this->db->dbprefix('mf_production_mst'). ".batch_no,".
+         	$this->db->dbprefix('stores'). ".name  as store_name,".
          	$this->db->dbprefix('mf_recipe_mst'). ".name,".
          	$this->db->dbprefix('products'). ".name as product_name,".
+         	$this->db->dbprefix('mf_production_mst'). ".actual_output ,".
+         	$this->db->dbprefix('mf_production_mst'). ".total_cost ,".
          	$this->db->dbprefix('mf_production_mst').".status,", FALSE
         ); 
         $this->datatables->from('mf_production_mst'); 
         $this->datatables->join('products','mf_production_mst.product_id=products.id'); 
         $this->datatables->join('mf_recipe_mst','mf_production_mst.recipe_id=mf_recipe_mst.id'); 
+        $this->datatables->join('stores','mf_production_mst.store_id=stores.id'); 
         $this->datatables->where('mf_production_mst.active_status',1); 
+
+        if($store_id){
+            $this->datatables->where('mf_production_mst.store_id',$store_id);
+        }
 
         $action="<div class='text-center'><div class='btn-group'>";
 		if($this->site->route_permission('mf_production_view')) {
@@ -272,7 +280,6 @@ class Mf_production extends MY_Controller
                
         $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));        
         $this->data['page_title'] = lang('View Production');
-        
         $this->load->view($this->theme . 'mf_production/view', $this->data);
         
     }

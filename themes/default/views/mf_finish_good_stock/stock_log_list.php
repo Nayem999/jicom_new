@@ -9,6 +9,21 @@
                         <!-- <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button> -->
                     </div>
                     <div class="table-responsive" id="print_content">
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <?= lang('Factory', 'Factory'); ?>
+                                <?php
+                                $fw[0] = lang("select") . " " . lang("Factory Name");
+                                foreach ($factory_stores as $factory) {
+                                    $fw[$factory->id] = $factory->name;
+                                }
+                                $setValue =  isset($_GET['store'])?$_GET['store']:'';
+                                ?>
+                                <?= form_dropdown('factory_id', $fw,$setValue, 'class="form-control select2 tip" id="factory_id" required="required" style="width:100%;"'); ?>
+                            </div>
+                        </div>
+
                         <div class="col-xs-12">
                             <table class="table table-bordered" id="stockLogList">
                                 <thead>
@@ -56,7 +71,10 @@
     let defaultUrl =  '<?= site_url('mf_finish_good_stock/get_adjustment_log') ?>';
 
     $(document).ready(function() {
-        tableData(defaultUrl);
+        
+        let storeId = "<?= isset($_GET['store'])?$_GET['store']:'' ?>";
+
+        tableData(defaultUrl+'/'+storeId);
     })
 
 
@@ -100,8 +118,8 @@
 
 
     $(document).on("change","#factory_id",function(){
-        let newUrl = defaultUrl + '/' +$(this).val();
-        tableData(newUrl);
+        let newUrl = '<?= site_url('mf_finish_good_stock/adjust_log_list') ?>?store='+$(this).val();
+        window.location = newUrl;
     })
 
 </script>

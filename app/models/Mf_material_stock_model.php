@@ -9,7 +9,7 @@ class Mf_material_stock_model extends CI_Model
 
     public function getStockList($brandId = null, $factory = null){
         // adjust_stock
-        $this->db->select('mf_material_store_qty.id, mf_material.name as material_name, mf_brands.name as brand_name, stores.name as store_name, mf_material_store_qty.quantity, mf_unit.name as unit_name, mf_material_adjust.adjust_reason as reason '); 
+        $this->db->select('mf_material_store_qty.id, mf_material.name as material_name, mf_brands.name as brand_name, stores.name as store_name, mf_material_store_qty.quantity, mf_material_store_qty.cost, mf_unit.name as unit_name, mf_material_adjust.adjust_reason as reason '); 
         $this->db->from('mf_material_store_qty');  
 		$this->db->join('mf_material','mf_material_store_qty.material_id=mf_material.id');
 		

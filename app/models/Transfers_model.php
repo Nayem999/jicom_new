@@ -352,8 +352,8 @@ class Transfers_model extends CI_Model
             if($this->db->insert('sales', $sales_data)) { 
             
                 $sale_id = $this->db->insert_id();
-                $data['type'] = 'insert';
-                $data['sale_id'] = $sale_id;
+                $sales_data['type'] = 'insert';
+                $sales_data['sale_id'] = $sale_id;
                 $this->db->insert('sales_log', $sales_data);
                 $sale_log_id = $this->db->insert_id(); 
     

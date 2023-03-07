@@ -80,6 +80,7 @@
                             <th class="col-xs-2">Brand Name</th>
                             <th class="col-xs-2">In Stock</th>
                             <th class="col-xs-2">Quantity</th>
+                            <th class="col-xs-2">Output</th>
                             <th class="col-xs-2">Cost</th>
                           </tr>
                         </thead>
@@ -87,6 +88,7 @@
                           <?php
 
                           if ($production_dtls) {
+                            $tc = 0;
                             $sl=1;
                             foreach ($production_dtls as $key => $val) {
                               ?>
@@ -96,12 +98,22 @@
                               <td><?=$val->brand_name?></td> 
                               <td><?=$val->stock_qty.' '.$val->unit_name?></td> 
                               <td><?=$val->quantity?></td> 
+                              <td><?=$val->stock_cost?></td> 
                               <td><?=$val->cost?></td> 
                               </tr>
                               <?php
                               $sl++;
+                              $tc += $val->cost;
 
                             }
+                            ?>
+                            <tr>
+                              <td class="text-right" colspan="6">Grand Total</td>
+                              <td class="text-right" ><?=$tc?></td>
+                            </tr>
+
+                            <?php
+
                           }
 
                           ?>

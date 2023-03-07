@@ -58,6 +58,7 @@ class Mf_material_stock extends MY_Controller
             $this->db->dbprefix('stores') . ".name as store_name, " .
 
             $this->db->dbprefix('mf_material_store_qty') . ".quantity as qty, " .
+            $this->db->dbprefix('mf_material_store_qty') . ".cost as cost, " .
 
             $this->db->dbprefix('mf_unit') . ".name as unit_name", FALSE);
         
@@ -139,12 +140,12 @@ class Mf_material_stock extends MY_Controller
 
         $fileName = "raw_material_stock_list_" . date('Y-m-d_h_i_s') . ".xls"; 
 
-        $fields = array('Name','Brand','Store','Quantity', 'Unit' );
+        $fields = array('Name','Brand','Store','Quantity', 'Unit', 'Unit Cost' );
         $excelData = implode("\t", array_values($fields)) . "\n"; 
 
         if(count($matarial_list) > 0){ 
             foreach($matarial_list as $result){ 
-                $lineData=array($result->material_name,$result->brand_name,$result->store_name,$result->quantity,$result->unit_name);
+                $lineData=array($result->material_name,$result->brand_name,$result->store_name,$result->quantity,$result->unit_name,$result->cost);
                 $excelData .= implode("\t", array_values($lineData)) . "\n"; 
             }            
         }else{ 

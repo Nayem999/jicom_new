@@ -32,13 +32,9 @@ class Mf_finish_good_stock extends MY_Controller
 		}
         $this->data['finish_good_list'] = $this->mf_finish_good_stock_model->getFinishStockList();   
 
-        // echo "<pre>";
-        // print_r( $this->data['finish_good_list']);
-        // die;
-
-        $this->data['page_title'] = $this->lang->line("finish_goods");
-        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('finish_goods')));
-        $meta = array('page_title' => lang('finish_goods'), 'bc' => $bc);
+        $this->data['page_title'] = $this->lang->line("finish_goods_stock");
+        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('finish_goods_stock')));
+        $meta = array('page_title' => lang('finish_goods_stock'), 'bc' => $bc);
         $this->page_construct('mf_finish_good_stock/stock_list', $this->data, $meta);
 
     }
@@ -86,17 +82,9 @@ class Mf_finish_good_stock extends MY_Controller
     }
 
 
-    public function get_stock_adjust_data()
+    public function get_stock_adjust_data($action = true, $store_id =null)
     {
-
-        /* 
-            $this->db->select('mf_finished_good_stock.id, mf_finished_good_stock.quantity as qty,mf_finished_good_stock.cost as cost, products.name as product_name, stores.name as store_name'); 
-            $this->db->from('mf_finished_good_stock');  
-            $this->db->join('products','mf_finished_good_stock.product_id=products.id');
-            $this->db->join('stores','stores.id=mf_finished_good_stock.store_id', 'left');
-            $this->db->order_by('mf_finished_good_stock.id','desc');
-    */
-
+        
         $this->load->library('datatables');
 
          $this->datatables->select($this->db->dbprefix('mf_finished_good_stock') . ".id as id, " .  
@@ -108,20 +96,24 @@ class Mf_finish_good_stock extends MY_Controller
         $this->datatables->join('products','mf_finished_good_stock.product_id=products.id'); 
         $this->datatables->join('stores','stores.id=mf_finished_good_stock.store_id', 'left');
 
-        $action="<div class='text-center'><div class='btn-group'>";
-		if($this->site->route_permission('mf_recipe_view')) {
-			$action.="<a onclick=\"window.open('" . site_url('mf_recipe/view/$1') . "', 'pos_popup', 'width=900,height=600,menubar=yes,scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#' title='Print Recipe' class='tip btn btn-primary btn-xs'><i class='fa fa-file-text-o'></i></a> ";
-		}
-		if($this->site->route_permission('mf_recipe_edit')) {
-			$action.="<a href='" . site_url('mf_recipe/edit/$1') . "' title='Edit Recipe' class='tip btn btn-warning btn-xs'><i class='fa fa-edit'></i></a>";
-		}
-		if($this->site->route_permission('mf_recipe_delete')) {
-			$action.=" <a href='" . site_url('mf_recipe/delete/$1') . "' onClick=\"return confirm('" . lang('alert_x_recipe') . "')\" title='" . lang("delete_unit") . "' class='tip btn btn-danger btn-xs'><i class='fa fa-trash-o'></i></a>";
-		}
-        $action.="</div></div>";
+        if($store_id):
+            $this->datatables->where('mf_finished_good_stock.store_id',$store_id);
+        endif;
 
-        $this->datatables->add_column("Actions", $action, "id, image, code, name");
+        $action="<div class='text-center'><div class='btn-group'>";
+
+		$action.="<a onclick=finishGoodStockAdjust($1) width=900,height=600,menubar=yes,scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#' title='Print Recipe' class='tip btn btn-primary btn-xs'><i class='fa fa-edit'></i></a> ";
+		
+        $action.="</div>";
+
+        if($action):
+
+            $this->datatables->add_column("Actions", $action, "id,product_name,store_name, quantity,cost");
+        
+        endif;
+
         $this->datatables->unset_column('id');
+
         echo $this->datatables->generate();
     }
 
@@ -198,7 +190,7 @@ class Mf_finish_good_stock extends MY_Controller
     }
   
 
-    public function get_adjustment_log()
+    public function get_adjustment_log($store_id=null)
     {
 
         $this->load->library('datatables');
@@ -218,6 +210,10 @@ class Mf_finish_good_stock extends MY_Controller
        $this->datatables->join('mf_finished_good_stock_log','mf_finished_good_stock_log.product_id=products.id and mf_finished_good_stock_log.store_id=mf_finished_good_stock.store_id', 'left');
        $this->datatables->join('stores','stores.id=mf_finished_good_stock_log.store_id','left');
        $this->datatables->where('mf_finished_good_stock_log.type','2');
+
+       if($store_id):
+        $this->datatables->where('mf_finished_good_stock_log.store_id',$store_id);
+       endif;
 
        $this->datatables->unset_column('id');
 

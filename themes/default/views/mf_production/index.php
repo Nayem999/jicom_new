@@ -1,4 +1,5 @@
 <script>
+    let defaultDataUrl = "<?= site_url('mf_production/get_production') ?>";
     $(document).ready(function() {
 
         if (get('recipe_items')) {
@@ -8,48 +9,61 @@
             remove('recipe_items');
         }
 
-        $('#purData').dataTable({
-
-            "aLengthMenu": [
-                [10, 25, 50, 100, -1],
-                [10, 25, 50, 100, '<?= lang('all'); ?>']
-            ],
-
-            "aaSorting": [
-                [0, "desc"]
-            ],
-            "iDisplayLength": <?= $Settings->rows_per_page ?>,
-
-            'bProcessing': true,
-            'bServerSide': true,
-
-            'sAjaxSource': '<?= site_url('mf_production/get_production') ?>',
-
-            'fnServerData': function(sSource, aoData, fnCallback) {
-
-                aoData.push({
-                    "name": "<?= $this->security->get_csrf_token_name() ?>",
-                    "value": "<?= $this->security->get_csrf_hash() ?>"
-                });
-
-                $.ajax({
-                    'dataType': 'json',
-                    'type': 'POST',
-                    'url': sSource,
-                    'data': aoData,
-                    'success': fnCallback
-                });
-
-            },
-
-            "aoColumns": [null, null, null, null, {
-                "bSortable": false,
-                "bSearchable": false
-            }]
-
-        });
+        let storeId = "<?= isset($_GET['store'])?$_GET['store']:'' ?>";
+        console.log(defaultDataUrl +'/'+ storeId);
+        
+        createTable(defaultDataUrl +'/'+ storeId);
 
     });
+
+    $(document).on("change","#factory_id",function(){
+        let newUrl = '<?= site_url('mf_production') ?>?store='+$(this).val();
+        window.location = newUrl;
+    })
+
+    function createTable(url){
+
+        $('#purData').dataTable({
+
+        "aLengthMenu": [
+            [10, 25, 50, 100, -1],
+            [10, 25, 50, 100, '<?= lang('all'); ?>']
+        ],
+
+        "aaSorting": [
+            [0, "desc"]
+        ],
+        "iDisplayLength": <?= $Settings->rows_per_page ?>,
+
+        'bProcessing': true,
+        'bServerSide': true,
+
+        'sAjaxSource': url ,
+
+        'fnServerData': function(sSource, aoData, fnCallback) {
+
+            aoData.push({
+                "name": "<?= $this->security->get_csrf_token_name() ?>",
+                "value": "<?= $this->security->get_csrf_hash() ?>"
+            });
+
+            $.ajax({
+                'dataType': 'json',
+                'type': 'POST',
+                'url': sSource,
+                'data': aoData,
+                'success': fnCallback
+            });
+
+        },
+
+        "aoColumns": [null, null, null, null,null,null, null, {
+            "bSortable": false,
+            "bSearchable": false
+        }]
+
+        });
+    }
 </script>
 
 <style type="text/css">
@@ -63,6 +77,20 @@
 <section class="content">
 
     <div class="row">
+
+        <div class="col-sm-3">
+            <div class="form-group">
+                <?= lang('Factory', 'Factory'); ?>
+                <?php
+                $fw[0] = lang("select") . " " . lang("Factory Name");
+                foreach ($factory_stores as $factory) {
+                    $fw[$factory->id] = $factory->name;
+                }
+                $setValue = isset($_GET['store'])?$_GET['store']:'';
+                ?>
+                <?= form_dropdown('factory_id', $fw, $setValue, 'class="form-control select2 tip" id="factory_id" required="required" style="width:100%;"'); ?>
+            </div>
+        </div>
 
         <div class="col-xs-12">
 
@@ -81,8 +109,11 @@
                             <thead>
                                 <tr class="active">
                                     <th class="col-xs-2">Batch No</th>
+                                    <th class="col-xs-2">Store Name</th>
                                     <th class="col-xs-2">Recipe Name</th>
                                     <th class="col-xs-3">Product</th>
+                                    <th class="col-xs-3">Output</th>
+                                    <th class="col-xs-3">Total Cost</th>
                                     <th class="col-xs-2">Status</th>
                                     <th class="col-xs-2">Action</th>
                                 </tr>

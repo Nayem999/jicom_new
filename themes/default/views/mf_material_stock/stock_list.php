@@ -12,7 +12,8 @@
                 });
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
             },
-            "aoColumns": [null, null, null, {"bSortable":false, "bSearchable": false}]
+            "aoColumns": [null, null, null,null,null]
+            // "aoColumns": [null, null, null,null, {"bSortable":false, "bSearchable": false}]
         });
     });
 </script>
@@ -35,6 +36,7 @@
                                         <th class="text-center"> Brand</th>      
                                         <th class="text-center"> Store</th>      
                                         <th class="text-center"> Quantity</th>
+                                        <th class="text-center"> Unit Cost</th>
                                     </tr>
                                 </thead>
 

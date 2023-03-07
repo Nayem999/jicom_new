@@ -463,88 +463,94 @@ class Transfers extends MY_Controller
 
     public function approve($id){
 
-
         $transfer_mst = $this->transfers_model->getTransfersByID($id);  
-        $transfer_dtls = $this->transfers_model->getAllTransfersItems($id); 
-
-        $total=$sales_total=$i=0;
-        foreach($transfer_dtls as $key=>$val){
-            $products[] = array(                        
-                'product_id' => $val->product_id,                
-                'cost' => $val->cost,                
-                'quantity' => $val->quantity,    
-                'subtotal' => ($val->cost * $val->quantity),                
-            );                          
-            $total += ($val->cost * $val->quantity);
-
-            $product_details = $this->site->getWhereDataByElement('mf_finished_good_stock','store_id','product_id',$transfer_mst->from_warehouse_id, $val->product_id);
-
-  
-            $sales_products[] = array(
-                'product_id' => $val->product_id,
-                'quantity' => $val->quantity,
-                'unit_price' => $val->cost,
-                'net_unit_price' => $val->cost,
-                'subtotal' => ($val->cost * $val->quantity),
-                'real_unit_price' => $val->cost,
-                'cost' => $product_details[0]->cost,
-                'store_id' => $transfer_mst->from_warehouse_id ,
-            );
-            $sales_total += $val->cost * $val->quantity;
-            $i++;
-        }
-        // print_r($sales_products);die;
-
-        $data = array(
-            'date' => date('Y-m-d H:i:s'),            
-            'reference' => $transfer_mst->reference,             
-            'note' =>$transfer_mst->note,             
-            'supplier_id' => $transfer_mst->supplier_id,            
-            'received' => 1,            
-            'total' => $total,
-            'deu' => $total,
-            'purchase_type' => 2,
-            'transfer_id' => $id,
-            'created_by' => $this->session->userdata('user_id'),  
-            'store_id' => $transfer_mst->to_warehouse_id ,   
-
-        );  
-        $dataAppr = array( 'status' => $this->input->post('status') );  
-
-        $customer_details = $this->site->whereRow('customers','id',$transfer_mst->customer_id);
-
-        $sales_data = array(
-            'date' => date('Y-m-d H:i:s'),
-            'customer_id' => $transfer_mst->customer_id,
-            'customer_name' => $customer_details->name,
-            'total' => $this->tec->formatDecimal($sales_total),
-            'grand_total' => $sales_total,
-            'total_items' => $i,
-            'total_quantity' => $this->input->post('total_quantity'),
-            'paid' => 0,
-            'paid_by' => 'Credit',
-            'created_by' => $this->session->userdata('user_id'),
-            'store_id' => $transfer_mst->from_warehouse_id,
-            'collection_id' => 0,
-            'delivery_date' => date('Y-m-d'),
-            'payment_status' => 3,
-            'status' => 'due',
-            'sale_type'=> 2,
-            'transfer_id' => $id,
-        );
-        
-        if($this->transfers_model->updateStatusApprove($id,$dataAppr,$data,$products,$sales_data,$sales_products))
+        if($transfer_mst->status=="Approved")
         {
-            $this->session->set_flashdata('message', lang('Updated successfully'));        
+            $this->session->set_flashdata('error', lang("It's already Approved. Approve not allow"));
             $this->index();
         }
         else
         {
-            $this->session->set_flashdata('error', lang('Failed Updated'));        
-            $this->index();
-        }
-                
+
+            $transfer_dtls = $this->transfers_model->getAllTransfersItems($id); 
+            $total=$sales_total=$i=0;
+            foreach($transfer_dtls as $key=>$val){
+                $products[] = array(                        
+                    'product_id' => $val->product_id,                
+                    'cost' => $val->cost,                
+                    'quantity' => $val->quantity,    
+                    'subtotal' => ($val->cost * $val->quantity),                
+                );                          
+                $total += ($val->cost * $val->quantity);
     
+                $product_details = $this->site->getWhereDataByElement('mf_finished_good_stock','store_id','product_id',$transfer_mst->from_warehouse_id, $val->product_id);
+    
+      
+                $sales_products[] = array(
+                    'product_id' => $val->product_id,
+                    'quantity' => $val->quantity,
+                    'unit_price' => $val->cost,
+                    'net_unit_price' => $val->cost,
+                    'subtotal' => ($val->cost * $val->quantity),
+                    'real_unit_price' => $val->cost,
+                    'cost' => $product_details[0]->cost,
+                    'store_id' => $transfer_mst->from_warehouse_id ,
+                );
+                $sales_total += $val->cost * $val->quantity;
+                $i++;
+            }
+            // print_r($sales_products);die;
+    
+            $data = array(
+                'date' => date('Y-m-d H:i:s'),            
+                'reference' => $transfer_mst->reference,             
+                'note' =>$transfer_mst->note,             
+                'supplier_id' => $transfer_mst->supplier_id,            
+                'received' => 1,            
+                'total' => $total,
+                'deu' => $total,
+                'purchase_type' => 2,
+                'transfer_id' => $id,
+                'created_by' => $this->session->userdata('user_id'),  
+                'store_id' => $transfer_mst->to_warehouse_id ,   
+    
+            );  
+            $dataAppr = array( 'status' => $this->input->post('status') );  
+    
+            $customer_details = $this->site->whereRow('customers','id',$transfer_mst->customer_id);
+    
+            $sales_data = array(
+                'date' => date('Y-m-d H:i:s'),
+                'customer_id' => $transfer_mst->customer_id,
+                'customer_name' => $customer_details->name,
+                'total' => $this->tec->formatDecimal($sales_total),
+                'grand_total' => $sales_total,
+                'total_items' => $i,
+                'total_quantity' => $this->input->post('total_quantity'),
+                'paid' => 0,
+                'paid_by' => 'Credit',
+                'created_by' => $this->session->userdata('user_id'),
+                'store_id' => $transfer_mst->from_warehouse_id,
+                'collection_id' => 0,
+                'delivery_date' => date('Y-m-d'),
+                'payment_status' => 3,
+                'status' => 'due',
+                'sale_type'=> 2,
+                'transfer_id' => $id,
+            );
+            
+            if($this->transfers_model->updateStatusApprove($id,$dataAppr,$data,$products,$sales_data,$sales_products))
+            {
+                $this->session->set_flashdata('message', lang('Updated successfully'));        
+                $this->index();
+            }
+            else
+            {
+                $this->session->set_flashdata('error', lang('Failed Updated'));        
+                $this->index();
+            }
+        }      
+
     }
 
     function view($id = NULL) { 
