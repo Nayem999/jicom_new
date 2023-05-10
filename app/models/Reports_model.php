@@ -1304,7 +1304,7 @@ class Reports_model extends CI_Model
         $this->db->select('today_collection.today_collect_id as collection_id, today_collection.payment_amount,  today_collection.paid_by, today_collection.payment_date as payments_date, customers.name as customers_name, bank_account.bank_name '); 
         $this->db->from('today_collection');  
 		$this->db->join('customers','customers.id=today_collection.customer_id');
-		//$this->db->join('payments','today_collection.today_collect_id=payments.collect_id','left');
+		$this->db->join('payments','today_collection.today_collect_id=payments.collect_id');
 		$this->db->join('bank_pending','bank_pending.collection_id=today_collection.today_collect_id','left');  
         $this->db->join('bank_account','bank_pending.bank_id=bank_account.bank_account_id','left');  
 
@@ -1322,8 +1322,35 @@ class Reports_model extends CI_Model
         }  
         if($store_id){$this->db->where('today_collection.store_id', $store_id); }
         $this->db->where('today_collection.paid_from', 2); 
-        //$this->db->group_by('collection_id,payment_amount,paid_by,payments_date,customers_name,bank_name'); 
+        $this->db->group_by('collection_id,payment_amount,paid_by,payments_date,customers_name,bank_name'); 
 		// $this->db->where("`today_collect_id` NOT IN ($where_clause)", NULL, FALSE);
+
+        $query = $this->db->get();
+        return $query->result(); 
+    }
+
+    public function collect_rpt_without_pos($start_date=NULL,$end_date=NULL,$store_id=0){
+
+        $this->db->select('today_collection.today_collect_id as collection_id, today_collection.payment_amount,  today_collection.paid_by, today_collection.payment_date as payments_date, customers.name as customers_name, bank_account.bank_name '); 
+        $this->db->from('today_collection');  
+		$this->db->join('customers','customers.id=today_collection.customer_id');
+		$this->db->join('bank_pending','bank_pending.collection_id=today_collection.today_collect_id','left');  
+        $this->db->join('bank_account','bank_pending.bank_id=bank_account.bank_account_id','left');  
+
+        if($start_date && $end_date){ 
+            $this->db->where('today_collection.payment_date >=', $start_date.' 00:00:00'); 
+            $this->db->where('today_collection.payment_date <=', $end_date.' 23:59:59');   
+        }
+		elseif($start_date)
+		{
+            $this->db->where('today_collection.payment_date >=', $start_date.' 00:00:00'); 
+            $this->db->where('today_collection.payment_date <=', $start_date.' 23:59:59');  
+		}
+		else{
+            $this->db->like('today_collection.payment_date', date('Y-m-d'));
+        }  
+        if($store_id){$this->db->where('today_collection.store_id', $store_id); }
+        $this->db->where('today_collection.paid_from', 2); 
 
         $query = $this->db->get();
         return $query->result(); 

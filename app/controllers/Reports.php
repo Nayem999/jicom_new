@@ -831,9 +831,9 @@ class Reports extends MY_Controller
         $this->data['end_date'] = $end_date;
         $this->data['store_id'] = $store_id;
         // $this->data['stores'] = $this->site->getAllStores();
-        $this->data['page_title'] = $this->lang->line("Collection Report Without POS");
-        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('Collection Report Without POS')));
-        $meta = array('page_title' => lang('Collection Report Without POS'), 'bc' => $bc);
+        $this->data['page_title'] = $this->lang->line("Credit Collection Report");
+        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('Credit Collection Report')));
+        $meta = array('page_title' => lang('Credit Collection Report'), 'bc' => $bc);
         $this->page_construct('reports/credit_collection_rpt', $this->data, $meta);
 
     }
@@ -851,8 +851,8 @@ class Reports extends MY_Controller
         $expensesCollection = $this->reports_model->expensesCollectionReport($start_date,$end_date,$store_id); 
 
 
-        $fileName = "collection_report_without_pos" . date('Y-m-d_h_i_s') . ".xls"; 
-        $fields = array('Collection Report Without POS');
+        $fileName = "credit_collection_report" . date('Y-m-d_h_i_s') . ".xls"; 
+        $fields = array('Credit Collection Report');
         $excelData = implode("\t", array_values($fields)) . "\n"; 
         if($store_id){
             $store_info = $this->site->getAllStores($store_id);
@@ -913,6 +913,78 @@ class Reports extends MY_Controller
             $excelData .= implode("\t", array_values($lineData)) . "\n"; 
 
             $lineData = array('','GRAND TOTAL', $gand_total );
+            $excelData .= implode("\t", array_values($lineData)) . "\n"; 
+            
+        }else{ 
+            $excelData .= 'No records found...'. "\n"; 
+        } 
+            
+        // Headers for download 
+        header("Content-Type: application/vnd.ms-excel"); 
+        header("Content-Disposition: attachment; filename=\"$fileName\""); 
+            
+        // Render excel data 
+        echo $excelData; 
+
+    }
+
+    function collection_rpt_without_pos()  {
+        $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');  
+        $end_date = $this->input->post('end_date') ? $this->input->post('end_date') : date('Y-m-d');  
+        $store_id = $this->input->post('store_id') ? $this->input->post('store_id') : 0;  
+
+        $this->data['creditCollection'] = $this->reports_model->collect_rpt_without_pos($start_date,$end_date,$store_id); 
+
+        $this->data['start_date'] = $start_date;
+        $this->data['end_date'] = $end_date;
+        $this->data['store_id'] = $store_id;
+          $this->data['page_title'] = $this->lang->line("Collection Report Without POS");
+        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('Collection Report Without POS')));
+        $meta = array('page_title' => lang('Collection Report Without POS'), 'bc' => $bc);
+        $this->page_construct('reports/collection_rpt_without_pos', $this->data, $meta);
+
+
+    }
+
+    function excel_collection_rpt_without_pos($data=null)  {
+
+        $data_arr=explode("_",$data);
+
+        $start_date = $data_arr[0] ? $data_arr[0] : date('Y-m-d');  
+        $end_date = $data_arr[1] ? $data_arr[1] : date('Y-m-d'); 
+        $store_id = $data_arr[2] ? $data_arr[2] : 0; 
+        
+        $creditCollection = $this->reports_model->collect_rpt_without_pos($start_date,$end_date,$store_id); 
+
+        $fileName = "collection_report_without_pos" . date('Y-m-d_h_i_s') . ".xls"; 
+        $fields = array('Collection Report Without POS');
+        $excelData = implode("\t", array_values($fields)) . "\n"; 
+        if($store_id){
+            $store_info = $this->site->getAllStores($store_id);
+            $fields = array('Store Name', $store_info[0]->name, 'Start Date', $start_date, 'End Date', $end_date);
+            $excelData .= implode("\t", array_values($fields)) . "\n"; 
+        }
+        else
+        {
+            $fields = array( 'Start Date', $start_date, 'End Date', $end_date);
+            $excelData .= implode("\t", array_values($fields)) . "\n"; 
+        }
+        $fields = array('SL','Date','V. No','Customer','Cash','Chq/TT','Bank');
+        $excelData .= implode("\t", array_values($fields)) . "\n"; 
+
+        $i=1; $total_cash = $total_bank = $total_bank_tt = $cash_amount = $expense_amount = 0;
+        if(count($creditCollection) > 0){   
+
+            foreach($creditCollection as $key=>$row){ 
+                $lineData = array($i++,date("d-M-Y",strtotime($row->payments_date)),$row->collection_id,$row->customers_name,($row->paid_by == "cash")? $row->payment_amount:0 , ($row->paid_by == "cash")? 0:$row->payment_amount , $row->bank_name );
+
+                if($row->paid_by == "cash"){ $total_cash+=$row->payment_amount; }else{ $total_bank+=$row->payment_amount; }
+                if($row->paid_by == "TT"){ $total_bank_tt+=$row->payment_amount; }
+
+                $excelData .= implode("\t", array_values($lineData)) . "\n"; 
+            } 
+
+            $lineData = array('','','','Grand Total',$total_cash,$total_bank,'');
             $excelData .= implode("\t", array_values($lineData)) . "\n"; 
             
         }else{ 
