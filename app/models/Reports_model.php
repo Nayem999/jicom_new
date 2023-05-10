@@ -1297,31 +1297,33 @@ class Reports_model extends CI_Model
 
     public function creditCollectionReport($start_date=NULL,$end_date=NULL,$store_id=0){
 
-		$this->db->select('collection_id');
+		/* $this->db->select('collection_id');
 		$this->db->from('sales');
-		$where_clause = $this->db->get_compiled_select();
+		$where_clause = $this->db->get_compiled_select(); */
 
-        $this->db->select('today_collection.today_collect_id as collection_id, today_collection.payment_amount,  payments.paid_by, payments.date as payments_date, customers.name as customers_name, bank_account.bank_name '); 
+        $this->db->select('today_collection.today_collect_id as collection_id, today_collection.payment_amount,  today_collection.paid_by, today_collection.payment_date as payments_date, customers.name as customers_name, bank_account.bank_name '); 
         $this->db->from('today_collection');  
-		$this->db->join('payments','today_collection.today_collect_id=payments.collect_id');
 		$this->db->join('customers','customers.id=today_collection.customer_id');
+		//$this->db->join('payments','today_collection.today_collect_id=payments.collect_id','left');
 		$this->db->join('bank_pending','bank_pending.collection_id=today_collection.today_collect_id','left');  
         $this->db->join('bank_account','bank_pending.bank_id=bank_account.bank_account_id','left');  
 
         if($start_date && $end_date){ 
-            $this->db->where('payments.date >=', $start_date.' 00:00:00'); 
-            $this->db->where('payments.date <=', $end_date.' 23:59:59');   
+            $this->db->where('today_collection.payment_date >=', $start_date.' 00:00:00'); 
+            $this->db->where('today_collection.payment_date <=', $end_date.' 23:59:59');   
         }
 		elseif($start_date)
 		{
-            $this->db->where('payments.date >=', $start_date.' 00:00:00'); 
-            $this->db->where('payments.date <=', $start_date.' 23:59:59');  
+            $this->db->where('today_collection.payment_date >=', $start_date.' 00:00:00'); 
+            $this->db->where('today_collection.payment_date <=', $start_date.' 23:59:59');  
 		}
 		else{
-            $this->db->like('payments.date', date('Y-m-d'));
+            $this->db->like('today_collection.payment_date', date('Y-m-d'));
         }  
         if($store_id){$this->db->where('today_collection.store_id', $store_id); }
-		$this->db->where("`today_collect_id` NOT IN ($where_clause)", NULL, FALSE);
+        $this->db->where('today_collection.paid_from', 2); 
+        //$this->db->group_by('collection_id,payment_amount,paid_by,payments_date,customers_name,bank_name'); 
+		// $this->db->where("`today_collect_id` NOT IN ($where_clause)", NULL, FALSE);
 
         $query = $this->db->get();
         return $query->result(); 

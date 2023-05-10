@@ -831,9 +831,9 @@ class Reports extends MY_Controller
         $this->data['end_date'] = $end_date;
         $this->data['store_id'] = $store_id;
         // $this->data['stores'] = $this->site->getAllStores();
-        $this->data['page_title'] = $this->lang->line("credit_collection");
-        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('credit_collection')));
-        $meta = array('page_title' => lang('credit_collection'), 'bc' => $bc);
+        $this->data['page_title'] = $this->lang->line("Collection Report Without POS");
+        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('Collection Report Without POS')));
+        $meta = array('page_title' => lang('Collection Report Without POS'), 'bc' => $bc);
         $this->page_construct('reports/credit_collection_rpt', $this->data, $meta);
 
     }
@@ -851,8 +851,8 @@ class Reports extends MY_Controller
         $expensesCollection = $this->reports_model->expensesCollectionReport($start_date,$end_date,$store_id); 
 
 
-        $fileName = "credit_collection_report" . date('Y-m-d_h_i_s') . ".xls"; 
-        $fields = array('Credit Collection Report');
+        $fileName = "collection_report_without_pos" . date('Y-m-d_h_i_s') . ".xls"; 
+        $fields = array('Collection Report Without POS');
         $excelData = implode("\t", array_values($fields)) . "\n"; 
         if($store_id){
             $store_info = $this->site->getAllStores($store_id);

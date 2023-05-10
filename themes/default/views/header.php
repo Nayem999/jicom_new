@@ -349,7 +349,8 @@
                   <li id="reports_invoiceprofit"><a href="<?= site_url('reports/invoiceProfit'); ?>"><i class="fa fa-circle-o"> </i>Invoice Profit</a></li>
                   <li id="reports_salaryreport"><a href="<?= site_url('reports/salaryReport'); ?>"><i class="fa fa-circle-o"> </i>Salary Report</a></li>
                   <li id="reports_expenses_rpt"><a href="<?= site_url('reports/expenses_rpt'); ?>"><i class="fa fa-circle-o"> </i>Expenses Report</a></li>
-                  <li id="reports_credit_collection_rpt"><a href="<?= site_url('reports/credit_collection_rpt'); ?>"><i class="fa fa-circle-o"> </i>Credit Collection</a></li>
+                  <!-- <li id="reports_credit_collection_rpt"><a href="<?= site_url('reports/credit_collection_rpt'); ?>"><i class="fa fa-circle-o"> </i>Credit Collection</a></li> -->
+                  <li id="reports_credit_collection_rpt"><a href="<?= site_url('reports/credit_collection_rpt'); ?>"><i class="fa fa-circle-o"> </i>Collection Report Without POS</a></li>
                   <li id="reports_aging_rpt"><a href="<?= site_url('reports/aging_rpt'); ?>"><i class="fa fa-circle-o"> </i>Aging Report</a></li>
   
                   <li id="reports_bank_balance"><a href="<?= site_url('reports/bank_balance'); ?>"><i class="fa fa-circle-o"></i>

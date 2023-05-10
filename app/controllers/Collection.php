@@ -381,6 +381,7 @@ class Collection extends MY_Controller
             'payment_note' => $this->input->post('note'),
             'store_id'  => $customers->store_id,
             'paid_by' => $type,
+            'paid_from' => 2,
           ); 
         $collect_id = $this->sales_model->payPayment($payPaymentdata);
 
