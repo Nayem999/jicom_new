@@ -128,6 +128,7 @@
                     <?= form_open("purchases/today/"); ?>
 
                     <div class="row">
+                        <?php if($this->Admin):?>
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <?= lang('Store', 'Store'); ?>
@@ -140,6 +141,7 @@
                                 <?= form_dropdown('store_id', $wr, set_value('store_id'), 'class="form-control select2 tip" id="store_id" required="required" style="width:100%;"'); ?>
                             </div>
                         </div>
+                        <?php endif;?>
 
 
                         <div class="clearfix"></div>

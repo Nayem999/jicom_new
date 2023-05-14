@@ -12,13 +12,13 @@
                         <?php echo form_open_multipart("mf_recipe/edit/" . $recipe_mst->id, 'class="validation edit-po-form"'); ?>
                         <div class="row">
 
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <?= lang('recipe_name', 'recipe_name'); ?>
                                     <?= form_input('recipe_name', set_value('recipe_name', $recipe_mst->recipe_name), 'class="form-control tip" id="recipe_name" required="required" '); ?>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <?= lang('For Product', 'For Product'); ?>
                                     <?php
@@ -31,7 +31,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <?= lang('uom', 'uom'); ?>
                                     <?php
@@ -41,6 +41,13 @@
                                     }
                                     ?>
                                     <?= form_dropdown('uom_id', $ur, set_value('uom_id', $recipe_mst->uom_id), 'class="form-control select2 tip" required="required" id="uom_id" style="width:100%;"'); ?>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <?= lang('target_qty', 'target_qty'); ?>
+                                    <?= form_input('target_qty', set_value('target_qty',$details_single->target_qty), 'class="form-control tip" id="target_qty"'); ?>
                                 </div>
                             </div>
 

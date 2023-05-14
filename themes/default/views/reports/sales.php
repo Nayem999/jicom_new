@@ -5,7 +5,7 @@
                 <div class="box-body">
                     <div class="panel-body">
                         <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button>
-                        <button type="button" style="width:120px; float:right; display:none;" class="btn btn-default btn-sm toggle_form pull-right" id="printWindow">Print</button>
+                        <button type="button" style="width:120px; float:right;" class="btn btn-default btn-sm toggle_form pull-right" id="printWindow">Print</button>
                         <?= form_open(""); ?>
                         <div class="row">
                             <div class="col-sm-3">
@@ -276,7 +276,7 @@
                                             if(isset($cashCollection->cash_amount)){ $cash_amount=$cashCollection->cash_amount; }
                                             $sub_total= $cr_collection+$cash_amount;
                                             if(isset($expensesCollection->expense_amount)){ $expense_amount=$expensesCollection->expense_amount; }
-                                            $cash_banlance = $sub_total - $cheque_collection;
+                                            $cash_banlance = $sub_total - $total_bank_collection; //$cheque_collection;
                                             $gand_total = $cash_banlance - $expense_amount;
                                         ?>
                                         <tbody>
@@ -293,8 +293,10 @@
                                                     <td><?php echo $sub_total;?></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>(-) Cheq/DD</td>
-                                                    <td><?php echo $cheque_collection;?></td>
+                                                    <td>(-) Cheq/TT</td>
+                                                    <td><?php echo $total_bank_collection;
+                                                    // $cheque_collection;
+                                                    ?></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Today Cash Balance</td>
@@ -336,7 +338,7 @@
 
         $(".dataTables_paginate ").css("display", "none");
         $("#fileData_filter ").css("display", "none");
-        var content = "<html> <br><img width='800px' src='<?= base_url('themes/default/assets/images/chalan.png'); ?>'><br><p style='text-align:center'>Daily Statement | <?php echo $this->Settings->site_name; ?> </p><style> table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 2px;} tr:nth-child(even) {background-color: #dddddd;} </style>";
+        var content = "<html> <br><img width='800px' src='<?= base_url('themes/default/assets/images/chalan.png'); ?>'><br><p style='text-align:center'> Master Sales Report  | <?php echo $this->Settings->site_name; ?> </p><style> table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 2px;} tr:nth-child(even) {background-color: #dddddd;} </style>";
         content += document.getElementById("print_content").innerHTML;
         content += "</body>";
         content += "</html>";

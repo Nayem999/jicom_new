@@ -547,13 +547,17 @@ if ($modal) {
                             <td class="col-xs-3">Sales</td>
                             <td class="text-right col-xs-3"><?=$life_sales_customer;?></td>
                         </tr>
+                        <!--<tr>-->
+                        <!--    <td class="col-xs-3">Sales Return</td>-->
+                        <!--    <td class="text-right col-xs-3"><?=$total_sales_return;?></td>-->
+                        <!--</tr>-->
                         <tr>
                             <td class="col-xs-3">Collected</td>
                             <td class="text-right col-xs-3"><?=$life_payment_customer;?></td>
                         </tr>
                         <tr>
                             <td class=" col-xs-3">Current Due</td>
-                            <td class="text-right col-xs-3"><?=$life_sales_customer-$life_payment_customer;?></td>
+                            <td class="text-right col-xs-3"><?=$life_sales_customer-$life_payment_customer - $total_sales_return;?></td>
                         </tr>
                     </tbody>
                 </table>
@@ -599,7 +603,7 @@ if ($modal) {
 
     <div class="alert alert-success">
 
-        <button data-dismiss="alert" class="close" type="button">×</button>
+        <button data-dismiss="alert" class="close" type="button"></button>
 
         <?= is_array($message) ? print_r($message, true) : $message; ?>
 

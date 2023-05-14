@@ -67,6 +67,8 @@
                         <tr>
                           <td class="col-xs-2"><strong>Target Quantity</strong></td>
                           <td class="col-xs-4"><?= $production_mst->target_qty.' '.$production_mst->uom_name; ?></td>
+                          <td class="col-xs-2"><strong>Actual Output</strong></td>
+                          <td class="col-xs-4"><?= $production_mst->actual_output; ?></td>
                         </tr>
         
                       </tbody>
@@ -80,7 +82,6 @@
                             <th class="col-xs-2">Brand Name</th>
                             <th class="col-xs-2">In Stock</th>
                             <th class="col-xs-2">Quantity</th>
-                            <th class="col-xs-2">Output</th>
                             <th class="col-xs-2">Cost</th>
                           </tr>
                         </thead>
@@ -98,7 +99,6 @@
                               <td><?=$val->brand_name?></td> 
                               <td><?=$val->stock_qty.' '.$val->unit_name?></td> 
                               <td><?=$val->quantity?></td> 
-                              <td><?=$val->stock_cost?></td> 
                               <td><?=$val->cost?></td> 
                               </tr>
                               <?php
@@ -108,8 +108,8 @@
                             }
                             ?>
                             <tr>
-                              <td class="text-right" colspan="6">Grand Total</td>
-                              <td class="text-right" ><?=$tc?></td>
+                              <td class="text-right" colspan="5">Grand Total</td>
+                              <td class="" ><?= number_format($tc, 2)?></td>
                             </tr>
 
                             <?php

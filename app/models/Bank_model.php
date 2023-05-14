@@ -136,14 +136,16 @@ public function  deleteTransaction($id)
 	  
 	 }
 	public function getTranjiction($id,$limit=NULL ){
-	$this->db->order_by("tranjiction_id", "DESC");	
-	if($limit !=NULL){
-	$this->db->limit($limit);	
-	}
-	$query = $this->db->get_where('tranjiction', array('bank_account_id' => $id)); 
+
+		$this->db->order_by("tranjiction_id", "DESC");	
+		if($limit !=NULL){
+		$this->db->limit($limit);	
+		}
+		$query = $this->db->get_where('tranjiction', array('bank_account_id' => $id)); 
+
 		if( $query->num_rows() > 0 ) {
 			
-			 return  $query->result(); ; //$q->rows();
+			return  $query->result(); //$q->rows();
 
 		} 
 
@@ -256,6 +258,20 @@ public function  deleteTransaction($id)
         $this->db->where('loaner_id',$loaner_id); 
         $q = $this->db->get('payloaner'); 
         return $q->row()->amount;
+	}
+
+	public function getTransactionDetails($pending_id)
+	{
+		$sql = "SELECT * FROM `tec_tranjiction` WHERE `bank_pending` = $pending_id ORDER BY `bank_panding_id` DESC ";
+
+		$query = $this->db->query($sql);
+
+		if($query){
+			return $query->result()[0];
+		}else{
+			return false;
+		}
+
 	}
 }
 

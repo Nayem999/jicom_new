@@ -27,7 +27,7 @@
 
             },
 
-            "aoColumns": [{"mRender":hrld}, null, null, {"bSortable":false, "bSearchable": false}]
+            "aoColumns": [{"mRender":hrld}, null, null,null, null,null,null, null, {"bSortable":false, "bSearchable": false}]
 
         });
 
@@ -67,9 +67,19 @@
                         
                             <th><?php echo 'Date' ?></th>
 
-                            <th><?php echo 'Amount' ; ?></th>
+                            <th><?php echo 'Bank Name' ; ?></th>
 
-                            <th><?php echo 'Note'; ?></th>
+                            <th><?php echo 'Account Name'; ?></th>
+
+                            <th><?php echo 'Cheque No'; ?></th>
+
+                            <th><?php echo 'Supplier'; ?></th>
+
+                            <th><?php echo 'Customer'; ?></th>
+
+                            <th><?php echo 'Amount'; ?></th>
+
+                            <th><?php echo 'Type'; ?></th>
 
                             <th style="width:100px;"><?php echo $this->lang->line("actions"); ?></th>
 

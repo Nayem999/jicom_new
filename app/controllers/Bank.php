@@ -79,8 +79,9 @@ class Bank extends MY_Controller
 		$action.="</div></div>";
     
     	$this->datatables->add_column("Actions",$action, "bank_account_id");
+		
     	if(!$this->Admin){
-    		$this->datatables->where('store_id', $this->session->userdata('store_id'));
+    		$this->datatables->where('bank_account.store_id', $this->session->userdata('store_id'));
     	}
 
     	$this->datatables->unset_column('bank_account_id');
@@ -158,8 +159,8 @@ class Bank extends MY_Controller
 				$dataTransaction = array(
 					'bank_account_id'   => $cid,
 					'tran_amount'  => $this->input->post('current_amount'),			
-					'tran_type'    => 1,				
-					'tran_date'    => date('Y-m-d H:i:s'),	
+					'tran_type'    => 1,			
+					'tran_date'    => date('Y-m-d H:i:s'),
 				);
 			
 				$this->site->insertQuery('tranjiction',$dataTransaction) ;
@@ -449,6 +450,30 @@ class Bank extends MY_Controller
 		$this->load->view($this->theme . 'bank/tranjiction',$this->data);  
  	}
  	function tranjictionList($id){
+
+		
+		$this->db->select("tranjiction.tranjiction_id as tid, tranjiction.tran_date ,tranjiction.tran_type, tranjiction.tran_date as date,bank_pending.cheque_no, bank_pending.payment_type,bank_pending.amount,bank_pending.type as type, bank_account.bank_name as b_name, bank_account.account_name as ac_name, suppliers.name as supplier, customers.name as customer, stores.name as store_name ");
+
+		$this->db->from('tranjiction');
+
+		$this->db->join("bank_pending","bank_pending.pending_id=tranjiction.pedding_cheque", 'left');
+
+		$this->db->join('bank_account', 'bank_account.bank_account_id=bank_pending.bank_id', 'left');
+
+		$this->db->join('suppliers', 'suppliers.id=bank_pending.supplier_id', 'left');
+
+		$this->db->join('customers', 'customers.id=bank_pending.customer_id', 'left'); 
+
+		$this->db->join('stores', 'stores.id=tranjiction.store_id', 'left'); 
+
+		$this->db->where("bank_pending.bank_id", $id)->limit(20);
+
+		$getData = $this->db->get()->result();
+
+
+		
+
+
 	  $this->load->helper('security');
 	
 	    if ((!$this->Admin) && (!$this->Manager)) {
@@ -458,7 +483,7 @@ class Bank extends MY_Controller
             redirect('pos');
         }
 		
-		$this->data['list'] = $this->bank_model->getTranjiction($id,'20');
+		$this->data['list'] = $getData;//$this->bank_model->getTranjiction($id,'20');
 	
 		$this->data['bank_info'] = $this->bank_model->getBankByID($id);
 	    $this->load->view($this->theme . 'bank/tranjictionList',$this->data); 
@@ -471,7 +496,7 @@ class Bank extends MY_Controller
 	
 	    $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
 	
-		$this->data['path'] = 'bank/get_Transaction/'.$account_id.'/'.$tran_type;
+		$this->data['path'] = 'bank/get_Tr_records/'.$account_id.'/'.$tran_type;
 		
 		$this->data['tabPath'] = 'bank/allTransaction/'.$account_id;
 		
@@ -515,6 +540,63 @@ class Bank extends MY_Controller
     	->unset_column('tranjiction_id');
 		$this->datatables->where('bank_account_id', $account_id);
 		$this->datatables->where('tran_type', $tran_type);
+
+    	echo $this->datatables->generate();
+
+    }
+
+	function get_Tr_records($account_id,$tran_type = NULL) {
+
+		$this->load->library('datatables');
+
+		$this->datatables->select(
+
+			$this->db->dbprefix('tranjiction').".tranjiction_id as tid,
+
+			".$this->db->dbprefix('tranjiction').".tran_date  as tran_date ,  
+
+			".$this->db->dbprefix('bank_account').".bank_name as bname,
+
+			".$this->db->dbprefix('bank_account').".account_name as acname, 
+			
+			".$this->db->dbprefix('bank_pending').".cheque_no as cheque_no ,
+
+			".$this->db->dbprefix('suppliers').".name as supplier ,
+
+			".$this->db->dbprefix('customers').".name as customer ,
+
+			".$this->db->dbprefix('bank_pending').".amount,
+
+			".$this->db->dbprefix('bank_pending').".type as type ", FALSE);
+
+
+			$this->datatables->from('tranjiction');
+
+			$this->datatables->join("bank_pending","bank_pending.pending_id=tranjiction.pedding_cheque", 'left');
+
+			$this->datatables->join('bank_account', 'bank_account.bank_account_id=bank_pending.bank_id', 'left');
+
+			$this->datatables->join('suppliers', 'suppliers.id=bank_pending.supplier_id', 'left');
+
+			$this->datatables->join('customers', 'customers.id=bank_pending.customer_id', 'left'); 
+
+			// $this->datatables->join('stores', 'stores.id=tranjiction.store_id', 'left'); 
+
+			$this->datatables->where("bank_pending.bank_id", $account_id);
+
+			$this->datatables->where('tranjiction.tran_type', $tran_type);
+
+			$this->datatables->unset_column('tid');
+			
+
+         $actdata = "<a class='tip btn btn-warning btn-xs' data-toggle='ajax' onclick='editTransaction($1)' href='javascript:;'> <i class='fa fa-edit'></i></a>";
+
+         $actdata .= "<a href='" . site_url('bank/deleteTransaction/$1') . "' onClick=\"return confirm('". $this->lang->line('alert_x_customer') ."')\" class='tip btn btn-danger btn-xs' title='Delete bank Transaction'>
+		 <i class='fa fa-trash-o'></i>
+	   </a>";
+
+         $this->datatables->add_column("Actions", "<div class='text-center'><div class='btn-group'>".$actdata."</div></div>", "bid");
+
 
     	echo $this->datatables->generate();
 
@@ -735,6 +817,7 @@ class Bank extends MY_Controller
 	}
 
 	public function get_pendingCheque(){
+
 		 $this->load->library('datatables');
          $this->datatables->select($this->db->dbprefix('bank_pending').".pending_id as bid,
           ".$this->db->dbprefix('bank_pending').".insert_date  as insert_date ,        
@@ -782,7 +865,8 @@ class Bank extends MY_Controller
 
 	public function get_approvedCheque(){
 		 $this->load->library('datatables');
-         $this->datatables->select($this->db->dbprefix('bank_pending').".pending_id as bid,
+         $this->datatables->select(
+			$this->db->dbprefix('bank_pending').".pending_id as bid,
           ".$this->db->dbprefix('bank_pending').".insert_date  as insert_date ,
           
           ".$this->db->dbprefix('bank_account').".bank_name as bname,
@@ -903,8 +987,10 @@ class Bank extends MY_Controller
 	}
 
 	public function chequeApproed($id){
+
 		$bank_id = $this->input->post('bank_id'); 
 		$info = $this->bank_model->getPendingChequeByID($id); 
+
 
 		if($bank_id != $info->bank_id){
 			$bankId = $bank_id;
@@ -919,7 +1005,7 @@ class Bank extends MY_Controller
 		$amount = $this->input->post('amount');
 
 
-		$dataAppr = array( 'type' => $this->input->post('paid_by') );
+		$dataAppr = array('type' => $this->input->post('paid_by') );
 		
 		if($info->payment_type == 1){
 			 
@@ -937,10 +1023,12 @@ class Bank extends MY_Controller
 						'tran_amount'  => $this->input->post('amount'),				
 						'tran_type'    => 1,				
 						'tran_date'    => date('Y-m-d H:i:s'),
-						'pedding_cheque' =>	$info->pending_id,		
+						'pedding_cheque' =>	$info->pending_id,
+						// 'bank_panding_id'=>$id,
+						// 'collection_id'=>$info->collection_id,
 					);
 				
-					$this->bank_model->addTranjiction($data) ;	
+					$this->bank_model->addTranjiction($data);
 				} else {				 
 					$this->session->set_flashdata('error', lang('Bank Cheque Approve error === 1'));
 		            redirect("bank/pendingCheque");
@@ -984,7 +1072,7 @@ class Bank extends MY_Controller
 						'pedding_cheque' =>	$info->pending_id,		
 					);
 				
-					$this->bank_model->addTranjiction($data) ;	
+					$this->bank_model->addTranjiction($data);
 				} else {				 
 					$this->session->set_flashdata('error', lang('Bank Cheque Approve error'));
 		            redirect("bank/pendingCheque");

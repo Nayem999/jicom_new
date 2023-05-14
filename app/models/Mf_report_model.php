@@ -61,6 +61,8 @@ class Mf_report_model extends CI_Model
 
         $ci->db->join('stores', 'stores.id=mf_purchases.store_id');
 
+		$ci->db->group_by('mf_purchases.id');
+
         if($startDate ||  $endDate){
 
             $ci->db->where('mf_purchases.created_at >=', $startDate." 00:00:00");

@@ -5,7 +5,7 @@
                 <div class="box-body">
                     <div class="panel-body">
                         <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button>
-                        <button type="button" style="width:120px; float:right; display:none;" class="btn btn-default btn-sm toggle_form pull-right" id="printWindow">Print</button>
+                        <button type="button" style="width:120px; float:right;" class="btn btn-default btn-sm toggle_form pull-right" id="printWindow">Print</button>
                         <?= form_open(""); ?>
                         <div class="row">
                             <div class="col-sm-3">
@@ -112,5 +112,25 @@
         let brandName = $("#brand_id").find(":selected").text();
         var url = '<?= site_url('mf_report/exp_material_report/'); ?>' + '/' + brand + '?brand_name='+ brandName;
         location.replace(url);
+    });
+
+    $("#printWindow").click(function () {        
+        $(".dataTables_info").css("display", "none"); 
+        $(".dataTables_length, .dataTables_filter ").css("display", "none");
+        $(".dataTables_paginate ").css("display", "none");
+        $("#fileData_filter ").css("display", "none");
+        var content = "<html> <br><p style='text-align:center'> <b class='box-title'>Raw Material list | <?= $this->Settings->site_name ?></b><br><b class='box-title'><p><style> table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 2px;} tr:nth-child(even) {background-color: #dddddd;} </style>";
+        content += document.getElementById("print_content").innerHTML;
+        content += "</body>";
+        content += "</html>";
+        var printWin = window.open('','','left=20,top=40,width=700,height=550 '); 
+        printWin.document.write(content);     
+        printWin.focus();
+        printWin.print();
+        printWin.close();
+        $(".dataTables_info").css("display", "block"); 
+        $(".dataTables_length, .dataTables_filter ").css("display", "block");
+        $(".dataTables_paginate ").css("display", "block");
+        $("#fileData_filter ").css("display", "block");   
     });
 </script>

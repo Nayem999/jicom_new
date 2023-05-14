@@ -10,7 +10,7 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
      <?php echo form_open('bank/chequeApproed/'.$id); ?>
       <div class="modal-body">
         <div class="row">
-          <?php if ($Admin) { ?>
+          <?php //if ($Admin) { ?>
           <div class="col-sm-12">
               </div>
               <div class="col-sm-8">
@@ -31,7 +31,7 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
                    <label for="paid_by" class=""><?= lang('Select Bank'); ?>*</label>
                    
                     <?php  
-                    $banks = $this->site->getAllBanks();  
+                    $banks = $this->site->get_bank_with_store();  
                     $bk[''] = 'Select Bank';
                     foreach($banks as $value) {
                         $bk[$value->bank_account_id] = $value->bank_name .' ('.$value->account_name.' ) ( '.$value->account_no.')'; 
@@ -49,7 +49,7 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
             </div>
             </div>
           </div>
-          <?php } ?>
+          <?php //} ?>
         </div>
       </div>
     </div>

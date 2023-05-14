@@ -111,6 +111,7 @@ class Transfers extends MY_Controller
             $this->load->view($this->theme.'transfers/fromWarehouse', $this->data, $meta); 
         } else {
         $this->form_validation->set_rules('date', lang('date'), 'required');
+
         if ($this->form_validation->run() == true) {
             
             $total = 0;            
@@ -180,7 +181,54 @@ class Transfers extends MY_Controller
         }
         // print_r($data);die;
 
-        if ($this->form_validation->run() == true && $this->transfers_model->addtransfers($data, $products)) { 
+        if ($this->form_validation->run() == true &&  $mfTrId = $this->transfers_model->addtransfers($data, $products)) { 
+            if($mfTrId){
+                // material ids
+                $materialIds = $_POST["packaging_material"];
+                // material qty
+                $materialQts = $_POST["pk_quantity"];
+
+                
+                if(is_array($materialIds) && count($materialIds) > 0){
+
+                    foreach ($materialIds as $key => $value) {
+                        
+                        $findPkMaterial = $this->db->select("*")->from("mf_material_packaging")->where('id',$value)->get()->row();
+
+                        if($findPkMaterial){
+                            $currentQty = $findPkMaterial->quantity;
+
+                            // print_r($materialQts[$key]);die;
+
+                            if($materialQts[$key] > 0){
+                                $newQty = $currentQty - $materialQts[$key];
+
+                                // decrease pk material qty
+                                $decreaseQty = $this->db->where('id',$value)->update('mf_material_packaging_store_qty',['quantity'=>$newQty]);
+                                $decreaseQtyFromPackaging = $this->db->where('id',$value)->update('mf_material_packaging',['quantity'=>$newQty]);
+
+
+                                $pkLogData = [];
+                                $pkLogData["material_id"] =$value;
+                                $pkLogData["to_sale"] = $materialQts[$key];
+                                $pkLogData["from_qty"] = $currentQty;
+                                $pkLogData["to_qty"] = $newQty;
+                                $pkLogData["balance"] = $newQty;
+                                $pkLogData["type"] = 3;
+                                $pkLogData["comment"] = "Finish goods transfer with packaging material";
+                                $pkLogData["date"] = date("Y-m-d");
+
+                                $insertIntoMaterialAdjust = $this->db->insert("mf_packaging_material_log",$pkLogData);
+                                // insert data into material adjust log
+                            }
+                            
+                        }
+
+                    }
+                }
+            }
+
+
             $this->session->set_userdata('remove_spo', 1);
             $this->session->set_flashdata('message', lang('transfer_added'));            
             redirect("transfers"); 
@@ -193,6 +241,7 @@ class Transfers extends MY_Controller
             $this->data['warehouses'] = $this->site->getAllStores();             
             $this->data['customers'] = $this->site->whereRows('customers','store_id',$this->session->userdata('from_warehouse'));             
             $this->data['page_title'] = lang('Add Transfers');
+            $this->data["packaging_items"] = $this->db->select('mf_material_packaging.*,mf_unit.name as unit')->from("mf_material_packaging")->join("mf_unit","mf_unit.id=mf_material_packaging.uom_id",'left')->get()->result();
             
             $bc = array(
                 array(
@@ -244,6 +293,8 @@ class Transfers extends MY_Controller
 
         $this->form_validation->set_rules('date', lang('date'), 'required');
 
+        $this->data["tr_materials"] = $this->db->select("*")->from('mf_material_packaging_adjust')->where("transfers_id",$id)->get()->result();
+
         if ($this->form_validation->run() == true) {
 
             $total = 0;
@@ -290,9 +341,70 @@ class Transfers extends MY_Controller
             
         }
         if ($this->form_validation->run() == true && $this->transfers_model->UpdateTransfers($id,$data, $products, $fromwarehouse,$towarehouse)) { 
+
+
+            if($id){
+
+                if(count($this->data["tr_materials"]) > 0){
+                    foreach ($this->data["tr_materials"] as $key => $value) {
+
+                        
+                        $findPakMaterial = $this->db->select("*")->from("mf_material_packaging_store_qty")->where('id',$value->material_id)->get()->row();
+
+                        $adjustNewQuantity = $value->adjust_qty + $findPakMaterial->quantity;
+
+                        $increaseStock = $this->db->where('id',$value->material_id)->update('mf_material_packaging_store_qty',['quantity'=>$value->adjust_qty + $findPakMaterial->quantity]);
+
+                        $deleteFromAdjust = $this->db->delete('mf_material_packaging_adjust', ['id' => $id]);
+
+                    }
+                }
+
+                // material ids
+                $materialIds = $_POST["packaging_material"];
+                // material qty
+                $materialQts = $_POST["pk_quantity"];
+                if(is_array($materialIds) && count($materialIds) > 0){
+                    
+                    foreach ($materialIds as $key => $value) {
+                        
+                        // $findPkMaterial = $this->db->select("*")->from("mf_material_packaging")->where('id',$value)->get()->row();
+
+                       /*  if($findPkMaterial){
+                            $currentQty = $findPkMaterial->quantity;
+
+                            if($materialQts[$key] > 0){
+
+                                $newQty = $currentQty - $materialQts[$key];
+
+                                // decrease pk material qty
+                                $decreaseQty = $this->db->where('id',$value)->update('mf_material_packaging_store_qty',['quantity'=>$newQty]);
+                                $decreaseQtyFromPackaging = $this->db->where('id',$value)->update('mf_material_packaging',['quantity'=>$newQty]);
+
+                                $pkLogData = [];
+                                $pkLogData["material_id"] =$value;
+                                $pkLogData["to_sale"] = $materialQts[$key];
+                                $pkLogData["from_qty"] = $currentQty;
+                                $pkLogData["to_qty"] = $newQty;
+                                $pkLogData["balance"] = $newQty;
+                                $pkLogData["type"] = 3;
+                                $pkLogData["comment"] = "Finish goods transfer with packaging material";
+                                $pkLogData["date"] = date("Y-m-d");
+
+                                $insertIntoMaterialAdjust = $this->db->insert("mf_packaging_material_log",$pkLogData);
+                            }
+                            
+                        } */
+
+                    }
+                }
+            }
+
             $this->session->set_userdata('remove_spo', 1);
             $this->session->set_flashdata('message', lang('Product Transfer Successfully Updated'));            
-            redirect("transfers");        
+            redirect("transfers");     
+            
+            
         }
 
         $this->data['transfer'] = $this->transfers_model->getTransfersByID($id);        
@@ -323,6 +435,7 @@ class Transfers extends MY_Controller
         $this->data['items'] = json_encode($pr);
         $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));            
         $this->data['page_title'] = lang('edit_purchase');
+        $this->data["packaging_items"] = $this->db->select('mf_material_packaging.*,mf_unit.name as unit')->from("mf_material_packaging")->join("mf_unit","mf_unit.id=mf_material_packaging.uom_id",'left')->get()->result();
         
         $bc = array(
             array(

@@ -13,9 +13,10 @@ if (isset($_POST['start_date'])) {
                 <div class="box-body">
                     <div class="panel-body">
                         <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button>
-                        <button type="button" style="width:120px; float:right; display:none;" class="btn btn-default btn-sm toggle_form pull-right" id="printWindow">Print</button>
+                        <button type="button" style="width:120px; float:right;" class="btn btn-default btn-sm toggle_form pull-right" id="printWindow">Print</button>
                         <?= form_open(""); ?>
                         <div class="row">
+                            <?php if($this->Admin):?>
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <?= lang('Store', 'Store'); ?>
@@ -28,6 +29,7 @@ if (isset($_POST['start_date'])) {
                                     <?= form_dropdown('store_id', $wr, set_value('store_id'), 'class="form-control select2 tip" id="store_id" required="required" style="width:100%;"'); ?>
                                 </div>
                             </div>
+                            <?php endif; ?>
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label class="control-label" for="start_date"><?= lang("start_date"); ?></label>
@@ -178,7 +180,7 @@ if (isset($_POST['start_date'])) {
 
         $(".dataTables_paginate ").css("display", "none");
         $("#fileData_filter ").css("display", "none");
-        var content = "<html> <br><img width='800px' src='<?= base_url('themes/default/assets/images/chalan.png'); ?>'><br><p style='text-align:center'>Daily Statement | <?php echo $this->Settings->site_name; ?> </p><style> table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 2px;} tr:nth-child(even) {background-color: #dddddd;} </style>";
+        var content = "<html> <br><img width='800px' src='<?= base_url('themes/default/assets/images/chalan.png'); ?>'><br><p style='text-align:center'>Credit Collection | <?php echo $this->Settings->site_name; ?> </p><style> table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 2px;} tr:nth-child(even) {background-color: #dddddd;} </style>";
         content += document.getElementById("print_content").innerHTML;
         content += "</body>";
         content += "</html>";

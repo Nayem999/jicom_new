@@ -85,7 +85,8 @@ class Mf_material extends MY_Controller
 		$this->form_validation->set_rules('uom_id', $this->lang->line("Unit"), 'required');
 
 		if ($this->form_validation->run() == true) { 
-			$data = array('name' => $this->input->post('name'),
+			$data = array(
+				'name' => $this->input->post('name'),
 				'category_id' => $this->input->post('category_id'),
 				'uom_id' => $this->input->post('uom_id'),
 				'descriptions' => $this->input->post('descriptions')

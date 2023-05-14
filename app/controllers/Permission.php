@@ -82,7 +82,7 @@ class Permission extends MY_Controller
             $permissiion_module = $this->site->whereRow('permissions','group_id',$group_id);
             $permission_route = $this->site->whereRow('module_routes','group_id',$group_id);
 
-
+            // mf_material_add
             $data = array(
                 'group_id' => $this->input->post('group_id'),
                 'pos' => $this->input->post('pos'),
@@ -118,7 +118,15 @@ class Permission extends MY_Controller
                 'transfers' => $this->input->post('transfers'),
                 'mf_payment' => $this->input->post('mf_payment'),
                 'mf_report' => $this->input->post('mf_report'),
+                'mf_transfers' => $this->input->post('mf_transfers'),
+                'mf_material_packaging' => $this->input->post('mf_material_packaging'),
+                'mf_purchases_packaging' => $this->input->post('mf_purchases_packaging'),
+                'mf_material_stock_packaging' => $this->input->post('mf_material_stock_packaging'),
+                'mf_payment_packaging' => $this->input->post('mf_payment_packaging'),
             );
+
+            // echo $this->input->post('mf_material_view');
+            // die;
 
             $data2 = array(
                 'group_id' => $this->input->post('group_id'),
@@ -199,7 +207,7 @@ class Permission extends MY_Controller
                 'mf_unit_add' => $this->input->post('mf_unit_add'),
                 'mf_unit_edit' => $this->input->post('mf_unit_edit'),
                 'mf_unit_delete' => $this->input->post('mf_unit_delete'),
-                'mf_material_view' => $this->input->post('mf_material_view'),
+                'mf_material_view' => $this->input->post('mf_material_view')?$this->input->post('mf_material_view'):0,
                 'mf_material_add' => $this->input->post('mf_material_add'),
                 'mf_material_edit' => $this->input->post('mf_material_edit'),
                 'mf_material_delete' => $this->input->post('mf_material_delete'),
@@ -236,10 +244,27 @@ class Permission extends MY_Controller
                 'mf_payment_edit' => $this->input->post('mf_payment_edit'),
                 'mf_payment_delete' => $this->input->post('mf_payment_delete'),
                 'mf_report_view' => $this->input->post('mf_report_view'),
-            );
-            // print_r($data);
-            // print_r($data2);die;
+                'mf_transfers_view' => $this->input->post('mf_transfers_view'),
+                'mf_transfers_add' => $this->input->post('mf_transfers_view'),
+                'mf_material_packaging_view' => $this->input->post('mf_material_packaging_view'),
+                'mf_material_packaging_add' => $this->input->post('mf_material_packaging_add'),
+                'mf_material_packaging_edit' => $this->input->post('mf_material_packaging_edit'),
+                'mf_material_packaging_delete' => $this->input->post('mf_material_packaging_delete'),
+               
+                'mf_purchases_packaging_view' => $this->input->post('mf_purchases_packaging_view'),
+                'mf_purchases_packaging_add' => $this->input->post('mf_purchases_packaging_add'),
+                'mf_purchases_packaging_edit' => $this->input->post('mf_purchases_packaging_edit'),
+                'mf_purchases_packaging_delete' => $this->input->post('mf_purchases_packaging_delete'),
 
+                'mf_payment_packaging_view' => $this->input->post('mf_payment_packaging_view'),
+                'mf_payment_packaging_add' => $this->input->post('mf_payment_packaging_add'),
+                'mf_payment_packaging_edit' => $this->input->post('mf_payment_packaging_edit'),
+                'mf_payment_packaging_delete' => $this->input->post('mf_payment_packaging_delete'),
+                
+                'mf_material_stock_packaging_view' => $this->input->post('mf_material_stock_packaging_view'),
+                'mf_material_stock_packaging_add' => $this->input->post('mf_material_stock_packaging_add'),
+            );
+            
             if(is_object($permissiion_module))
             {
                 $where_data=array('permissions_id'=>$permissiion_module->permissions_id);

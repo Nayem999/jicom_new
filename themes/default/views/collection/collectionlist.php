@@ -69,7 +69,7 @@ $v = "?v=1";
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
 
             },
-            "aoColumns": [ null,null, null, null, null,null,null,null]
+            "aoColumns": [ null,null, null, null, null,null,null,null,null]
 
         });
 
@@ -108,6 +108,8 @@ $v = "?v=1";
 
                         <div class="row">
 
+                         <?php if($this->Admin):?>
+
                             <div class="col-sm-3">
 
                                 <div class="form-group">
@@ -122,6 +124,7 @@ $v = "?v=1";
                                 </div>
 
                             </div>
+                            <?php endif; ?>
                             <div class="col-sm-3">
 
                                 <div class="form-group">
@@ -199,6 +202,9 @@ $v = "?v=1";
                                 <th class="col-xs-2">Note</th> 
 
                                 <th class="col-xs-1">Paid By</th> 
+
+                                <th class="col-xs-1">Cheque Number</th> 
+
                                 <th class="col-xs-1">Cheque Status</th> 
                                 <!-- <th class="col-xs-1">Status</th>  -->
 

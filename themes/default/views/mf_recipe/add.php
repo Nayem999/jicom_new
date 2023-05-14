@@ -49,7 +49,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <?= lang('uom', 'uom'); ?>
                                     <?php
@@ -59,6 +59,13 @@
                                     }
                                     ?>
                                     <?= form_dropdown('uom_id', $ur, set_value('uom_id'), 'class="form-control select2 tip" required="required" id="uom_id" style="width:100%;"'); ?>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <?= lang('target_qty', 'target_qty'); ?>
+                                    <?= form_input('target_qty', set_value('target_qty'), 'class="form-control tip" id="target_qty"'); ?>
                                 </div>
                             </div>
 
@@ -225,7 +232,7 @@
                     item_qty = item.row.qty,
                     item_name = item.row.name,
                     item_brand = item.row.brand_name,
-                    unit_name = item.row.unit_name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
+                    unit_name = item.row.unit_name && item.row.unit_name.replace(/"/g, "&#034;").replace(/'/g, "&#039;");
 
                 var row_no = (new Date).getTime();
 

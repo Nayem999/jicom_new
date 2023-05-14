@@ -125,10 +125,9 @@ $v = "?v=1";
 
                 <div class="box-header">
                 
-                	<button type="button" onclick="printIt()" style="width:120px; float:right;display:none;" class="btn bg-navy btn-block btn-flat" id="daily_sales">Print report</button>
                     <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button>
-
                     <a href="#" class="btn btn-default btn-sm toggle_form pull-right"><?= lang("show_hide"); ?></a>
+                	<button type="button" style="width:120px; float:right;" class="btn bg-default btn-sm" id="daily_sales">Print</button>
 
                     <h3 class="box-title"><?= lang('customize_report'); ?></h3>
 
@@ -283,11 +282,11 @@ $v = "?v=1";
                         }
                     ?>
 
-                    <div class="row">
+                    <div class="row" id="page_content1">
 
                         <div class="col-xs-12">
 
-                            <div class="table-responsive" id="page_content">
+                            <div class="table-responsive" id="">
 
                                 <table id="fileData" class="table table-striped table-bordered table-hover" style="margin-bottom:5px;">
 
@@ -362,27 +361,26 @@ $v = "?v=1";
 
  $("#daily_sales").click(function () {
 	 
-	$(".text-center a ").css("display", "none"); 
-    $(".dataTables_length ").css("display", "none");
-    $(".dataTables_paginate ").css("display", "none");
-    $("#fileData_filter ").css("display", "none");  
-	
-	 var content = "<html> <br> <h2 style='text-align:center'> Products Report <br></h2>";
-	 content += document.getElementById("page_content").innerHTML ;
-     content += "</body>";
-     content += "</html>";
-	 var printWin = window.open('','','left=20,top=40,width=700,height=550,toolbar=0,scrollbars=0,status =0');
-	 printWin.document.write('<link rel="stylesheet" href="http://localhost/spos-new/themes/default/assets/bootstrap/css/bootstrap.min.css" type="text/css" />');
+	    $(".text-center a ").css("display", "none");
+        $(".dataTables_length ").css("display", "none");
+        $(".dataTables_paginate ").css("display", "none");
+        $("#fileData_filter ").css("display", "none");
 
-     printWin.document.write(content);
-     
-	 printWin.focus();
-     printWin.print();
-	 printWin.close();
-   
-    // window.print();            
-            
+        var content = "<html> <br> <h2 style='text-align:center'> Customer Wise Products Report <br></h2>";
+        content += document.getElementById("page_content1").innerHTML;
+        content += "</body>";
+        content += "</html>";
+        var printWin = window.open('', '', 'left=20,top=40,width=700,height=550,toolbar=0,scrollbars=0,status =0');
+        printWin.document.write('<link rel="stylesheet" href="http://localhost/spos-new/themes/default/assets/bootstrap/css/bootstrap.min.css" type="text/css" />');
+
+        printWin.document.write(content);
+
+        printWin.focus();
+        printWin.print();
+        printWin.close();
+        location.reload();  
   });
+
   $("#excelWindow").click(function () {  
         var data=$("#product").val()+'_'+$("#warehouse").val()+'_'+$("#start_date").val()+'_'+$("#end_date").val()+'_'+$("#customer").val();    
         var url='<?=site_url('reports/get_excel_products/');?>'+'/'+data;

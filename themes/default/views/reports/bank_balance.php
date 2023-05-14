@@ -17,6 +17,7 @@
                     <h3 class="box-title"><?= lang('list_results'); ?></h3>
 
                     <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button>
+                    <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="daily_sales">Print</button>
 
 
                 </div>
@@ -167,7 +168,7 @@
     $(".dataTables_length, .dataTables_filter ").css("display", "none");
     $(".dataTables_paginate ").css("display", "none");
     $("#fileData_filter ").css("display", "none");
-     var content = "<html> <br><p style='text-align:center'> <b class='box-title'>Account Payable list | <?= $this->Settings->site_name ?></b><br><b class='box-title'><p><style> table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 2px;} tr:nth-child(even) {background-color: #dddddd;} </style>";
+     var content = "<html> <br><p style='text-align:center'> <b class='box-title'>Bank Balance | <?= $this->Settings->site_name ?></b><br><b class='box-title'><p><style> table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 2px;} tr:nth-child(even) {background-color: #dddddd;} </style>";
      content += document.getElementById("page_content").innerHTML;
      content += "</body>";
      content += "</html>";

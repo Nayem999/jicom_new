@@ -150,13 +150,13 @@
 
                             <div class="col-md-6">
 
-                                <div class="form-group">
+                               <!--  <div class="form-group">
 
                                     <?= lang('delete_code', 'pin_code'); ?>
 
                                     <?php echo form_password('pin_code', $settings->pin_code, 'class="form-control" pattern="[0-9]{4,8}"id="pin_code"'); ?>
 
-                                </div>
+                                </div> -->
 
                                 <div class="form-group">
 

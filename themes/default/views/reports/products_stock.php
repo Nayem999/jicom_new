@@ -100,7 +100,8 @@
                 <div class="box-header">
 
                     <h3 class="box-title"><?= lang('list_results'); ?></h3>
-                    <a href="<?= site_url('reports/get_excel_products_stock'); ?>" style="width:120px; float:right" class="btn btn-default btn-sm toggle_form pull-right" id="excelWindow">Download Report</a>  <button type="button" onclick="printIt()" style="width:120px; float:right; display:none;" class="btn btn-default btn-sm toggle_form pull-right" id="daily_sales">Print report</button>
+                    <a href="<?= site_url('reports/get_excel_products_stock'); ?>" style="width:120px; float:right" class="btn btn-default btn-sm toggle_form pull-right" id="excelWindow">Download Report</a>  
+                    <button type="button" onclick="printIt()" style="width:120px; float:right;" class="btn btn-default btn-sm toggle_form pull-right" id="daily_sales">Print</button>
 
                 </div>
 
@@ -208,7 +209,7 @@
         $(".dataTables_paginate ").css("display", "none");
         $("#fileData_filter ").css("display", "none");
 
-        var content = "<html> <br> <h2 style='text-align:center'> Products Report <br></h2>";
+        var content = "<html> <br> <h2 style='text-align:center'> Products stock  <br></h2>";
         content += document.getElementById("page_content").innerHTML;
         content += "</body>";
         content += "</html>";

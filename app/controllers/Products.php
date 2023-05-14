@@ -50,11 +50,17 @@ class Products extends MY_Controller
     function get_products() {
 
         $this->load->library('datatables');
-
+        
         if ($this->Admin) {
 
-            $this->datatables->select($this->db->dbprefix('products').".id as pid, ".
-                 $this->db->dbprefix('products').".code as code, ".$this->db->dbprefix('products').".name as pname, type, ".$this->db->dbprefix('categories').".name as cname, quantity , tax, tax_method, cost, price, ".$this->db->dbprefix('products').".barcode_symbology as barcodeSymbology", FALSE);
+            $this->datatables->select(
+                $this->db->dbprefix('products').".id as pid, ".
+                $this->db->dbprefix('products').".code as code, ".
+                $this->db->dbprefix('products').".name as pname, type, ".
+                // $this->db->dbprefix('categories').".name as cname, quantity , tax, tax_method, cost, price, ".
+                $this->db->dbprefix('categories').".name as cname , tax, tax_method, cost, price, ".
+                $this->db->dbprefix('products').".barcode_symbology as barcodeSymbology", FALSE
+            );
 
         } else {
 
@@ -66,7 +72,7 @@ class Products extends MY_Controller
                 $this->db->dbprefix('products').".name as pname,".
                 $this->db->dbprefix('products').".type, ".
                 $this->db->dbprefix('categories').".name as cname, ".
-                $this->db->dbprefix('product_store_qty').".quantity as qty , ".
+                // $this->db->dbprefix('product_store_qty').".quantity as qty , ".
                 $this->db->dbprefix('products').".tax, ".
                 $this->db->dbprefix('products').".tax_method, ".
                 $this->db->dbprefix('products').".price, ".
@@ -76,10 +82,9 @@ class Products extends MY_Controller
 
         $this->datatables->join('categories', 'categories.id=products.category_id');
 
-       if (!$this->Admin) {
-
-         $this->datatables->join('product_store_qty',  'product_store_qty.product_id=products.id' );
-        }
+        // if(!$this->Admin) {
+        //     $this->datatables->join('product_store_qty',  'product_store_qty.product_id=products.id' );
+        // }
 
         $this->datatables->from('products');
 
@@ -97,16 +102,13 @@ class Products extends MY_Controller
 		}
         $action.="</div></div>";
 
-        $this->datatables->add_column("Actions",$action, "pid, image, code, pname, barcodeSymbology");
+        $this->datatables->add_column("Actions",$action, "pid,  code, pname, barcodeSymbology");
 
         //<a href='" . site_url('products/edit/$1') . "' title='" . lang("edit_product") . "' class='tip btn btn-warning btn-xs'><i class='fa fa-edit'></i></a> <a href='" . site_url('products/delete/$1') . "' onClick=\"return confirm('" . lang('alert_x_product') . "')\" title='" . lang("delete_product") . "' class='tip btn btn-danger btn-xs'><i class='fa fa-trash-o'></i></a>
 
         $this->datatables->unset_column('pid')->unset_column('barcodeSymbology');
 
-        if (!$this->Admin) {
-
-            $this->datatables->where('product_store_qty.store_id', $store_id );
-        }
+    
 
         echo $this->datatables->generate();
 

@@ -185,6 +185,21 @@
 
                         </div>
 
+                        <div id="addMore">
+                            <div class="input-group mb-3" style="display:flex;margin-bottom: 5vh; gap: 1rem;">
+                                <?php
+                                        $pk[''] = lang("select") . " " . lang("Packaging materials");
+                                        foreach ($packaging_items as $k=>$v) {
+                                            $pk[$v->id] = $v->name . " (" . $v->quantity . ' ' .$v->unit. ") ";
+                                        }
+                                    ?>
+                                <?= form_dropdown('packaging_material[]', $pk, '', 'class="form-control" id="packagingMaterial" style="width:100%;" required="required"'); ?>
+                                <input type="text" class="form-control" name="pk_quantity[]" id="basic-url" aria-describedby="basic-addon3" placeholder="Enter Quantity" required>
+                                <a href='javascript:void(0)' data-target="#myModal"><i onclick="onClickAdd()" class="fa fa-2x fa-plus-circle"></i></a> 
+                                <a href='javascript:void(0)'  class="removeItem"><i class="fa fa-2x fa-minus-circle"  ></i></a>
+                            </div>
+                        </div>
+
                         <div class="form-group">
 
                             <?= form_submit('add_transfers', lang('Add Transfers'), 'class="btn btn-primary" id="add_transfers"'); ?>
@@ -517,4 +532,43 @@
             return collection;
         };
     })(jQuery, window);
+
+
+
+     var row = $("#addMore").html();
+
+    function checkItems() {
+        let minusSelector = document.getElementsByClassName("fa-minus-circle");
+        $('.fa-minus-circle').each(function(i, obj) {
+            if(i === 0){
+                $(this).addClass("remove_item_"+i);
+            }
+            $(this).attr("data-id", i);
+        });
+
+        $(".addMoreItems").each(function(i, obj) {
+            $(this).addClass("current_item_"+i);
+        });
+
+    }
+
+    checkItems();
+
+    function onClickAdd() {
+        $("#addMore").append(row);
+        checkItems();
+    }
+
+    function onClickRemove(t){
+        $(".current_item_"+t.data("id")).remove();
+    }
+
+    $(document).on("click",".removeItem",function(){
+        $(this).parent("div").remove()
+    })
 </script>
+<style>
+    .remove_item_0{
+        display: none;
+    }
+</style>

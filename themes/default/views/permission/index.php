@@ -436,17 +436,60 @@
                         <div class="col-sm-4">
                             <input type="checkbox" name="mf_material" id="mf_material" value="<?=isset($permissiion_module->mf_material)?$permissiion_module->mf_material:0;?>" <?=(isset($permissiion_module->mf_material) && $permissiion_module->mf_material==1)?'checked':'';?> onclick="fn_change_val('mf_material')" > <?= lang('raw_material'); ?>
                         </div>
+
                         <div class="col-sm-2">
-                            <input type="checkbox" name="mf_material_view" id="mf_material_view"  value="<?=isset($permissiion_module->pos)?$permissiion_module->pos:0;?>" <?=(isset($permissiion_module->pos) && $permissiion_module->pos==1)?'checked':'';?> onclick="fn_change_val('mf_material_view')">
+                            <input type="checkbox" name="mf_material_view" id="mf_material_view_vs"  value="<?=isset($permission_route->mf_material_view)?$permission_route->mf_material_view:0;?>" <?=(isset($permission_route->mf_material_view) && $permission_route->mf_material_view==1)?'checked':'';?> onclick="fn_change_val('mf_material_view_vs')">
                         </div>
                         <div class="col-sm-2">
-                            <input type="checkbox" name="mf_material_add" id="mf_material_add"  value="<?=isset($permission_route->mf_material_add)?$permission_route->mf_material_add:0;?>" <?=(isset($permission_route->mf_material_add) && $permission_route->mf_material_add==1)?'checked':'';?>  onclick="fn_change_val('mf_material_add')">   
+                            <input type="checkbox" name="mf_material_add" id="mf_material_add_vs"  value="<?=isset($permission_route->mf_material_add)?$permission_route->mf_material_add:0;?>" <?=(isset($permission_route->mf_material_add) && $permission_route->mf_material_add==1)?'checked':'';?>  onclick="fn_change_val('mf_material_add_vs')">   
                         </div>
                         <div class="col-sm-2">
                             <input type="checkbox" name="mf_material_edit" id="mf_material_edit"  value="<?=isset($permission_route->mf_material_edit)?$permission_route->mf_material_edit:0;?>" <?=(isset($permission_route->mf_material_edit) && $permission_route->mf_material_edit==1)?'checked':'';?>  onclick="fn_change_val('mf_material_edit')">  
                         </div>
                         <div class="col-sm-2">
                             <input type="checkbox" name="mf_material_delete" id="mf_material_delete"  value="<?=isset($permission_route->mf_material_delete)?$permission_route->mf_material_delete:0;?>" <?=(isset($permission_route->mf_material_delete) && $permission_route->mf_material_delete==1)?'checked':'';?>  onclick="fn_change_val('mf_material_delete')">   
+                        </div>
+                    </div>
+                    <hr>
+                  
+                    <div class="row" >
+                        <div class="col-sm-4">
+                            <input type="checkbox" name="mf_material_packaging" id="mf_material_packaging" value="<?=isset($permissiion_module->mf_material_packaging)?$permissiion_module->mf_material_packaging:0;?>" <?=(isset($permissiion_module->mf_material_packaging) && $permissiion_module->mf_material_packaging==1)?'checked':'';?> onclick="fn_change_val('mf_material_packaging')" > <?= lang('raw_material_packaging'); ?>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_material_packaging_view" id="mf_material_packaging_view"  value="<?=isset($permission_route->mf_material_packaging_view)?$permission_route->mf_material_packaging_view:0;?>" <?=(isset($permission_route->mf_material_packaging_view) && $permission_route->mf_material_packaging_view==1)?'checked':'';?> onclick="fn_change_val('mf_material_packaging_view')">
+                        </div>
+
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_material_packaging_add" id="mf_material_packaging_add"  value="<?=isset($permission_route->mf_material_packaging_add)?$permission_route->mf_material_packaging_add:0;?>" <?=(isset($permission_route->mf_material_packaging_add) && $permission_route->mf_material_packaging_add==1)?'checked':'';?>  onclick="fn_change_val('mf_material_packaging_add')">   
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_material_packaging_edit" id="mf_material_packaging_edit"  value="<?=isset($permission_route->mf_material_packaging_edit)?$permission_route->mf_material_packaging_edit:0;?>" <?=(isset($permission_route->mf_material_packaging_edit) && $permission_route->mf_material_packaging_edit==1)?'checked':'';?>  onclick="fn_change_val('mf_material_packaging_edit')">  
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_material_packaging_delete" id="mf_material_packaging_delete"  value="<?=isset($permission_route->mf_material_packaging_delete)?$permission_route->mf_material_packaging_delete:0;?>" <?=(isset($permission_route->mf_material_packaging_delete) && $permission_route->mf_material_packaging_delete==1)?'checked':'';?>  onclick="fn_change_val('mf_material_packaging_delete')">   
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="row" >
+                        <div class="col-sm-4">
+                            <input type="checkbox" name="mf_purchases_packaging" id="mf_purchases_packaging" value="<?=isset($permissiion_module->mf_purchases_packaging)?$permissiion_module->mf_purchases_packaging:0;?>" <?=(isset($permissiion_module->mf_purchases_packaging) && $permissiion_module->mf_purchases_packaging==1)?'checked':'';?> onclick="fn_change_val('mf_purchases_packaging')" > Packaging Material Purchases
+                        </div>
+
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_purchases_packaging_view" id="mf_purchases_packaging_view"  value="<?=isset($permission_route->mf_purchases_packaging_view)?$permission_route->mf_purchases_packaging_view:0;?>" <?=(isset($permission_route->mf_purchases_packaging_view) && $permission_route->mf_purchases_packaging_view==1)?'checked':'';?> onclick="fn_change_val('mf_purchases_packaging_view')">
+                        </div>
+
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_purchases_packaging_add" id="mf_purchases_packaging_add"  value="<?=isset($permission_route->mf_purchases_packaging_add)?$permission_route->mf_purchases_packaging_add:0;?>" <?=(isset($permission_route->mf_purchases_packaging_add) && $permission_route->mf_purchases_packaging_add==1)?'checked':'';?>  onclick="fn_change_val('mf_purchases_packaging_add')">   
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_purchases_packaging_edit" id="mf_purchases_packaging_edit"  value="<?=isset($permission_route->mf_purchases_packaging_edit)?$permission_route->mf_purchases_packaging_edit:0;?>" <?=(isset($permission_route->mf_purchases_packaging_edit) && $permission_route->mf_purchases_packaging_edit==1)?'checked':'';?>  onclick="fn_change_val('mf_purchases_packaging_edit')">  
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_purchases_packaging_delete" id="mf_purchases_packaging_delete"  value="<?=isset($permission_route->mf_purchases_packaging_delete)?$permission_route->mf_purchases_packaging_delete:0;?>" <?=(isset($permission_route->mf_purchases_packaging_delete) && $permission_route->mf_purchases_packaging_delete==1)?'checked':'';?>  onclick="fn_change_val('mf_purchases_packaging_delete')">   
                         </div>
                     </div>
                     <hr>
@@ -513,6 +556,20 @@
                         </div>
                         <div class="col-sm-2">
                             <input type="checkbox" name="mf_material_stock_add" id="mf_material_stock_add"  value="<?=isset($permission_route->mf_material_stock_add)?$permission_route->mf_material_stock_add:0;?>" <?=(isset($permission_route->mf_material_stock_add) && $permission_route->mf_material_stock_add==1)?'checked':'';?>  onclick="fn_change_val('mf_material_stock_add')">   
+                        </div>
+                        <div class="col-sm-2"> </div>
+                        <div class="col-sm-2"> </div>
+                    </div>
+                    <hr>
+                    <div class="row" >
+                        <div class="col-sm-4">
+                            <input type="checkbox" name="mf_material_stock_packaging" id="mf_material_stock_packaging" value="<?=isset($permissiion_module->mf_material_stock_packaging)?$permissiion_module->mf_material_stock_packaging:0;?>" <?=(isset($permissiion_module->mf_material_stock_packaging) && $permissiion_module->mf_material_stock_packaging==1)?'checked':'';?> onclick="fn_change_val('mf_material_stock_packaging')"> Packaging Material Stock
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_material_stock_packaging_view" id="mf_material_stock_packaging_view"  value="<?=isset($permission_route->mf_material_stock_packaging_view)?$permission_route->mf_material_stock_packaging_view:0;?>" <?=(isset($permission_route->mf_material_stock_packaging_view) && $permission_route->mf_material_stock_packaging_view==1)?'checked':'';?> onclick="fn_change_val('mf_material_stock_packaging_view')">
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_material_stock_packaging_add" id="mf_material_stock_packaging_add"  value="<?=isset($permission_route->mf_material_stock_packaging_add)?$permission_route->mf_material_stock_packaging_add:0;?>" <?=(isset($permission_route->mf_material_stock_packaging_add) && $permission_route->mf_material_stock_packaging_add==1)?'checked':'';?>  onclick="fn_change_val('mf_material_stock_packaging_add')">   
                         </div>
                         <div class="col-sm-2"> </div>
                         <div class="col-sm-2"> </div>
@@ -588,6 +645,24 @@
                     <hr>
                     <div class="row" >
                         <div class="col-sm-4">
+                            <input type="checkbox" name="mf_transfers" id="mf_transfers" value="<?=isset($permissiion_module->mf_transfers)?$permissiion_module->mf_transfers:0;?>" <?=(isset($permissiion_module->mf_transfers) && $permissiion_module->mf_transfers==1)?'checked':'';?> onclick="fn_change_val('mf_transfers')" >Raw Material Transfers
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_transfers_view" id="mf_transfers_view"  value="<?=isset($permission_route->mf_transfers_view)?$permission_route->mf_transfers_view:0;?>" <?=(isset($permission_route->mf_transfers_view) && $permission_route->mf_transfers_view==1)?'checked':'';?> onclick="fn_change_val('mf_transfers_view')">
+                        </div>
+                        <div class="col-sm-2"> 
+                            <input type="checkbox" name="mf_transfers_add" id="mf_transfers_add"  value="<?=isset($permission_route->mf_transfers_add)?$permission_route->mf_transfers_add:0;?>" <?=(isset($permission_route->mf_transfers_add) && $permission_route->mf_transfers_add==1)?'checked':'';?> onclick="fn_change_val('mf_transfers_add')">
+                        </div>
+                        <!-- <div class="col-sm-2">
+                            <input type="checkbox" name="transfers_edit" id="transfers_edit"  value="<?=isset($permission_route->transfers_edit)?$permission_route->transfers_edit:0;?>" <?=(isset($permission_route->transfers_edit) && $permission_route->transfers_edit==1)?'checked':'';?> onclick="fn_change_val('transfers_edit')">
+                         </div>
+                        <div class="col-sm-2"> 
+                            <input type="checkbox" name="transfers_delete" id="transfers_delete"  value="<?=isset($permission_route->transfers_delete)?$permission_route->transfers_delete:0;?>" <?=(isset($permission_route->transfers_delete) && $permission_route->transfers_delete==1)?'checked':'';?> onclick="fn_change_val('transfers_delete')">
+                        </div> -->
+                    </div>
+                    <hr>
+                    <div class="row" >
+                        <div class="col-sm-4">
                             <input type="checkbox" name="mf_payment" id="mf_payment" value="<?=isset($permissiion_module->mf_payment)?$permissiion_module->mf_payment:0;?>" <?=(isset($permissiion_module->mf_payment) && $permissiion_module->mf_payment==1)?'checked':'';?> onclick="fn_change_val('mf_payment')" > Raw Material Payment 
                         </div>
                         <div class="col-sm-2">
@@ -601,6 +676,24 @@
                          </div>
                         <div class="col-sm-2"> 
                             <input type="checkbox" name="mf_payment_delete" id="mf_payment_delete"  value="<?=isset($permission_route->mf_payment_delete)?$permission_route->mf_payment_delete:0;?>" <?=(isset($permission_route->mf_payment_delete) && $permission_route->mf_payment_delete==1)?'checked':'';?> onclick="fn_change_val('mf_payment_delete')">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row" >
+                        <div class="col-sm-4">
+                            <input type="checkbox" name="mf_payment_packaging" id="mf_payment_packaging" value="<?=isset($permissiion_module->mf_payment_packaging)?$permissiion_module->mf_payment_packaging:0;?>" <?=(isset($permissiion_module->mf_payment_packaging) && $permissiion_module->mf_payment_packaging==1)?'checked':'';?> onclick="fn_change_val('mf_payment_packaging')" > Packaging Material Payment 
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_payment_packaging_view" id="mf_payment_packaging_view"  value="<?=isset($permission_route->mf_payment_packaging_view)?$permission_route->mf_payment_packaging_view:0;?>" <?=(isset($permission_route->mf_payment_packaging_view) && $permission_route->mf_payment_packaging_view==1)?'checked':'';?> onclick="fn_change_val('mf_payment_packaging_view')">
+                        </div>
+                        <div class="col-sm-2"> 
+                            <input type="checkbox" name="mf_payment_packaging_add" id="mf_payment_packaging_add"  value="<?=isset($permission_route->mf_payment_packaging_add)?$permission_route->mf_payment_packaging_add:0;?>" <?=(isset($permission_route->mf_payment_packaging_add) && $permission_route->mf_payment_packaging_add==1)?'checked':'';?> onclick="fn_change_val('mf_payment_packaging_add')">
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="checkbox" name="mf_payment_packaging_edit" id="mf_payment_packaging_edit"  value="<?=isset($permission_route->mf_payment_packaging_edit)?$permission_route->mf_payment_packaging_edit:0;?>" <?=(isset($permission_route->mf_payment_packaging_edit) && $permission_route->mf_payment_packaging_edit==1)?'checked':'';?> onclick="fn_change_val('mf_payment_packaging_edit')">
+                         </div>
+                        <div class="col-sm-2"> 
+                            <input type="checkbox" name="mf_payment_packaging_delete" id="mf_payment_packaging_delete"  value="<?=isset($permission_route->mf_payment_packaging_delete)?$permission_route->mf_payment_packaging_delete:0;?>" <?=(isset($permission_route->mf_payment_packaging_delete) && $permission_route->mf_payment_delete==1)?'checked':'';?> onclick="fn_change_val('mf_payment_packaging_delete')">
                         </div>
                     </div>
                     <hr>
@@ -637,7 +730,17 @@
 
     function fn_change_val(type){
         var data = $("#"+type).val();
-        if(data==1){ $("#"+type).val(0); }else{ $("#"+type).val(1); }
+        console.log(data);
+        if(data==1)
+            {
+             
+                $("#"+type).attr("value",0);// val(0); 
+
+            }else{
+
+                 $("#"+type).attr("value",1);
+
+            }
     }
 
 </script>

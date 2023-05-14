@@ -66,7 +66,9 @@
                     <h3 class="box-title"><?= lang('list_results'); ?></h3>
                     <!-- <a href="<?= site_url('reports/excel_invoiceProfit'); ?>" style="width:120px; float:right" class="btn btn-default btn-sm toggle_form pull-right" id="excelWindow">Download Report</a>  -->
                     <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button>
+                    <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="printWindow">Print</button>
 
+                   <?php if($this->Admin): ?>
                     <?= form_open(""); ?>
                         <div class="row">
                             <div class="col-sm-3">
@@ -86,6 +88,7 @@
                             </div>
                         </div>
                     <?= form_close(); ?>
+                    <?php endif;?>
 
                 </div>
                 <?php if($this->session->userdata('group_id') == 2){
@@ -96,7 +99,7 @@
                          }; ?>
 
                 <div class="box-body"> 
-                    <div class="table-responsive">
+                    <div class="table-responsive" id="print_content">
 
                         <table id="SLData" class="table table-striped table-bordered table-condensed table-hover">
 
@@ -160,5 +163,27 @@
         var url = '<?= site_url('reports/excel_invoiceProfit/'); ?>' + '/' + data;
         location.replace(url);
     });
+
+    $("#printWindow").click(function() {
+        $(".dataTables_info").css("display", "none");
+        $(".dataTables_length, .dataTables_filter ").css("display", "none");
+
+        $(".dataTables_paginate ").css("display", "none");
+        $("#fileData_filter ").css("display", "none");
+        var content = "<html> <br><img width='800px' src='<?= base_url('themes/default/assets/images/chalan.png'); ?>'><br><p style='text-align:center'> Invoice Profit  | <?php echo $this->Settings->site_name; ?> </p><style> table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 2px;} tr:nth-child(even) {background-color: #dddddd;} </style>";
+        content += document.getElementById("print_content").innerHTML;
+        content += "</body>";
+        content += "</html>";
+        var printWin = window.open('', '', 'left=20,top=40,width=700,height=550 ');
+        printWin.document.write(content);
+        printWin.focus();
+        printWin.print();
+        printWin.close();
+        $(".dataTables_info").css("display", "block");
+        $(".dataTables_length, .dataTables_filter ").css("display", "block");
+        $(".dataTables_paginate ").css("display", "block");
+        $("#fileData_filter ").css("display", "block");
+    });
+
 </script>
 

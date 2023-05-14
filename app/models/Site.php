@@ -64,7 +64,7 @@ class Site extends CI_Model
     }
 
     public function getAllCustomers($store_id=NULL) {
-        if($this->session->userdata('store_id') !=0){
+        if(! $this->Admin){
             $this->db->where('store_id', $this->session->userdata('store_id'));
         }     
         if($store_id !=NULL){
@@ -117,6 +117,11 @@ class Site extends CI_Model
     public function getAllStores($id=0, $type = null)
     {
         if($id){ $this->db->where('id',$id);}
+
+        if($this->Admin === false){
+        	$this->db->where('id', $this->session->userdata('store_id'));
+        }
+        
         if($type){ $this->db->where('store_type',$type);}
         $q = $this->db->get('stores');
         if($q->num_rows() > 0) {
@@ -160,7 +165,11 @@ class Site extends CI_Model
     {
         $this->db->select("users.id as id, first_name, last_name, email, company,store_id," . $this->db->dbprefix('groups') . ".name as group,active");
         //$this->db->join('stores', 'users.store_id=stores.id','left');  
-        $this->db->join('groups', 'users.group_id=groups.id','left');       
+        $this->db->join('groups', 'users.group_id=groups.id','left');    
+
+        if($this->Admin === false){
+            $this->db->where('users.store_id', $this->session->userdata('store_id'));
+        }
          
         //".$this->db->dbprefix('stores') . ".name as storename,   
         $this->db->group_by('users.id');
@@ -184,6 +193,24 @@ class Site extends CI_Model
             return $q->row();
         }
         return FALSE;
+    }
+
+    public function get_bank_with_store()
+    {
+        $this->db->select("bank_account.*,stores.name as store_name");
+        $this->db->from("bank_account");
+        $this->db->join("stores","stores.id=bank_account.store_id");
+        if(!$this->Admin){
+            $data = $this->db->where("bank_account.store_id",$this->session->userdata("store_id"))->get();
+        }else{
+            $storeId = $this->session->userdata('store_id_pos')?$this->session->userdata('store_id_pos'):'';
+            if($storeId):
+            $data = $this->db->where("bank_account.store_id",$storeId)->get();
+            else:
+                $data = $this->db->get();
+            endif;
+        }
+        return $data->result();
     }
 
     public function wheres_rows($table,$data = NULL)
@@ -210,6 +237,15 @@ class Site extends CI_Model
     {
         
         $q = $this->db->get_where('mf_material', array('id' => $id), 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return FALSE;
+    }
+    public function getPackagingMaterialByID($id)
+    {
+        
+        $q = $this->db->get_where('mf_material_packaging', array('id' => $id), 1);
         if ($q->num_rows() > 0) {
             return $q->row();
         }
@@ -508,5 +544,21 @@ class Site extends CI_Model
         }
     }
 
+
+    public function getAllEmployees()
+    {
+        $this->db->select("employee.id, employee.name as name, stores.name as store_name");
+        $this->db->from("employee");
+        $this->db->join('stores','employee.store_id=stores.id','left');
+        $this->db->where("employee.satus",1);
+
+        // echo $this->session->userdata('store_id');
+
+        if(! $this->Admin && $this->session->userdata('store_id')){
+            $this->db->where('employee.store_id', $this->session->userdata('store_id'));
+        }
+
+        return $this->db->get()->result();
+    }
       
 }

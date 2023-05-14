@@ -122,6 +122,7 @@ class Transfers_model extends CI_Model
                 if ($this->db->insert('transfers_items', $item));
             }
             $this->session->unset_userdata('from_warehouse');
+            return $transfers_id;
             return true;
         }
 

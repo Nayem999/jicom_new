@@ -50,7 +50,7 @@
 
             },
 
-            "aoColumns": [  null, null, null, null, null, null, {"mRender":method}, <?= $Admin ? '{"mRender":currencyFormat},' : ''; ?> {"mRender":currencyFormat}, {"bSortable":false, "bSearchable": false}]
+            "aoColumns": [  null, null, null, null,  null, {"mRender":method}, <?= $Admin ? '{"mRender":currencyFormat},' : ''; ?> {"mRender":currencyFormat}, {"bSortable":false, "bSearchable": false}]
 
         });
 
@@ -158,7 +158,7 @@
 
                                 <th class="col-xs-1"><?= lang("category"); ?></th>
 
-                                <th class="col-xs-1"><?= lang("quantity"); ?></th>
+                                <!-- <th class="col-xs-1"><?= lang("quantity"); ?></th> -->
 
                                 <th class="col-xs-1"><?= lang("tax"); ?></th>
 

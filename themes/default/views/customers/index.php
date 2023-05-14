@@ -26,7 +26,7 @@
 
             },
 
-            "aoColumns": [null, null,null, null, null, null,null,{"bSortable":false, "bSearchable": false}]
+            "aoColumns": [null, null,null, null, null, null,null,null,null,{"bSortable":false, "bSearchable": false}]
 
         });
 
@@ -69,6 +69,10 @@
                             <th><?php echo $this->lang->line("email_address"); ?></th>
 
                             <th><?php echo $this->lang->line("Store Name"); ?></th>
+
+                            <th><?php echo $this->lang->line("Opening Balance"); ?></th>
+
+                            <th><?php echo $this->lang->line("Credit Limit"); ?></th>
 
                             <th><?php echo $this->lang->line("ccf1"); ?></th>
 

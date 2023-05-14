@@ -30,14 +30,22 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
 
                     <tr>
 
-                        <th style="width:15%;">Amount</th>
+                        <th>Date</th>
 
-                        <th style="width:15%;">Type</th>
+                        <th >Bank Name</th>
 
-                        <th style="width:30%;">Note</th>
-                        
-                        <th style="width:25%;">Submit Date</th>
-                        
+                        <th >Account Name</th>
+
+                        <th >Cheque No</th>
+
+                        <th >Store name</th>
+
+                        <th >Supplier name</th>
+
+                        <th >Customer name</th>
+
+                        <th >Amount</th>
+
 
                     </tr>
 
@@ -52,19 +60,27 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
 
                             <tr class="row<?php echo $i ; if($value->tran_type ==0){ echo ' Cash_Out displyOut' ; }else{ echo ' Cash_In ';}  ?>">
                             
-                                <td><?php echo $value->tran_amount  ?></td>
-                                
-                                <td><?php if($value->tran_type ==0){ echo 'Cash Out' ; }else{ echo 'Cash In';} ?></td>
+                                <td><?= date("d-m-Y" ,strtotime($value->tran_date)) ?></td>
 
-                                <td><?php echo $value->tran_note ?></td>
+                                <td><?= $value->b_name ?></td>
 
-                                <td><?php echo  $this->tec->hrld($value->tran_date);  ?></td>
+                                <td><?= $value->ac_name ?></td>
+
+                                <td><?= $value->cheque_no ?></td>
+
+                                <td><?= $value->store_name ?></td>
+
+                                <td><?= $value->supplier ?></td>
+
+                                <td><?= $value->customer ?></td>
+
+                                <td><?= $value->amount ?></td>
                                 
                                 <td>
-                                <a class="tip" data-toggle="ajax" onclick="editTransaction(<?php echo $value->tranjiction_id ; ?>)" href="javascript:;">
+                                <a class="tip" data-toggle="ajax" onclick="editTransaction(<?php echo $value->tid ; ?>)" href="javascript:;">
                                 	<i class="fa fa-edit"></i>
                                 </a>
-                                <a class="tip" onclick="return confirm('You are going to delete Transaction, please click ok to delete.')" href="<?php echo site_url('bank/deleteTransaction/'.$value->tranjiction_id); ?>" title="Delete Transaction">
+                                <a class="tip" onclick="return confirm('You are going to delete Transaction, please click ok to delete.')" href="<?php echo site_url('bank/deleteTransaction/'.$value->tid); ?>" title="Delete Transaction">
                                 <i class="fa fa-trash-o"></i>
                                 </a>
                                 

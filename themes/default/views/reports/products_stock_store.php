@@ -78,7 +78,7 @@ $v = "?v=1";
 
 <section class="content">
 
-    <div class="row">
+    <div class="row" >
 
         <div class="col-xs-12">
 
@@ -88,9 +88,10 @@ $v = "?v=1";
 
                     <h3 class="box-title"><?= lang('list_results'); ?></h3>
                     <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm toggle_form pull-right" id="excelWindow">Download Report</button>
+                    <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm toggle_form pull-right" id="daily_sales">Print</button>
                 </div> 
 
-                <div class="box-body"> 
+                <div class="box-body" > 
                    <div  class="panel panel-warning">
 
                         <div class="panel-body">
@@ -143,7 +144,7 @@ $v = "?v=1";
 
                     </div>
 
-                    <div class="clearfix"></div> 
+                    <div class="clearfix" id="page_content">
                         <table id="fileData" class="table table-striped table-bordered table-hover" style="margin-bottom:5px;">
 
                             <thead>
@@ -174,6 +175,7 @@ $v = "?v=1";
 
                         </table>
 
+                        </div>
                         </div>
 
 
@@ -222,25 +224,25 @@ $v = "?v=1";
 <script>
 
  $("#daily_sales").click(function () {
-     
-    $(".text-center a ").css("display", "none");
-    $(".dataTables_length ").css("display", "none");
-    $(".dataTables_paginate ").css("display", "none");
-    $("#fileData_filter ").css("display", "none");  
-    
-     var content = "<html> <br> <h2 style='text-align:center'> Products Report <br></h2>";
-     content += document.getElementById("page_content").innerHTML ;
-     content += "</body>";
-     content += "</html>";
-     var printWin = window.open('','','left=20,top=40,width=700,height=550,toolbar=0,scrollbars=0,status =0');
-     printWin.document.write('<link rel="stylesheet" href="http://localhost/spos-new/themes/default/assets/bootstrap/css/bootstrap.min.css" type="text/css" />');
 
-     printWin.document.write(content);
-     
-     printWin.focus();
-     printWin.print();
-     printWin.close();
-     location.reload();    
+        $(".text-center a ").css("display", "none");
+        $(".dataTables_length ").css("display", "none");
+        $(".dataTables_paginate ").css("display", "none");
+        $("#fileData_filter ").css("display", "none");
+
+        var content = "<html> <br> <h2 style='text-align:center'> Products stock  <br></h2>";
+        content += document.getElementById("page_content").innerHTML;
+        content += "</body>";
+        content += "</html>";
+        var printWin = window.open('', '', 'left=20,top=40,width=700,height=550,toolbar=0,scrollbars=0,status =0');
+        printWin.document.write('<link rel="stylesheet" href="http://localhost/spos-new/themes/default/assets/bootstrap/css/bootstrap.min.css" type="text/css" />');
+
+        printWin.document.write(content);
+
+        printWin.focus();
+        printWin.print();
+        printWin.close();
+        location.reload();
    
     // window.print();            
             

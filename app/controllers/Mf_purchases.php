@@ -64,8 +64,8 @@ class Mf_purchases extends MY_Controller
 
             $this->db->dbprefix('mf_suppliers') . ".name as cname , total, paid , deu ", FALSE);
         
-        $this->datatables->join('mf_suppliers', 'mf_suppliers.id=mf_purchases.supplier_id');
-        $this->datatables->join('stores', 'stores.id=mf_purchases.store_id');         
+        $this->datatables->join('mf_suppliers', 'mf_suppliers.id=mf_purchases.supplier_id','left');
+        $this->datatables->join('stores', 'stores.id=mf_purchases.store_id');
         $this->datatables->from('mf_purchases');        
         $this->datatables->group_by('mf_purchases.id');
 
@@ -177,7 +177,7 @@ class Mf_purchases extends MY_Controller
                     $total += ($item_cost * $item_qty);                    
                 }                
             }                        
-            
+            // mf_material_adjust
             if (!isset($products) || empty($products)) {                
                 $this->form_validation->set_rules('product', lang("order_items"), 'required');
                 $this->form_validation->set_rules('mf_supplier_id', lang("order_items"), 'required');

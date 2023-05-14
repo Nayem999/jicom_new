@@ -72,7 +72,9 @@
                                         $ur[$all_uom_arr->id] = $all_uom_arr->name;
                                     }
                                     ?><br>
-                                    <?= form_input('target_qty', set_value('target_qty', 1), 'class="form-control tip" id="target_qty" required="required" style="width:60%;display:inline;" onkeyup="fn_cal()"'); ?>
+                                    <?= form_input('target_qty_h', set_value('target_qty', 1), 'class="form-control tip target_qty" id="target_qty" required="required" style="width:60%;display:inline;" onkeyup="fn_cal()" disabled' ); ?>
+                                    <input type="hidden" name="target_qty" class="target_qty">
+                                    
                                     <?= form_dropdown('uom_name', $ur, set_value('uom_name'), 'class="form-control uom_name" required="required"  style="width:30%;display:inline;" disabled'); ?>
                                     <input type="hidden" name="product_id" id="product_id">
                                     <input type="hidden" name="uom_id" id="uom_id">
@@ -185,6 +187,7 @@
                 // console.log(data)
                 var html = sl = '';
                 if (data) {
+                    $(".target_qty").val(data[0].target_qty);
                     for (var i = 0; i < data.length; i++) {
                         sl = i + 1;
                         html += '<tr><td>' + sl + '</td> <td>' + data[i].name + '</td> <td>';

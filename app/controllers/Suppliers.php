@@ -84,8 +84,8 @@ class Suppliers extends MY_Controller
 
     	$this->datatables->add_column("Actions", $action, "sid");
 
-    	if($this->session->userdata('store_id') !=0){
-    		$this->datatables->where('store_id',$this->session->userdata('store_id'));
+    	if(!$this->Admin){
+    		$this->datatables->where('suppliers.store_id',$this->session->userdata('store_id'));
     	}
 
     	$this->datatables->unset_column('sid'); 

@@ -200,11 +200,13 @@ class Mf_material_stock extends MY_Controller
         }
         else if($adjust_type==2 && $adjust_qty>0)
         {
-            $new_store_qty=$matarial_store_info->quantity - $adjust_qty;
-            $new_qty=$matarial_info->quantity - $adjust_qty;
+            $new_store_qty= $matarial_store_info->quantity - $adjust_qty;
+            $new_qty= $matarial_info->quantity - $adjust_qty;
         }
 
-        if($new_store_qty>=0 &&  $adjust_qty>0){
+        $new_qty = number_format((float)$new_qty, 2, '.', '');
+        
+        if($new_store_qty >=0 &&  $adjust_qty >0 ){
 
             $data = array(
                 'quantity'   => $new_store_qty		
@@ -214,6 +216,7 @@ class Mf_material_stock extends MY_Controller
             );
         
             $this->mf_material_stock_model->adjustStoreStock($id,$data) ;	
+
             $this->mf_material_stock_model->adjustStock($material_id,$data2) ;	
 
             $data3 = array(
@@ -228,14 +231,19 @@ class Mf_material_stock extends MY_Controller
                 'created_at'   => date('Y-m-d H:i:s'),		
             );
 
-            if($this->mf_material_stock_model->adjustStockLog($data3))
-            {
-                $this->session->set_flashdata('message', lang('Collection delete successfully')); 
-            }
-            else
-            {
-                $this->session->set_flashdata('error', lang('Adjust not successfully'));
-            }
+          
+            if($this->input->post()):
+
+                if($this->mf_material_stock_model->adjustStockLog($data3))
+                {
+                    $this->session->set_flashdata('message', lang('Collection delete successfully')); 
+                }
+                else
+                {
+                    $this->session->set_flashdata('error', lang('Adjust not successfully'));
+                }
+                
+            endif;
               
         } 
 			 

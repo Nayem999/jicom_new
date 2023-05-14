@@ -1,4 +1,4 @@
-<?php (defined('BASEPATH')) OR exit('No direct script access allowed'); ?>
+<?php  (defined('BASEPATH')) OR exit('No direct script access allowed'); ?>
 <!DOCTYPE html>
 <style>
 
@@ -44,6 +44,7 @@
 
 
 <body class="skin-green sidebar-collapse sidebar-mini pos">
+
 <div class="wrapper">
   <header class="main-header"> <a href="<?= site_url(); ?>" class="logo"> <span class="logo-mini">POS</span> <span class="logo-lg">
     <?= $Settings->site_name == 'SimplePOS' ? 'Simple<b>POS</b>' : '<img src="'.base_url('assets/uplaods/'.$Settings->logo).'" alt="'.$Settings->site_name.'" />'; ?>
@@ -594,12 +595,12 @@
              <!--  select store  -->
                 <?php if ($this->Admin ==1)
                  {
-            //   $resultStore =  $this->site->findeNameByID('stores', 'id' ,$this->session->userdata('store_id_pos'));
-              $resultStore =  $this->site->findeNameByID('stores', 'id' ,'1');
+              $resultStore =  $this->site->findeNameByID('stores', 'id' ,$this->session->userdata('store_id_pos'));
+            //   $resultStore =  $this->site->findeNameByID('stores', 'id' ,'1');
             //   echo "<pre>";print_r($resultStore);exit;
               $storeName = $resultStore->name ;
                 ?>
-                <div id="lefttop" style="margin-bottom:5px; display:none;">
+                <div id="lefttop" style="margin-bottom:5px; ">
                 <div class="form-group" style="margin-bottom:5px;">
                   <div class="input-group" >
                     <input type="" name="" readonly="" class="form-control" value="<?php echo $storeName ?>">
@@ -618,7 +619,7 @@
                   <!-- <div class="input-group" > -->
                     <samp id="customerDropdown">
                     <?php 
-                    $cus=array();
+                    $cus=array(0=>"Select customer");
                     if(is_array($customers))
                     {
                       foreach($customers as $customer){ 
@@ -631,7 +632,9 @@
                         } 
                     }
                       ?>
-                    <?= form_dropdown('customer_id', $cus, set_value('customer_id', $Settings->default_customer), 'id="spos_customer" data-placeholder="' . lang("select") . ' ' . lang("customer") . '" required="required" class="form-control select2" style="width:100%;"'); ?>
+
+                      <!-- set_value('customer_id', $Settings->default_customer) -->
+                    <?= form_dropdown('customer_id', $cus,'' , 'id="spos_customer" data-placeholder="' . lang("select") . ' ' . lang("customer") . '" required="required" class="form-control select2" style="width:100%;"'); ?>
                     </samp>
                     <div class="input-group-addon no-print" style="padding: 2px 5px; display:none;"> <a href="#" id="add-customer" class="external" data-toggle="modal" data-target="#myModal"><i class="fa fa-2x fa-plus-circle" id="addIcon"></i></a> </div>
                   <!-- </div> -->
@@ -1174,7 +1177,7 @@
                     <?php  
                     $barr[0]="Select Bank";
                     foreach ($banks as $key => $bank) {
-                       $barr[$bank->bank_account_id] = $bank->bank_name.' ('.$bank->account_no.' )';
+                       $barr[$bank->bank_account_id] = $bank->bank_name.' ( '. $bank->store_name .' - '.$bank->account_no.' )';
                     }
                     ?>
                     <?= form_dropdown('bank', $barr, set_value('bank'), 'class="form-control" id="bank"') ?>
@@ -1598,14 +1601,9 @@
 
 		posScreen();
 
-
+    if (get('spositems')) { remove('spositems'); }
 
 		<?php if($this->session->userdata('rmspos')) { ?>
-
-
-
-		if (get('spositems')) { remove('spositems'); }
-
 
 
 		if (get('spos_discount')) { remove('spos_discount'); }
@@ -2056,5 +2054,9 @@ function changeStpre(){
         $('.datepicker').datetimepicker({
             format: 'YYYY-MM-DD'
         });
+
+        get('spos_note') && remove('spos_note');
+        $(".kb-text").val(' ')
+        $(".kb-text").html(' ')
     });
 </script>

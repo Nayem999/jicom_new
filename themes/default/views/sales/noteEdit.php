@@ -10,7 +10,7 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
      <?php echo form_open('sales/noteUpdate/'.$info->id); ?>
       <div class="modal-body">
         <div class="row">
-          <?php if ($Admin) { ?>
+          <?php //if ($Admin) { ?>
           <div class="col-sm-12">
             <div class="form-group">
               <label for="note">Note</label>
@@ -20,7 +20,7 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
           <div class="modal-footer">
             <input type="submit"  class="btn btn-primary" value="Save" name="add_payment">
           </div>
-          <?php } ?>
+          <?php //} ?>
         </div>
       </div>
     </div>

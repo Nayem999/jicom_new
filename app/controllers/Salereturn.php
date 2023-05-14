@@ -78,6 +78,12 @@ class Salereturn extends MY_Controller
 	 
     function selectInvoice() {
 
+		if(!$this->site->permission('sales'))
+        {
+          $this->session->set_flashdata('error', lang('access_denied'));
+          redirect();
+        }
+
 		$this->$data['action'] = "salereturn/add" ;
 		$this->data['page_title'] = 'Sales Return';
 
@@ -234,7 +240,7 @@ class Salereturn extends MY_Controller
                 	$sequenceids = $_POST['sequenceid'][$i]; 
 
                     //$sequence = array_combine($pid,$sqno);
-
+					// return_amount
 					$dataItems = array(			
 						'sreturn_id'   	=> $return_id,
 						'product_id'   	=> $product_id ,

@@ -568,7 +568,7 @@ class Auth_model extends CI_Model {
                 ->limit(1)
                 ->get($this->tables['users']);
 
-        if ($this->is_time_locked_out($identity)) {
+        /* if ($this->is_time_locked_out($identity)) {
             //Hash something anyway, just to take up time
             $this->hash_password($password);
 
@@ -576,7 +576,7 @@ class Auth_model extends CI_Model {
             $this->set_error('login_timeout');
 
             return FALSE;
-        }
+        } */
 
         if ($query->num_rows() === 1) {
             $user = $query->row();
@@ -599,7 +599,7 @@ class Auth_model extends CI_Model {
                     }
                 }
 
-                if ($user->group_id != 1) {
+               /*  if ($user->group_id != 1) {
                     $currenttime = date('H:i:s');
                     if(($currenttime < '10:00:00')){ 
                         $this->trigger_events('post_login_unsuccessful');
@@ -610,7 +610,8 @@ class Auth_model extends CI_Model {
                         $this->set_error('You can\'t login after 9:00:00 pm');
                         return FALSE; 
                     }
-                }
+                } */
+
                 if ($user->active != 1) {
                     $this->trigger_events('post_login_unsuccessful');
                     $this->set_error('login_unsuccessful_not_active');

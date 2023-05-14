@@ -194,6 +194,11 @@
 		$("#paySalary").load(site_url);
 	}
 
+	function stockAdjustPackaging(id) { 		 
+		var site_url = "<?php echo site_url('mf_material_stock_packaging/adjustStock'); ?>/"+id; //append id at end
+		$("#paySalary").load(site_url);
+	}
+
 	function finishGoodStockAdjust(id) { 		 
 		var site_url = "<?php echo site_url('mf_finish_good_stock/adjustStock'); ?>/"+id; //append id at end
 		$("#paySalary").load(site_url);
@@ -227,6 +232,11 @@
 
 	function productsTransfer() { 
 	 var site_url = "<?php echo site_url('transfers/selectFromWarehouse'); ?>/"; //append id at end 
+	 $("#paySalary").load(site_url);
+	}
+
+	function mfTransfer() { 
+	 var site_url = "<?php echo site_url('mf_transfers/selectFromWarehouse'); ?>/"; //append id at end 
 	 $("#paySalary").load(site_url);
 	}
 	   

@@ -14,10 +14,6 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
       <div class="modal-body">  
         <div class="row"> 
           <div class="col-sm-10">
-
-
-
-            
                     <?php
                               
                     //  $store[''] = lang("select")." Select store";

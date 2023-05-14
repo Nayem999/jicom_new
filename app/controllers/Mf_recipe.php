@@ -92,7 +92,7 @@ class Mf_recipe extends MY_Controller
                     $products[] = array(           
                         'material_id' => $material_id,                    
                         'material_stock_id' => $material_stock_id,                    
-                        'quantity' => $item_qty,    
+                        'quantity' => $item_qty,   
                         'created_by' => $this->session->userdata('user_id'),               
                         'created_at' =>  date('Y-m-d H:i:s'),                                      
                     ); 
@@ -114,12 +114,13 @@ class Mf_recipe extends MY_Controller
                 'name' => $this->input->post('recipe_name'),
                 'product_id' => $this->input->post('product_id'),          
                 'uom_id' => $this->input->post('uom_id'),          
-                'description' => $this->input->post('description'),          
+                'description' => $this->input->post('description'),    
+                'target_qty'=> $this->input->post('target_qty')?$this->input->post('target_qty'):1,     
                 'created_by' => $this->session->userdata('user_id'),               
                 'created_at' =>  date('Y-m-d H:i:s'),               
             );
 
-        }
+        } 
         // print_r($data);die;
         
         if ($this->form_validation->run() == true && $this->mf_recipe_model->add_recipe($data, $products)) {
@@ -190,7 +191,8 @@ class Mf_recipe extends MY_Controller
             $data = array(                                                          
                 'name' => $this->input->post('recipe_name'),
                 'product_id' => $this->input->post('product_id'),          
-                'uom_id' => $this->input->post('uom_id'),          
+                'uom_id' => $this->input->post('uom_id'), 
+                'target_qty'=> $this->input->post('target_qty')?$this->input->post('target_qty'):1,         
                 'description' => $this->input->post('description'),          
                 'updated_by' => $this->session->userdata('user_id'),               
                 'updated_at' =>  date('Y-m-d H:i:s'),               
@@ -209,8 +211,11 @@ class Mf_recipe extends MY_Controller
             $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
 
             $this->data['all_product']  = $this->products_model->getAllProducts();
+
             $this->data['all_uom']  = $this->mf_unit_model->getAllUnit();
+            
             $this->data['recipe_mst'] = $this->mf_recipe_model->getRecipeByID($id);
+            
             $recipe_dtls = $this->mf_recipe_model->getRecipeDtlsByID($id);
 
             $c = rand(100000, 9999999);
@@ -229,6 +234,8 @@ class Mf_recipe extends MY_Controller
                 $c++;
             }  
             $this->data['recipe_dtls'] = json_encode($pr);  
+
+            $this->data["details_single"] = $this->db->select("*")->from('mf_recipe_mst')->where('id',$id)->get()->row();
  
             $this->data['page_title'] = lang('new_category');
             $bc = array(array('link' => site_url('unit'), 'page' => lang('unit')), array('link' => '#', 'page' => lang('edit_uom')));

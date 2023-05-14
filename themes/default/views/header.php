@@ -197,7 +197,7 @@
                 </span> <i class="fa fa-angle-left pull-right"></i> </a>
               <ul class="treeview-menu">
                   <?php if ($this->site->route_permission('salereturn_view')) {?>
-                    <li id="sales_index"><a href="<?= site_url('salereturn_view'); ?>"><i class="fa fa-circle-o"></i>
+                    <li id="sales_index"><a href="<?= site_url('salereturn'); ?>"><i class="fa fa-circle-o"></i>
                     <?= lang('list_sales_return'); ?></a></li>
                   <?php } ?>
                   <?php if ($this->site->route_permission('salereturn_add')) {?>
@@ -312,9 +312,21 @@
                 </span> <i class="fa fa-angle-left pull-right"></i> </a>
               <ul class="treeview-menu">
                 <?php if ($this->site->route_permission('reports_view')) {?>
-                  <li id="reports_daily_statement"><a href="<?= site_url('reports/daily_statement'); ?>"><i class="fa fa-circle-o"></i>
+                  <li id="reports_daily_statement">
+                    <a href="<?= site_url('reports/daily_statement'); ?>"><i class="fa fa-circle-o"></i>
                       <?= lang('Daily Statement'); ?>
-                    </a></li>
+                    </a>
+                  </li>
+                  <li id="reports_pettycash">
+                    <a href="<?= site_url('reports/pettycash'); ?>"><i class="fa fa-circle-o"></i>
+                      <?= lang('Patty Cash'); ?>
+                    </a>
+                  </li>
+                  <li id="reports_pettycashlist">
+                    <a href="<?= site_url('reports/pettycashlist'); ?>"><i class="fa fa-circle-o"></i>
+                      <?= lang('Patty Cash List'); ?>
+                    </a>
+                  </li>
                   <li id="reports_todayhighlight"><a href="<?= site_url('reports/todayhighlight'); ?>"><i class="fa fa-circle-o"></i>
                       <?= lang('Today\'s Highlights'); ?>
                     </a></li>
@@ -561,6 +573,23 @@
             </li>
           <?php
           }
+          // mf_material_packaging MODULE
+          if ($this->site->permission('mf_material_packaging')) {
+          ?>
+            <li class="treeview mm_mf_material_packaging"> <a href="#"> <i class="fa fa-barcode"></i> <span>
+                  <?= lang('raw_material_packaging'); ?>
+                </span> <i class="fa fa-angle-left pull-right"></i> </a>
+              <ul class="treeview-menu">
+                <?php if ($this->site->route_permission('mf_material_packaging_view')) {?>
+                  <li id="mf_material_packaging_index"><a href="<?= site_url('mf_material_packaging'); ?>"><i class="fa fa-circle-o"></i><?= lang('list_material_packaging'); ?></a></li>
+                <?php } ?> 
+                <?php if ($this->site->route_permission('mf_material_packaging_add')) {?>
+                  <li id="mf_material_packaging_add"><a href="<?= site_url('mf_material_packaging/add'); ?>"><i class="fa fa-circle-o"></i> <?= lang('add_material_packaging'); ?> </a></li>
+                <?php } ?>              
+              </ul>
+            </li>
+          <?php
+          }
 
           // mf_brands MODULE
           if ($this->site->permission('mf_brands')) {
@@ -620,6 +649,24 @@
           <?php
           }
 
+          if ($this->site->permission('mf_purchases_packaging')) {
+          ?>
+            <li class="treeview mm_mf_purchases_packaging"> <a href="#"> <i class="fa fa-plus"></i> <span>
+                  <?= lang('Packaging Material Purchases'); ?>
+                </span> <i class="fa fa-angle-left pull-right"></i> </a>
+              <ul class="treeview-menu">
+                <?php if ($this->site->route_permission('mf_purchases_packaging_view')) {?>
+                  <li id="mf_purchases_packaging_index"><a href="<?= site_url('mf_purchases_packaging'); ?>"><i class="fa fa-circle-o"></i><?= lang('list_purchases_packaging'); ?></a></li>
+                <?php } ?>  
+                <?php if ($this->site->route_permission('mf_purchases_packaging_add')) {?>
+                  <li id="mf_purchases_packaging_add"><a href="<?= site_url('mf_purchases_packaging/add'); ?>"><i class="fa fa-circle-o"></i> <?= lang('add_purchase_packaging'); ?></a> </li>
+                <?php } ?>  
+                <li class="divider"></li>
+              </ul>
+            </li>
+          <?php
+          }
+
           // mf_material_stock MODULE
           if ($this->site->permission('mf_material_stock')) {
           ?>
@@ -635,6 +682,27 @@
                 <?php } ?>  
                 <?php if ($this->site->route_permission('mf_material_stock_view')) {?>
                   <li id="mf_material_stock_adjust_log_list"><a href="<?= site_url('mf_material_stock/adjust_log_list'); ?>"><i class="fa fa-circle-o"></i><?= lang('adjust_log'); ?></a></li>
+                <?php } ?>  
+                <li class="divider"></li>
+              </ul>
+            </li>
+          <?php
+          }
+          // packaging_material_stock MODULE
+          if ($this->site->permission('mf_material_stock_packaging')) {
+          ?>
+            <li class="treeview mm_mf_material_stock_packaging"> <a href="#"> <i class="fa fa-folder"></i> <span>
+                  <?= lang('Packaging Material Stock'); ?>
+                </span> <i class="fa fa-angle-left pull-right"></i> </a>
+              <ul class="treeview-menu">
+                <?php if ($this->site->route_permission('mf_material_stock_packaging_view')) {?>
+                  <li id="mf_material_stock_packaging_index"><a href="<?= site_url('mf_material_stock_packaging'); ?>"><i class="fa fa-circle-o"></i> <?= lang('stock_list'); ?></a></li>
+                <?php } ?>  
+                <?php if ($this->site->route_permission('mf_material_stock_packaging_add')) {?>
+                  <li id="mf_material_stock_packaging_stock_adjust"><a href="<?= site_url('mf_material_stock_packaging/stock_adjust'); ?>"><i class="fa fa-circle-o"></i><?= lang('stock_adjust'); ?></a></li>
+                <?php } ?>  
+                <?php if ($this->site->route_permission('mf_material_stock_packaging_view')) {?>
+                  <li id="mf_material_stock_packaging_adjust_log_list"><a href="<?= site_url('mf_material_stock_packaging/adjust_log_list'); ?>"><i class="fa fa-circle-o"></i><?= lang('adjust_log'); ?></a></li>
                 <?php } ?>  
                 <li class="divider"></li>
               </ul>
@@ -717,6 +785,30 @@
             </li>
           <?php
           }
+          // TRANSFERS MODULE
+          if ($this->site->permission('mf_transfers')) {
+          ?>
+            <li class="treeview mm_mf_transfers"> <a href="#"> <i class="fa fa-folder"></i> <span>
+                  <?= lang('Raw Material Transfers'); ?>
+                </span> <i class="fa fa-angle-left pull-right"></i> </a>
+              <ul class="treeview-menu">
+                <?php
+                 if ($this->site->route_permission('mf_transfers_view')) {
+                  ?>
+                <li id="mf_mf_transfers_index"><a href="<?= site_url('mf_transfers'); ?>"><i class="fa fa-circle-o"></i><?= lang('Raw Material Transfers'); ?></a></li>
+                <?php
+                 }
+                if ($this->site->route_permission('mf_transfers_add')) {
+                  ?>
+                <li id="mf_mf_transfers_add"><a href="javascript:;" onClick="mfTransfer()"><i class="fa fa-circle-o"></i> Add Transfers</a></li>
+                <?php
+                    }
+
+                ?>
+              </ul>
+            </li>
+          <?php
+          }
           // Raw Material Payment MODULE
           if ($this->site->permission('mf_payment')) {
           ?>
@@ -729,6 +821,24 @@
                 <?php }
                 if ($this->site->route_permission('mf_payment_add')) {?>
                 <li id="mf_payment_add"><a  href="<?= site_url('mf_payment/add'); ?>" ><i class="fa fa-circle-o"></i> Add Payment</a></li>
+                <?php }?>
+              </ul>
+            </li>
+          <?php
+          }
+          
+          // Raw Material Payment MODULE
+          if ($this->site->permission('mf_payment_packaging')) {
+          ?>
+            <li class="treeview mm_mf_payment_packaging"> <a href="#"> <i class="fa fa-folder"></i> <span>
+                Packaging Material Payment
+                </span> <i class="fa fa-angle-left pull-right"></i> </a>
+              <ul class="treeview-menu">
+                <?php if ($this->site->route_permission('mf_payment_packaging_view')) {?>
+                <li id="mf_mf_payment_packaging_index"><a href="<?= site_url('mf_payment_packaging'); ?>"><i class="fa fa-circle-o"></i>Payment List</a></li>
+                <?php }
+                if ($this->site->route_permission('mf_payment_packaging_add')) {?>
+                <li id="mf_mf_payment_packaging_add"><a  href="<?= site_url('mf_payment_packaging/add'); ?>" ><i class="fa fa-circle-o"></i> Add Payment</a></li>
                 <?php }?>
               </ul>
             </li>
@@ -771,12 +881,23 @@
                     <li id="mf_report_raw_material_transfer"><a href="<?= site_url('mf_report/raw_material_transfer'); ?>">
                       <i class="fa fa-circle-o"></i> Raw Material Transfer </a>
                     </li>
+                    
                     <li id="mf_report_collection_rpt"><a href="<?= site_url('mf_report/collection_rpt'); ?>">
                       <i class="fa fa-circle-o"></i> Collection Report </a>
                     </li>
+                    
                     <li id="mf_report_profit_n_loss_rpt"><a href="<?= site_url('mf_report/profit_n_loss_rpt'); ?>">
                       <i class="fa fa-circle-o"></i> Profit and Loss Report </a>
                     </li>
+                   
+                    <li id="mf_report_profit_n_loss_rpt"><a href="<?= site_url('mf_report/suppliers_payment'); ?>">
+                      <i class="fa fa-circle-o"></i> Supplier payment </a>
+                    </li>
+
+                    <li id="mf_report_profit_n_loss_rpt"><a href="<?= site_url('mf_report/packaging_material'); ?>">
+                      <i class="fa fa-circle-o"></i> Packaging Material </a>
+                    </li>
+
                   <?php } ?>   
                   <li class="divider"></li>
                 </ul>

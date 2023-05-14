@@ -5,7 +5,7 @@
                 <div class="box-body">
                     <div class="panel-body">
                         <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button>
-                        <button type="button" style="width:120px; float:right; display:none;" class="btn btn-default btn-sm toggle_form pull-right" id="printWindow">Print</button>
+                        <button type="button" style="width:120px; float:right;" class="btn btn-default btn-sm toggle_form pull-right" id="daily_sales">Print</button>
                         <?= form_open(""); ?>
                         <div class="row">
                             <div class="col-sm-3">
@@ -40,7 +40,18 @@
                         </div>
                         <?= form_close(); ?>
                     </div>
-                    <div class="table-responsive" id="print_content">
+
+                    <?php
+                        $CI =& get_instance();
+
+                        $CI->load->model('mf_purchases_model');
+
+                        $purchaseModel =  new mf_purchases_model();
+
+                        
+                    ?>
+
+                    <div class="table-responsive" id="page_content">
                         <div class="col-xs-12">
                             <table class="table table-bordered">
                                 <thead>
@@ -70,6 +81,19 @@
                                         if(count($materials) > 0):
                                         $i=0;
                                         foreach ($materials as $key => $material):
+
+                                            $productsName =  $purchaseModel->getAllPurchaseItems($material->id);
+
+                                            $names = '';
+                                            
+                                            if(count($productsName) > 0):
+
+                                                foreach ($productsName as $key => $pname):
+
+                                                    $names .=$pname->product_name .', ';
+
+                                                endforeach;
+                                            endif;
                                         ?>
                                             <tr style="">
 
@@ -77,7 +101,7 @@
 
                                                 <td><?= date("d-m-Y", strtotime($material->date)) ?></td>
 
-                                                <td><?= $material->material_name; ?></td>
+                                                <td><?= substr($names, 0, -2); ?></td>
                                                 
                                                 <td><?= $material->supplier_name; ?></td>
 
@@ -122,4 +146,25 @@
         var url = '<?= site_url('mf_report/exp_material_purchase_report/'); ?>' + '/' + stDate + '/'+ endDate + '/' + factoryId;
         location.replace(url);
     });
+
+    $("#daily_sales").click(function () {        
+        $(".dataTables_info").css("display", "none"); 
+        $(".dataTables_length, .dataTables_filter ").css("display", "none");
+        $(".dataTables_paginate ").css("display", "none");
+        $("#fileData_filter ").css("display", "none");
+        var content = "<html> <br><p style='text-align:center'> <b class='box-title'>Raw Material Purchase list | <?= $this->Settings->site_name ?></b><br><b class='box-title'><p><style> table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 2px;} tr:nth-child(even) {background-color: #dddddd;} </style>";
+        content += document.getElementById("page_content").innerHTML;
+        content += "</body>";
+        content += "</html>";
+        var printWin = window.open('','','left=20,top=40,width=700,height=550 '); 
+        printWin.document.write(content);     
+        printWin.focus();
+        printWin.print();
+        printWin.close();
+        $(".dataTables_info").css("display", "block"); 
+        $(".dataTables_length, .dataTables_filter ").css("display", "block");
+        $(".dataTables_paginate ").css("display", "block");
+        $("#fileData_filter ").css("display", "block");   
+    });
+
 </script>

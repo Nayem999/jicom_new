@@ -129,6 +129,12 @@
 
             <div style="clear:both;"> </div>
 
+            <?php
+            // echo "<pre>";
+            // print_r( $customer);
+            // die;
+            ?>
+
             <table class="table table-striped table-bordered" width="800px"> 
                 <tbody>
                     <tr>
@@ -141,12 +147,26 @@
                     </tr>
                     <tr>
                         <td><strong>Collected By</strong> </td>
-                        <td><strong><span><?= $Settings->site_name; ?></span></strong></td>                        
+                        <td><strong><span><?= @$customer->first_name .' '.@$customer->last_name //$Settings->site_name; ?></span></strong></td>                    
                     </tr>                    
                     <tr>
                         <td><strong>Collected amount<strong></td>
                         <td><?= $customer->payment_amount?></td>
                     </tr>
+                    <tr>
+                        <td><strong>Paid By<strong></td>
+                        <td><?= $customer->paid_by; ?></td>
+                    </tr>
+                    <?php 
+                        if( strtolower($customer->paid_by) != "cash"):
+                    ?>
+                    <tr>
+                        <td><strong>Cheque Number<strong></td>
+                        <td><?= $cheque_details->cheque_no ?></td>
+                    </tr>
+                    <?php 
+                        endif;
+                    ?>
                     <tr>
                         <td><strong>Amount In Words </strong></td>
                         <td><div id="word-of-amount"></div></td>

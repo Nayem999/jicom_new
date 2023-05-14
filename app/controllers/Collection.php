@@ -41,6 +41,7 @@ class Collection extends MY_Controller
         $this->db->dbprefix('today_collection') . ".payment_amount, " .  
         $this->db->dbprefix('today_collection') . ".payment_note, " .  
         $this->db->dbprefix('today_collection') . ".paid_by , " .  
+        $this->db->dbprefix('bank_pending') . ".cheque_no, " .  
         $this->db->dbprefix('bank_pending') . ".type , " , FALSE);
         $this->datatables->join('customers', 'customers.id=today_collection.customer_id');
         $this->datatables->join('stores', 'customers.store_id=stores.id');     
@@ -83,7 +84,7 @@ class Collection extends MY_Controller
         $start_date = $data_arr[1] ? $data_arr[1].' 00:00:00' : NULL;
         $end_date = $data_arr[2] ? $data_arr[2].' 23:59:59' : NULL;
         $store_id = $data_arr[3] ? $data_arr[3] : 0;
-
+        // payment_note
         $this->db->select($this->db->dbprefix('today_collection') . ".today_collect_id as id, " . 
         $this->db->dbprefix('customers') . ".name as name, ". 
         $this->db->dbprefix('stores') . ".name as storename, ".
@@ -342,6 +343,7 @@ class Collection extends MY_Controller
     }
 
     public function todayCollectionPayment(){
+
         $paidamount = $this->input->post('colAmount');
         $customerid = $this->input->post('customer');
         $note       = $this->input->post('note');      
@@ -373,7 +375,7 @@ class Collection extends MY_Controller
         } else {
             $paymentAmount = $this->input->post('colAmount');             
         }
-
+          // tranjiction_id //tran_amount
          $payPaymentdata = array(
             'payment_date' => date('Y-m-d H:i:s'),
             'payment_amount' => $this->input->post('colAmount'),
@@ -381,6 +383,7 @@ class Collection extends MY_Controller
             'payment_note' => $this->input->post('note'),
             'store_id'  => $customers->store_id,
             'paid_by' => $type,
+            'collected_by'=>$this->session->userdata('user_id'),
             'paid_from' => 2,
           ); 
         $collect_id = $this->sales_model->payPayment($payPaymentdata);
@@ -469,7 +472,7 @@ class Collection extends MY_Controller
         
         $grand_total  = 0;
 
-        if($type=='Cheque' || $type=='card' || $type=='TT'){
+        if($type=='Cheque' || $type=='card' || $type=='TT' || $type == 'Deposit'){
           $bankPending = array(
             'customer_id'  => $this->input->post('customer'),
             'amount'       => $this->input->post('colAmount'),
@@ -485,36 +488,38 @@ class Collection extends MY_Controller
           $this->bank_model->bankPendingTranjection($bankPending);
           
         }
-        else if($type=='Deposit')
-        {
-          $bankPending = array(
-            'customer_id'  => $this->input->post('customer'),
-            'amount'       => $this->input->post('colAmount'),
-            'bank_id'      => $this->input->post('bank'),
-            'cheque_no'    => $this->input->post('cheque_no'),
-            'insert_date'  => date('Y-m-d H:i:s'),
-            'type'         => 'Approved',
-            'collection_id' => $collect_id,
-            'store_id'       => 1,
-            'payment_type' =>  1,
-          );
+        // else if($type=='Deposit')
+        // {
+        //   $bankPending = array(
+        //     'customer_id'  => $this->input->post('customer'),
+        //     'amount'       => $this->input->post('colAmount'),
+        //     'bank_id'      => $this->input->post('bank'),
+        //     'cheque_no'    => $this->input->post('cheque_no'),
+        //     'insert_date'  => date('Y-m-d H:i:s'),
+        //     'type'         => 'Approved',
+        //     'collection_id' => $collect_id,
+        //     'store_id'       => 1,
+        //     'payment_type' =>  1,
+        //   );
 
-          $cid=$this->bank_model->bankPendingTranjection($bankPending);
-          $dataTransaction = array(
-            'bank_account_id'   => $cid,
-            'tran_amount'  => $this->input->post('current_amount'),			
-            'tran_type'    => 1,				
-            'tran_date'    => date('Y-m-d H:i:s'),	
-          );
+        //   $cid=$this->bank_model->bankPendingTranjection($bankPending);
+        //   // echo $cid;die;
+        //   $dataTransaction = array(
+        //     'bank_account_id'   => $cid,
+        //     'tran_amount'  => $this->input->post('current_amount'),			
+        //     'tran_type'    => 1,				
+        //     'tran_date'    => date('Y-m-d H:i:s'),	
+
+        //   );
         
-          $this->site->insertQuery($dataTransaction) ;
-        }
+        //   $this->site->insertQuery($dataTransaction) ;
+        // }
 
         // echo '32*';die;
         
         $this->session->set_flashdata('message', lang('Payment Collection submited successfully'));
-        // redirect('collection/collectionpayment');
-        $this->collectionpayment();
+        redirect('collection');
+        // $this->collectionpayment();
     }
 
   public function collectdelete($id = null){
@@ -557,16 +562,19 @@ class Collection extends MY_Controller
   }
 
    function view($collect_id = NULL, $noprint = NULL) { 
+
     if($this->input->get('collect_id')){ $collect_id = $this->input->get('collect_id'); }  
     $this->data['message'] = $this->session->flashdata('message');
     $invs = $this->sales_model->getCollectByID($collect_id);
     $this->data['invColl'] = $this->sales_model->getAllCustomers($invs->customer_id);  
-    $this->data['customer'] = $this->sales_model->getCollectByID($collect_id);;
+    $this->data['customer'] = $this->sales_model->getCollectByID($collect_id);
+    if(strtolower($this->data['customer']->paid_by != "cash")){
+      $this->data["cheque_details"] = $this->db->select('*')->from('bank_pending')->where('collection_id',$collect_id)->get()->row();
+    }
     $this->data['advamount'] = $this->sales_model->getCusAdv($invs->customer_id);   
     $this->data['deuamount'] = $this->sales_model->salesDeuByCustomer($invs->customer_id);    
     $this->data['admin'] = $this->sales_model->getUserInfo($this->session->userdata('user_id'));
     $this->data['page_title'] = lang("Collection invoice");
-
 
     $this->load->view($this->theme.'collection/view', $this->data);
 
@@ -575,7 +583,7 @@ class Collection extends MY_Controller
   public function bankInfo($type){   
       //$suppliers = $this->purchases_model->getSupplierByID($sid);
       
-      $banks = $this->site->wheres_rows('bank_account',null); 
+      $banks = $this->site->get_bank_with_store(); 
     
       if($type == 'Cheque' || $type == 'TT' || $type == 'Deposit'){
         $output= '<div class="form-group">

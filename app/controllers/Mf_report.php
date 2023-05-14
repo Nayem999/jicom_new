@@ -127,6 +127,12 @@ class Mf_report extends MY_Controller
 
     public function raw_material_purchase()
     {
+        // $this->load->model("mf_purchases_model");
+
+        // $this->data['items'] = 
+        
+       
+
         $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('raw_material_purchase_report')));
 
         $meta = array('page_title' => lang('Raw material Purchase Report'), 'bc' => $bc);
@@ -147,6 +153,10 @@ class Mf_report extends MY_Controller
 
     public function exp_material_purchase_report($stDate=null, $endDate=null, $factoryId = null)  {
 
+        $this->load->model('mf_purchases_model');
+
+        $purchaseModel =  new mf_purchases_model();
+
         $fields = array('SL','DATE', 'MATERIAL NAME', 'SUPPLIER Name ', 'STORE NAME','TOTAL','PAID AMOUNT','DUE AMOUNT');
 
         $start_date = $stDate ? $stDate : date('Y-m-d');  
@@ -165,11 +175,24 @@ class Mf_report extends MY_Controller
             $i = 0;
             foreach ($items as $key => $item):
 
+                $productsName =  $purchaseModel->getAllPurchaseItems($item->id);
+
+                $names = '';
+                
+                if(count($productsName) > 0):
+
+                    foreach ($productsName as $key => $pname):
+
+                        $names .=$pname->product_name .', ';
+
+                    endforeach;
+                endif;
+
                 $lineData = 
                 [
                     ++$i,
                     date("d-m-Y", strtotime($item->date)),
-                    $item->material_name,
+                    substr($names, 0, -2),
                     $item->supplier_name,
                     $item->store_name,
                     $item->total,
@@ -542,9 +565,282 @@ class Mf_report extends MY_Controller
         $this->data['profit_n_loss'] = $this->mf_report_model->profit_n_loss();
 
         $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('profit_n_loss')));
+
         $meta = array('page_title' => lang('Profit and Loss Report'), 'bc' => $bc);
 
         $this->page_construct('mf_report/profit_n_loss',$this->data, $meta);
+    }
+
+    public function suppliers_payment()
+    {
+       
+        $allSuppliers = $this->site->getAllMfSuppliers();
+
+        if(isset($_GET['supplier']) && $_GET['supplier']){
+
+            $supplierId = $_GET["supplier"];
+
+            foreach ($allSuppliers as $key => $value) {
+
+                if($value->id == $supplierId){
+
+                    $this->data['suppliers'][] = $value;
+                }
+
+            }
+           
+        }else{
+            $this->data['suppliers'] = $this->site->getAllMfSuppliers();
+        }
+
+        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('suppliers_payment')));
+        
+        $meta = array('page_title' => lang('Supplier Payment Report'), 'bc' => $bc);
+
+        $this->page_construct('mf_report/suppliers_payment',$this->data, $meta);
+    }
+
+    public function packaging_material()
+    {
+
+        $pkLogItems = [];
+
+        if(isset($_GET['select_material']) && $_GET['select_month'] && $_GET['select_year']){
+
+            $materialId = $_GET["select_material"];
+            $select_month = $_GET["select_month"];
+            $select_year = $_GET["select_year"];
+            
+            $numDays = cal_days_in_month(CAL_GREGORIAN, $select_month, $select_year);
+
+            $monthFormatting =strlen($select_month) > 1?$select_month:'0'.$select_month;
+
+            if($select_year.'-'.$monthFormatting == date("Y-m")){
+                $numDays = number_format(date("d"));
+            }
+
+            $prevLog = '';
+            $found = false;
+
+            for ($i=1; $i < $numDays+1; $i++) {
+
+                $dateFormatting =strlen($i) > 1?$i:'0'.$i;
+
+                $date = $select_year.'-'.$monthFormatting.'-'.$dateFormatting;
+                $getData = $this->db->select('*')->from('mf_packaging_material_log')->where(["material_id"=>$materialId,'date'=>$date])->order_by('created_at', 'desc')->limit(1)->get()->row();
+
+                if ($getData){
+                    $pkLogItems[$i] =  array_merge_recursive((array) $getData, ['carry'=>false ]);
+                    $prevLog = $getData;
+                    $found = true;
+                }else{
+                    if($found)
+                    $pkLogItems[$i] = array_merge_recursive((array) $prevLog, ['carry'=>true ]);
+                }
+            }
+        }
+
+        $this->data["packaging_log"] = $pkLogItems;
+
+        $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('Packaging Material Report')));
+
+        $this->data["packaging_materials"] = $this->db->select("*")->from("mf_material_packaging")->get()->result();
+        
+        $meta = array('page_title' => lang('Packaging Material Report'), 'bc' => $bc);
+
+        $this->page_construct('mf_report/packaging_material',$this->data, $meta);
+    }
+
+
+
+    public function exp_packaging_material()
+    {
+        $pkLogItems = [];
+
+        $fields = array( 'DATE ', 'ADD','B/F', 'TOTAL', 'TO SALE', 'BALANCE');
+
+        $fileName = "packaging_material_report_" . date('Y-m-d_h_i_s') . ".xls"; 
+        
+        $excelData = implode("\t", array_values($fields)) . "\n"; 
+
+        if(isset($_GET['select_material']) && $_GET['select_month'] && $_GET['select_year']){
+
+            $materialId = $_GET["select_material"];
+            $select_month = $_GET["select_month"];
+            $select_year = $_GET["select_year"];
+
+            $getPkMaterial = $this->db->select("*")->from("mf_material_packaging")->where("id",$materialId)->get()->row();
+
+            // $excelData = implode("\t", array_values([$getPkMaterial->name . " - " . $select_year .' - '.$select_month])) . "\n";
+            
+            $numDays = cal_days_in_month(CAL_GREGORIAN, $select_month, $select_year);
+
+            $monthFormatting =strlen($select_month) > 1?$select_month:'0'.$select_month;
+
+            if($select_year.'-'.$monthFormatting == date("Y-m")){
+                $numDays = number_format(date("d"));
+            }
+
+            $prevLog = '';
+            $found = false;
+
+            for ($i=1; $i < $numDays+1; $i++) {
+
+                $dateFormatting =strlen($i) > 1?$i:'0'.$i;
+
+                $date = $select_year.'-'.$monthFormatting.'-'.$dateFormatting;
+                $getData = $this->db->select('*')->from('mf_packaging_material_log')->where(["material_id"=>$materialId,'date'=>$date])->order_by('created_at', 'desc')->limit(1)->get()->row();
+
+                if ($getData){
+                    $pkLogItems[$i] =  array_merge_recursive((array) $getData, ['carry'=>false ]);
+                    $prevLog = $getData;
+                    $found = true;
+                }else{
+                    if($found)
+                    $pkLogItems[$i] = array_merge_recursive((array) $prevLog, ['carry'=>true ]);
+                }
+            }
+
+            if($pkLogItems):
+
+                foreach ($pkLogItems as $key => $value) {
+                    $lineData = 
+                    [
+                        $key,
+    
+                        $value["carry"]? '' :  $value["add_qty"],
+    
+                        $value["from_qty"],
+    
+                        $value["from_qty"],
+    
+                        $value["carry"]? '' : $value["to_sale"],
+    
+                        $value["balance"],
+    
+                    ];
+    
+                    $excelData .= implode("\t", array_values($lineData)) . "\n"; 
+                }
+
+            else:
+
+                $excelData = implode("\t", array_values(["No data found"])) . "\n"; 
+    
+            endif;
+    
+            header("Content-Type: application/vnd.ms-excel"); 
+    
+            header("Content-Disposition: attachment; filename=\"$fileName\""); 
+    
+            echo $excelData;
+        }
+    }
+    public function exp_supplier_payment_report($supplierId)
+    {
+        $this->load->model('mf_payment_model');
+
+        $payModel = new Mf_payment_model();
+
+        $today = date('d-m-Y');
+
+        $fields = array( 'NAME ', 'PHONE','TODAY PURCHASE', 'TODAY PAID', 'TOTAL PURCHASE', 'TOTAL PAID', 'TOTAL BALANCE');
+
+        $fileName = "supplier_payment_report_" . date('Y-m-d_h_i_s') . ".xls"; 
+        
+        $excelData = implode("\t", array_values($fields)) . "\n"; 
+
+        $allSuppliers = $this->site->getAllMfSuppliers();
+
+        if($supplierId){
+
+            foreach ($allSuppliers as $key => $value) {
+
+                if($value->id == $supplierId){
+
+                    $this->data['suppliers'][] = $value;
+                }
+
+            }
+           
+        }else{
+            $this->data['suppliers'] = $this->site->getAllMfSuppliers();
+        }
+
+        if($this->data['suppliers']):
+
+            foreach ($this->data['suppliers'] as $key => $supplier):
+
+                $id = $supplier->id;
+
+                $todayTotalPurchases = $payModel->purchasesAmount('total',$id,$today);
+
+                $todayPaidpurchases = $payModel->purchasesAmount('paid',$id,$today);
+
+                $todayDeupurchases = $payModel->purchasesAmount('deu',$id,$today);
+
+                $todayAdAmount = $payModel->advPayAmount('adv_amount',$id,$today);
+
+                $totalAdAmount = $payModel->advPayAmount('adv_amount',$id);
+
+                $total = $deu = $paid = 0;
+
+                $suppliersDetails = $payModel->getSupplierByID($id);
+                
+                if(is_array($suppliersDetails)):
+
+                    foreach ($suppliersDetails as $key => $value):
+
+                        $total = $total+ $value->total;
+
+                        $deu = $deu+ $value->deu;
+
+                        $paid = $paid+ $value->paid;
+
+                    endforeach;
+
+                endif;
+
+                $tpaid = $paid + $totalAdAmount;
+
+                $todpuPaid = $todayPaidpurchases+$todayAdAmount;
+
+                $lineData = 
+                [
+                    $supplier->name,
+
+                    $supplier->phone,
+
+                    $todayTotalPurchases,
+
+                    $todpuPaid,
+
+                    $total,
+
+                    $tpaid,
+
+                    $total-$tpaid
+
+                ];
+
+                $excelData .= implode("\t", array_values($lineData)) . "\n"; 
+
+
+            endforeach;
+
+        else:
+
+            $excelData = implode("\t", array_values(["No data found"])) . "\n"; 
+
+        endif;
+
+        header("Content-Type: application/vnd.ms-excel"); 
+
+        header("Content-Disposition: attachment; filename=\"$fileName\""); 
+
+        echo $excelData;
+
+
     }
 
 }

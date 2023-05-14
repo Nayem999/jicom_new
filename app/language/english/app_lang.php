@@ -579,3 +579,4 @@ $lang['finish_good_stock_list']            = "Finish Good Stock List";
 $lang['finish_good_stock_list']            = "Finish Good Stock List";
 
 $lang['mf_report']                         = "Manufacture Report";
+$lang['target_qty']                        = "Target Quantity";

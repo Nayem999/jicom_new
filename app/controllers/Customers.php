@@ -37,6 +37,8 @@ class Customers extends MY_Controller
     		$this->db->dbprefix('customers') . ".phone, ".
     		$this->db->dbprefix('customers') . ".email, ".
     		$this->db->dbprefix('stores') . ".name as storename, ".
+    		$this->db->dbprefix('customers') . ".opening_blance, ".
+    		$this->db->dbprefix('customers') . ".credit_limit, ".
     		$this->db->dbprefix('customers') . ".cf1, ".
     		$this->db->dbprefix('customers') . ".cf2,", FALSE);        
        $this->datatables->join('stores', 'customers.store_id=stores.id'); 
@@ -53,9 +55,11 @@ class Customers extends MY_Controller
 
     	$this->datatables->add_column("Actions", $action, "cid");
     	// $this->datatables->unset_column('cid');
+
     	if(!$this->Admin){
-    		$this->datatables->where('store_id',$this->session->userdata('store_id'));
+    		$this->datatables->where('customers.store_id',$this->session->userdata('store_id'));
     	}
+
     	echo $this->datatables->generate();
 
     }
@@ -233,8 +237,13 @@ class Customers extends MY_Controller
 		$this->data['results'] = '';  
 		$this->data['customer'] = $this->sales_model->getCustomerByID($id);    
         if($id !=''){ 
-        $this->data['results'] = $this->customers_model->getCustomerLaserByCid($id);  
+        	$this->data['results'] = $this->customers_model->getCustomerLaserByCid($id);  
         }  
+
+		// echo "<pre>";
+		// print_r($this->data['results']);
+		// die;
+
         $this->data['page_title'] = $this->lang->line("Customer Laser List"); 
         $bc = array(array('link' => '#', 'page' => lang('merge')), array('link' => '#', 'page' => lang('Customer Laser list')));
         $meta = array('page_title' => lang('Customer Laser List'), 'bc' => $bc);        

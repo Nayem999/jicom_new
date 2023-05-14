@@ -108,7 +108,8 @@
 
                     <h3 class="box-title"><?= lang('list_results'); ?></h3>
                     <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button>
-                    <button type="button" onclick="printIt()" style="width:120px; float:right; display:none;" class="btn btn-default btn-sm toggle_form pull-right" id="daily_sales">Print report</button>
+                    <button type="button" onclick="printIt()" style="width:120px; float:right;" class="btn btn-default btn-sm toggle_form pull-right" id="daily_sales">Print</button>
+                    <?php if($this->Admin): ?>
                     <?= form_open(""); ?>
                         <div class="row">
                             <div class="col-sm-3">
@@ -128,6 +129,7 @@
                             </div>
                         </div>
                     <?= form_close(); ?>
+                    <?php endif; ?>
                 </div>
 
                 <div class="box-body">
@@ -206,8 +208,11 @@
     $("#daily_sales").click(function() {
 
         $(".text-center a ").css("display", "none");
+        $(".dataTables_length ").css("display", "none");
+        $(".dataTables_paginate ").css("display", "none");
+        $("#fileData_filter ").css("display", "none");
 
-        var content = "<html> <br> <h2 style='text-align:center'> Products Report <br></h2>";
+        var content = "<html> <br> <h2 style='text-align:center'> Products List Staff Report  <br></h2>";
         content += document.getElementById("page_content").innerHTML;
         content += "</body>";
         content += "</html>";
@@ -219,6 +224,7 @@
         printWin.focus();
         printWin.print();
         printWin.close();
+        location.reload();
 
         // window.print();            
 

@@ -120,6 +120,28 @@ class Salesreturn_model extends CI_Model
 		return false;  
 
   	}
+
+	public function getUserSalesReturn($customer_id)
+	{
+		$this->db->select("salesreturn.sreturn_id,sreturn_items.return_qty,sreturn_items.net_unit_price");
+		$this->db->join('sreturn_items','salesreturn.sreturn_id=sreturn_items.sreturn_id');
+		$this->db->where('salesreturn.customer_id',$customer_id);
+		$this->db->from('salesreturn');
+		$query = $this->db->get();
+		$totalReturn = 0;
+		if($query){
+			$result = $query->result();
+			if($result){
+				foreach ($result as $key => $value) {
+					$totalReturn += $value->net_unit_price * $value->return_qty;
+				}
+			}
+		}
+		return $totalReturn;
+
+	}
+
+
 	public function addSreturnItems($data,$sequence) {   
 		
 	   if($this->db->insert('sreturn_items', $data)) { 	   	

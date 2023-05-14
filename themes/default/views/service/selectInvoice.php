@@ -22,7 +22,7 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
 
             <div class="row">
 
-                <?php if ($Admin) { ?>
+                <?php // if ($Admin) { ?>
 
                 <div class="col-sm-12">
 
@@ -36,7 +36,7 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
                 <div class="col-sm-12">
                 <div class="invoiceName" id="invoiceName"></div>
                 </div>
-                <?php } ?>
+                <?php // } ?>
 
 
             </div>

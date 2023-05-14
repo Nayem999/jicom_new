@@ -172,6 +172,7 @@ class Expenses extends MY_Controller
             $created_by = $this->session->userdata('user_id');
             $note = $this->input->post('note', TRUE);
             $employee_id = $this->input->post('employee_id');
+            $expense_for = $this->input->post('expense_for');
             if($this->input->post('warehouse'))
             {
                 $store_id=$this->input->post('warehouse');
@@ -232,7 +233,8 @@ class Expenses extends MY_Controller
                         'note' => $note,
                         'store_id'   =>$store_id,                 
                         'employee_id'   =>$employee_id,                 
-                        'attachment'   =>$attachment                 
+                        'attachment'   =>$attachment,
+                        'expense_for' =>$expense_for                 
                     );
                     $expenses_id = $this->site->insertQuery('expenses',$data);
                     if(($payment_type == 'cheque') || ($payment_type == 'card')){
@@ -692,7 +694,8 @@ class Expenses extends MY_Controller
     public function bankInfo($type){   
         //$suppliers = $this->purchases_model->getSupplierByID($sid);
         
-        $banks = $this->site->wheres_rows('bank_account',null); 
+        $banks = $this->site->get_bank_with_store(); 
+        // $banks = $this->site->wheres_rows('bank_account',null); 
       
         if($type == 'cheque' || $type == 'TT'){
           $output= '<div class="col-md-6"><div class="form-group">

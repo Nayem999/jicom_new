@@ -39,9 +39,6 @@ class Mf_payment_model extends CI_Model
 
 		$results = $query->result();
 
-		foreach ($results as $result) {
-			$total = $total + $result->$type;
-		}
 		return $total;
 	}
 

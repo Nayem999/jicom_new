@@ -27,6 +27,9 @@ class Pos extends MY_Controller {
 	} 
 
 	function index($sid = NULL, $eid = NULL) { 
+		
+		$this->load->model('salesreturn_model');
+
 		if(!$this->site->route_permission('pos_add')) {
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
@@ -245,15 +248,22 @@ class Pos extends MY_Controller {
 					$totalDeu = $totalDeu + $value->deu;
 				}
 			} */
+
 			$grandTotalSalesCustomers = $this->sales_model->getCustomerGrandTotal($customer_id);
+
 			$totalPaymentSalesCustomers = $this->sales_model->getCustomerAmountWithBankApproved($customer_id);
+
+			$total_sales_return = $this->salesreturn_model->getUserSalesReturn($customer_id);
+			
 			// echo $this->db->last_query();die;
 			$totalDeu = $pre_grand_total=0;
 			if(is_array($grandTotalSalesCustomers))
 			{
-				$totalDeu += $grandTotalSalesCustomers[0]->grand_total;
+				$totalDeu += $grandTotalSalesCustomers[0]->grand_total - $total_sales_return;
 			}
 			$totalDeu += $opening_blance;
+			// print_r($totalDeu);
+			// die;
 			if(is_array($totalPaymentSalesCustomers))
 			{
 				$totalDeu -= abs($totalPaymentSalesCustomers[0]->chk_amount + $totalPaymentSalesCustomers[0]->other_amount);
@@ -276,10 +286,10 @@ class Pos extends MY_Controller {
 				}
 				if($customer_credit_limit==null){ $customer_credit_limit=0; }
 				// echo $status."__".$credit_over."__".$customer_credit_limit."_".$totalDeu;die;
-				if($this->input->post('paid_by') !='Cash')
+				/* if($this->input->post('paid_by') !='Cash')
 				{
 					$credit_over=$totalDeu + $grand_total;
-				}
+				} */
 				if($credit_over>0){
 					if($credit_over>$customer_credit_limit){
 						$this->session->set_flashdata('error', lang('Credit Over'));
@@ -644,8 +654,12 @@ class Pos extends MY_Controller {
 			$this->data["tcp"] = $this->pos_model->products_count($this->Settings->default_category);
 			$this->data['products'] = $this->ajaxproducts($this->Settings->default_category, 1);
 			$this->data['categories'] = $this->site->getAllCategories();
-			$this->data['banks'] = $this->site->wheres_rows('bank_account',null);
+			$this->data['banks'] = $this->site->get_bank_with_store();
 			
+			// echo "<pre>";
+			// print_r($this->data['banks']);
+			// die;
+
 			$this->data['message'] = $this->session->flashdata('message');
 			$this->data['suspended_sales'] = $this->site->getUserSuspenedSales();
 			$this->data['page_title'] = lang('pos');
@@ -698,16 +712,24 @@ class Pos extends MY_Controller {
 
 		$rows = $this->pos_model->getProductNames($term); 
 
+		// echo "<pre>";
+		// print_r($rows);
+		// die;
+
 		if ($rows) {
 			foreach ($rows as $row) {
 				unset($row->cost, $row->details);
 				$row->qty = 1;
-				$row->sQty = $row->sQty ;
-				if($row->sQty > 0){
+				// $row->sQty = $row->sQty;
+				$row->sQty = $row->sQty;
+				$seqAv ='';
+			    /* 	if($row->sQty > 0){
 					$seqAv = '(Seq: available)';
 				}else{
-					$seqAv = '';
-				}
+					$seqAv = 'not available';
+				} */
+				
+				
 				$row->discount = '0';
 				$row->StockQty = $row->sQuantity ;
 				$row->real_unit_price = $row->price;
@@ -716,8 +738,14 @@ class Pos extends MY_Controller {
 				if ($row->type == 'combo') {
 				    $combo_items = $this->pos_model->getComboItemsByPID($row->id);
 				}
+				// $pr[] = array('id' => str_replace(".", "", microtime(true)), 'item_id' => $row->id, 'label' => $row->name . " (" . $row->code . ")(Stock Qty SU" . $row->sQuantity. ")".$seqAv, 'row' => $row, 'combo_items' => $combo_items);
 				$pr[] = array('id' => str_replace(".", "", microtime(true)), 'item_id' => $row->id, 'label' => $row->name . " (" . $row->code . ")(Stock Qty SU" . $row->sQuantity. ")".$seqAv, 'row' => $row, 'combo_items' => $combo_items);
 			}
+			// sQuantity
+			// echo "<pre>";
+			// print_r($pr);
+			// die;
+
 			echo json_encode($pr);
 		} else {
 			echo json_encode(array(array('id' => 0, 'label' => lang('no_match_found'), 'value' => $term)));
@@ -897,9 +925,12 @@ class Pos extends MY_Controller {
             <?php
 	
 	}
+
 	function view($sale_id = NULL, $noprint = NULL, $warranty = NULL)
 	{
 		
+		$this->load->model('salesreturn_model');
+
 		if($this->input->get('id')){ $sale_id = $this->input->get('id'); }
 		$this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
 		$this->data['message'] = $this->session->flashdata('message');
@@ -912,7 +943,10 @@ class Pos extends MY_Controller {
 		$this->data['store_info'] = $this->site->getAllStores($inv->store_id);
 
 		$this->data['life_sales_customer'] = $this->data['customer']->opening_blance + $this->sales_model->salesAmountByCustomer('grand_total',$inv->customer_id);
+
 		$this->data['life_payment_customer'] = $this->pos_model->payment_by_customer($inv->customer_id);
+
+		$this->data["total_sales_return"] = $this->salesreturn_model->getUserSalesReturn($inv->customer_id);
 
 		$cID = $this->site->findMergeIdbycp('customer_id',$inv->customer_id);
 		$this->data['cID'] = $cID;

@@ -32,6 +32,7 @@
                             <table class="table table-bordered" id="adjustmentTable">
                                 <thead>
                                     <tr>
+                                        <th class="text-center"> Date</th>      
                                         <th class="text-center"> Name</th>      
                                         <th class="text-center"> Brand</th>      
                                         <th class="text-center"> Store</th>      
@@ -46,6 +47,7 @@
                                     foreach ($matarial_list as $key => $result) {
                                         ?>
                                         <tr>
+                                            <td><?= date("d-m-y", strtotime($result->created_at)) ?></td>
                                             <td><?=$result->material_name; ?></td>
                                             <td><?=$result->brand_name; ?></td>
                                             <td><?=$result->store_name; ?></td>

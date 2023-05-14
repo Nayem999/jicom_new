@@ -223,6 +223,7 @@ class Sales_model extends CI_Model
          $total = 0;
          $this->db->select('sales.*');
          $this->db->from('sales');
+        //  $this->db->joind("salesreturn.id", "salesreturn.id=sales.id");
          $this->db->where('sales_type','sale');
          if( $id !=''){
             $this->db->where('customer_id', $id);
@@ -350,7 +351,11 @@ class Sales_model extends CI_Model
        $this->db->select('sum(grand_total) as grand_total');
        $this->db->from('sales');
        $this->db->where('customer_id', $id);
+    //    $this->db->where('return_id', null);
        $q =$this->db->get();
+
+    //    $getPurchaseReturnData = 
+
         if( $q->num_rows() > 0 ) {
             return $q->result();
         }
@@ -605,7 +610,12 @@ public function salesProfitByDate($start,$end,$store_id=NULL){
 
     }
     public function getCollectByID($id) {
-        $q = $this->db->get_where('today_collection', array('today_collect_id' => $id), 1);
+        $this->db->select("today_collection.*,users.first_name,users.last_name");
+        $this->db->from('today_collection');
+        $this->db->join('users', 'users.id = today_collection.collected_by',"left");
+        $this->db->where('today_collection.today_collect_id',$id);
+        $q = $this->db->get();
+        // $q = $this->db->get_where('today_collection', array('today_collect_id' => $id), 1);
         if ($q->num_rows() > 0) {
             return $q->row();
         }

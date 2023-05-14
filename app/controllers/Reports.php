@@ -464,6 +464,9 @@ class Reports extends MY_Controller
     }
 
     function daily_sales()  {
+
+       
+
         $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');  
         $end_date = $this->input->post('end_date') ? $this->input->post('end_date') : date('Y-m-d');  
         $store_id = $this->input->post('store_id') ? $this->input->post('store_id') : 0;  
@@ -474,6 +477,7 @@ class Reports extends MY_Controller
         $this->data['start_date'] = $start_date;
         $this->data['end_date'] = $end_date;
         $this->data['store_id'] = $store_id;
+        $this->data["is_admin"] = $this->Admin?true:false;
         $results = array(); 
         // $this->data['stores'] = $this->site->getAllStores();
         $this->data['results'] = $results; 
@@ -596,9 +600,15 @@ class Reports extends MY_Controller
     }
 
     function expenses_rpt()  {
+
+    
+        //  die($this->Admin);
+        // ReturnTypeWillChange;
+
         $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');  
         $end_date = $this->input->post('end_date') ? $this->input->post('end_date') : date('Y-m-d');  
         $store_id = $this->input->post('store_id') ? $this->input->post('store_id') : 0;  
+        $employee_id = $this->input->post('employee_id') ? $this->input->post('employee_id'): 0;
 
         $this->data['categories'] = $this->categories_model->getAllCategories();
         $this->db->select(
@@ -612,6 +622,7 @@ class Reports extends MY_Controller
         $this->db->join('employee', 'employee.id=expenses.employee_id','left');
         $this->db->group_by('expenses.id');
         if($store_id) { $this->db->where('expenses.store_id', $store_id); }
+        if($employee_id) { $this->db->where('expenses.employee_id', $employee_id); }
         if($start_date) { $this->db->where('expenses.date >=', $start_date.' 00:00:00'); }
         if($end_date) { $this->db->where('expenses.date <=', $end_date.' 23:59:59'); } 
         if($this->session->userdata('store_id') !=0){
@@ -622,6 +633,7 @@ class Reports extends MY_Controller
         // echo $this->db->last_query();die;
         $this->data['start_date'] = $start_date;
         $this->data['end_date'] = $end_date;
+        $this->data['employee_id'] = $employee_id;
 
         // $this->data['stores'] = $this->site->getAllStores();
         $this->data['page_title'] = $this->lang->line("Expenses Report");
@@ -851,7 +863,7 @@ class Reports extends MY_Controller
         $expensesCollection = $this->reports_model->expensesCollectionReport($start_date,$end_date,$store_id); 
 
 
-        $fileName = "credit_collection_report" . date('Y-m-d_h_i_s') . ".xls"; 
+        $fileName = "credit_collection_report_" . date('Y-m-d_h_i_s') . ".xls"; 
         $fields = array('Credit Collection Report');
         $excelData = implode("\t", array_values($fields)) . "\n"; 
         if($store_id){
@@ -927,7 +939,7 @@ class Reports extends MY_Controller
         echo $excelData; 
 
     }
-
+    
     function collection_rpt_without_pos()  {
         $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');  
         $end_date = $this->input->post('end_date') ? $this->input->post('end_date') : date('Y-m-d');  
@@ -953,7 +965,7 @@ class Reports extends MY_Controller
         $start_date = $data_arr[0] ? $data_arr[0] : date('Y-m-d');  
         $end_date = $data_arr[1] ? $data_arr[1] : date('Y-m-d'); 
         $store_id = $data_arr[2] ? $data_arr[2] : 0; 
-        
+ 
         $creditCollection = $this->reports_model->collect_rpt_without_pos($start_date,$end_date,$store_id); 
 
         $fileName = "collection_report_without_pos" . date('Y-m-d_h_i_s') . ".xls"; 
@@ -1722,6 +1734,11 @@ class Reports extends MY_Controller
          $this->datatables->unset_column('pid');
 		
 		 $this->datatables->where('products.quantity >', 0);
+
+         if(!$this->Admin){
+            $this->datatables->where('product_store_qty.store_id', $this->session->userdata('store_id'));
+        }
+
          if($store_id){$this->datatables->where('product_store_qty.store_id',$store_id);}
 
          echo $this->datatables->generate();
@@ -1789,7 +1806,13 @@ class Reports extends MY_Controller
         $this->datatables->from('products')
 
          ->group_by('products.id,products.name,categories.name,products.code,products.cost,products.price');
+
          if($store_id){$this->datatables->where('product_store_qty.store_id',$store_id);}
+
+         if(!$this->Admin){
+            $this->db->where('product_store_qty.store_id', $this->session->userdata('store_id'));
+        }
+
          $this->datatables->unset_column('pid');
 		
          echo $this->datatables->generate();
@@ -2101,6 +2124,9 @@ class Reports extends MY_Controller
             }
             $this->data['warehouses'] = $this->site->getAllStores();
             $store_id = $this->input->post('warehouse') ? $this->input->post('warehouse') : NULL;
+            if(!$this->Admin){
+                $store_id = $this->session->userdata('store_id');
+            }
             $cashSale = $this->sales_model->salesPaidAmount(NULL,NULL,$store_id);
 
             $advPayment = $this->purchases_model->advPayAmount('adv_amount',NULL,NULL,$store_id); 
@@ -2114,6 +2140,9 @@ class Reports extends MY_Controller
             $this->data['pendinBankAmount'] = $this->bank_model->pendinBankAmount();
 
             //$cashpayment = $this->purchases_model->purchasesPaidAmount(); //This is old Petty cash query from purchases SUM(paid) 
+            // Total Cash Collection
+
+            // cashSales
 
             $cashpayment = $this->purchases_model->purchasesPaidAmountPay($store_id); //This is new Petty cash query from purchase_payments SUM(amount)  
 
@@ -2420,6 +2449,10 @@ class Reports extends MY_Controller
         $cID = NULL; 
 
         $this->data['recivabl'] = $this->reports_model->recablelist($cID);  
+
+        // echo "<pre>";
+        // print_r($this->data['recivabl'] );
+        // die;
         // $customer = $this->reports_model->recablelist($cID); 
         // $this->data['tDue'] = $customer[0]['due']; 
         // $this->data['cID'] = $this->site->findMergeIdbycp('customer_id',$this->input->post('customer'));
@@ -2742,9 +2775,17 @@ class Reports extends MY_Controller
 
     public function bank_balance(){
 
+
+        // echo "<pre>";
+        // print_r($this->site->get_bank_with_store());
+        // die;
+
+        // $this->load->model("site");
+
         $bank_id = $this->input->post('bank_id') ? $this->input->post('bank_id') : 0;
-        $this->data['bank_name'] = $this->reports_model->getAllBank();
+        $this->data['bank_name'] = $this->site->get_bank_with_store();
         $this->data['bank_data'] = $this->reports_model->getAllBankInfo($bank_id);
+        // $this->data['bank_data'] = $this->reports_model->getAllBankInfo($bank_id);
      
         $this->data['bank_id'] = $bank_id;        
         $this->data['page_title'] = 'Bank Balance';        

@@ -65,12 +65,17 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
+	/*
 	'username' => 'root',
 	'password' => '',
 	'database' => 'jicom',
+	'port'     => '3312',
 	/* 'username' => 'devj_devjicomu',
 	'password' => '^hP#JOem6Do591#D',
 	'database' => 'devj_devjicom', */
+	'username' => 'root',
+	'password' => '',
+	'database' => 'jicom',
 	/* 'username' => 'jicom_jicom',
 	'password' => '%O7nshw5+6jBOCq0',
 	'database' => 'jicom_jicom', */

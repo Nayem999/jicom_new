@@ -856,7 +856,8 @@ $(document).ready(function(){
             suspend.appendTo("#hidesuspend");
             }
 
-            gtotal = formatDecimal(total - order_discount + order_tax);
+            // gtotal = formatDecimal(total - order_discount + order_tax);
+            gtotal = formatDecimal(parseFloat(total) - parseFloat(order_discount) + parseFloat(order_tax));
             if(Settings.rounding != 0) {
                 round_total = roundNumber(gtotal, parseInt(Settings.rounding));
                 var rounding = formatDecimal(round_total - gtotal);

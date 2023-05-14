@@ -153,7 +153,7 @@ class Mf_recipe_model extends CI_Model
     
     public function get_Recipe_for_production($id) {
 
-        $this->db->select('mf_recipe_mst.uom_id, mf_recipe_mst.product_id, mf_material.name, mf_brands.name as brand_name, mf_recipe_dtls.quantity as qty, mf_unit.name as unit_name, mf_recipe_dtls.material_id, mf_recipe_dtls.material_stock_id, mf_material_store_qty.quantity as stock_qty, mf_material_store_qty.id as material_stock_id, mf_recipe_dtls.id as recipe_dtls_id, mf_material_store_qty.cost as cost');
+        $this->db->select('mf_recipe_mst.uom_id,mf_recipe_mst.target_qty, mf_recipe_mst.product_id, mf_material.name, mf_brands.name as brand_name, mf_recipe_dtls.quantity as qty, mf_unit.name as unit_name, mf_recipe_dtls.material_id, mf_recipe_dtls.material_stock_id, mf_material_store_qty.quantity as stock_qty, mf_material_store_qty.id as material_stock_id, mf_recipe_dtls.id as recipe_dtls_id, mf_material_store_qty.cost as cost');
         $this->db->join('mf_recipe_mst','mf_recipe_dtls.recipe_id=mf_recipe_mst.id');
         $this->db->join('mf_material','mf_recipe_dtls.material_id=mf_material.id');
         $this->db->join('mf_material_store_qty','mf_recipe_dtls.material_stock_id=mf_material_store_qty.id');

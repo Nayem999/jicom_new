@@ -149,16 +149,25 @@ public function getCustomerLaserByCid($cusromer){
                     }
                 } 
   
-        $this->db->select('sales.id, sales.date as datetime, sales.grand_total,sales.collection_id ');
-        $q = $this->db->get_where('sales', array('customer_id' => $cusromer,'sales_type'=>'sale'));
-        if($q->num_rows() > 0) {
-            foreach (($q->result()) as $row) {
+        $this->db->select('sales.id, sales.date as datetime, sales.grand_total, sales.collection_id, bank_pending.cheque_no as cheque_number ');
+        
+        $this->db->from('sales');
+        
+        $this->db->join('bank_pending','bank_pending.collection_id=sales.collection_id','left');
+        
+        $this->db->where(['sales.customer_id'=>$cusromer,'sales.sales_type'=>'sale']);
+        
+        $q = $this->db->get()->result();
+
+        if( count($q) > 0) {
+            foreach (($q) as $row) {
                 $rows['datetime'] = $row->datetime ;
                 $rows['total'] = $row->grand_total ;
                 $rows['sgtotal'] = $row->grand_total ;
                 $rows['collection_id'] = $row->collection_id ;
                 $rows['sale'] = '0.00' ;
                 $rows['type'] = 'sale' ;
+                $rows['cheque_number'] = $row->cheque_number ;
                 $rows['id'] = $row->id;
                 $results[] = $rows ;
                 $salesid[] = $row->id ;
@@ -207,6 +216,19 @@ public function getCustomerLaserByCid($cusromer){
 
         }  
         return $results; 
+    }
+
+    public function get_bank_pending($collection_id)
+    {
+        try {
+            $findData =  $this->db->select('*')->from('bank_pending')->where('collection_id',$collection_id)->get()->row();
+            if($findData){
+                return $findData;
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+       
     }
 
 }

@@ -64,8 +64,6 @@
                             </div>
                             <div class="form-group">
                                 <?= form_submit('add_purchase', lang('Collect Now'), 'class="btn btn-primary"'); ?>
-
-                                 
                             </div>
 
                             <?php echo form_close();?>
@@ -104,6 +102,8 @@
     $(function(){
 
         $("#type").change(function(){
+        let customer = $("#customer").val();
+        console.log(customer);
          var supplier_id = $('#supplier').val();          
          var paymentType = this.value;         
          var url = '<?php echo base_url('collection/bankInfo') ?>/'+paymentType;   

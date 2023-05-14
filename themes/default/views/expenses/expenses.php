@@ -71,6 +71,7 @@
                         <?=  form_open("expenses");?>
 
                         <div class="row">
+                            <?php if($this->Admin): ?>
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <?= lang('Store', 'Store'); ?>
@@ -84,6 +85,7 @@
                                 </div>
 
                             </div>
+                            <?php endif;?>
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <?= lang('category', 'category'); ?>

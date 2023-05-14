@@ -83,7 +83,7 @@ class Employee extends MY_Controller
         $action.="</div></div>";
     
     	$this->datatables->add_column("Actions", $action, "id");
-    	if(!$this->Admin){
+    	if($this->Admin === false){
     		$this->datatables->where('store_id',$this->session->userdata('store_id'));
     	}
 

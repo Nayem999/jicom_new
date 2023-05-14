@@ -81,6 +81,7 @@ $v = "?v=1";
 
                     <h3 class="box-title">Sold and Purchase</h3>
                     <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button>
+                    <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="daily_sales">Print</button>
                 </div>
 
                 <div class="box-body">
@@ -199,13 +200,15 @@ $v = "?v=1";
 <script>
 
  $("#daily_sales").click(function () {
+
+    console.log($)
 	 
 	$(".text-center a ").css("display", "none");
     $(".dataTables_length ").css("display", "none");
     $(".dataTables_paginate ").css("display", "none");
     $("#fileData_filter ").css("display", "none");  
 	
-	 var content = "<html> <br> <h2 style='text-align:center'> Products Report <br></h2>";
+	 var content = "<html> <br> <h2 style='text-align:center'> Sold and Purchase  <br></h2>";
 	 content += document.getElementById("page_content").innerHTML ;
      content += "</body>";
      content += "</html>";

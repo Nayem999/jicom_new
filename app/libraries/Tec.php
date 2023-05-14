@@ -259,17 +259,18 @@ class Tec {
 
     public function view_rights($check_id, $js = NULL)
     {
-        if (!$this->Admin) {
-            if ($check_id != $this->session->userdata('user_id')) {
-                $this->session->set_flashdata('error', $this->data['access_denied']);
-                if ($js) {
-                    die("<script type='text/javascript'>setTimeout(function(){ window.top.location.href = '" . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : site_url('welcome')) . "'; }, 10);</script>");
-                } else {
-                    redirect(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : 'welcome');
-                }
-            }
-        }
-        return TRUE;
+         return TRUE;
+        // if (!$this->Admin) {
+        //     if ($check_id != $this->session->userdata('user_id')) {
+        //         $this->session->set_flashdata('error', $this->data['access_denied']);
+        //         if ($js) {
+        //             die("<script type='text/javascript'>setTimeout(function(){ window.top.location.href = '" . (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : site_url('welcome')) . "'; }, 10);</script>");
+        //         } else {
+        //             redirect(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : 'welcome');
+        //         }
+        //     }
+        // }
+        // return TRUE;
     }
 
     public function dd()

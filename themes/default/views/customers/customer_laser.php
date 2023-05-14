@@ -45,9 +45,11 @@
                                     <th class="col-xs-2">Date </th>
                                     <th class="col-xs-2">Description </th>
                                     <th class="col-xs-1">Type</th>                                    
+                                    <!-- <th class="col-xs-1">Cheque Number</th>                                     -->
                                     <th class="col-xs-2">Dr</th>
                                     <th class="col-xs-2">Cr</th>
                                     <th class="col-xs-2">Balance</th>
+                                    <th class="col-xs-1">Cheque Number</th>
 
                                 </tr>
 
@@ -95,7 +97,7 @@
                                             echo '<td class="center"> </td>' ;
                                         }
                                     }
-
+                                    
                                      if(($value['type']=='collection') || ($value['type'] =='Advance Collection') || ($value['type'] =='Advance Payment')){
                                         if(($value['type']=='collection')){
                                             $url = base_url('collection/view'); 
@@ -116,6 +118,7 @@
                                             <a onclick=\"window.open('" . $url.'/'.$value['type'].'/'.$value['id'] . "', 'pos_popup', 'scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#'>".$value['type'] .'</a>
                                             </td>' ; */
                                     }
+
                                      if(($value['type'] =='collection') ||($value['type'] =='Advance Collection') || ($value['type'] =='Sales Return')) {  ;
                                          echo '<td class="center">'.$emptyvalue.'</td>' ;
                                          $pgtotal = $pgtotal + $value['total'];
@@ -141,15 +144,26 @@
                                      $gtotal = $sgtotal - $pgtotal;
 
                                      echo '<td class="center">'.$gtotal. '</td>' ;
+                                     
+                                     if(isset($value["cheque_number"])):
+
+                                        echo "<td>".$value["cheque_number"]."</td>";
+                                        
+                                     else:
+                                       echo "<td></td>";
+                                     endif;
+
+
                                      echo '</tr>' ;
                                   
                             } 
 
                          ?>
                             <tr>
-                                <td colspan="3"></td> 
+                                <td colspan="4"></td> 
                                 <td class="center"><?php echo $sgtotal; ?></td>
                                 <td class="center"><?php echo $pgtotal;?></td>
+                                <td></td>
                                 <td></td>
                             </tr>
 

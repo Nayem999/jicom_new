@@ -19,12 +19,14 @@ class Pos_model extends CI_Model
        // $this->db->where("(name LIKE '%" . $term . "%' OR code LIKE '%" . $term . "%' OR  concat(name, ' (', code, ')') LIKE '%" . $term . "%') ");
 
         //$store_id = $this->session->userdata('store_id'); 
-        if(!$this->Admin){
-                $store_id = $this->session->userdata('store_id') ;
-            }else{
-                $store_id = $this->session->userdata('store_id_pos') ;
-            }
+        if(!$this->Admin)
+        {
+            $store_id = $this->session->userdata('store_id') ;
+        }else{
+            $store_id = $this->session->userdata('store_id_pos') ;
+        }
 
+            // sQty
 
         $this->db->select("products.* , product_store_qty.quantity as sQuantity");
 		$this->db->where("(name LIKE '%" . $term . "%' OR code LIKE '%" . $term . "%' OR  concat(name, ' (', code, ')') LIKE '%" . $term . "%') and product_store_qty.store_id=".$store_id );        
@@ -41,13 +43,11 @@ class Pos_model extends CI_Model
 
                $q2 = $this->db->get_where('pro_sequence', array('pro_id' => $row->id,'store_id' => $store_id, 'status' => 0));
 
-
                $sQty =  $q2->num_rows();
 
-               $row->sQty = $sQty ;
+               $row->sQty = $sQty;
 
-
-                $data[] = $row;
+               $data[] = $row;
 
             }
 

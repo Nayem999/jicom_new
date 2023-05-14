@@ -67,7 +67,7 @@ class Mf_payment extends MY_Controller
     public function supplierInfo($id){
 
       $suppliers = $this->mf_payment_model->getSupplierByID($id);
-      $SupPro = $this->mf_suppliers_model->getSupplierByID($id);         
+      $SupPro = $this->mf_suppliers_model->getSupplierByID($id);   
       
       $today = date("Y-m-d");
       $total = $deu = $paid = 0;

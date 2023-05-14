@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script accesscreditCollectionReport allowed');
 
 class Reports_model extends CI_Model
 {
@@ -843,6 +843,9 @@ class Reports_model extends CI_Model
             $this->db->like('sales.date', date('Y-m-d'));
         }  
         if($store_id){$this->db->where('sales.store_id', $store_id); }
+
+        if(! $this->Admin){$this->db->where('sales.store_id', $this->session->userdata('store_id')); }
+
         $query = $this->db->get();
         return $query->result(); 
     }
@@ -858,6 +861,9 @@ class Reports_model extends CI_Model
         	$this->db->where_not_in('today_collection.today_collect_id',$coll_id);
         }
         $this->db->join('customers','customers.id=today_collection.customer_id');  
+
+       
+
 		if($start_date && $end_date){ 
             $this->db->where('today_collection.payment_date >=', $start_date); 
             $this->db->where('today_collection.payment_date <=', $end_date);   
@@ -868,6 +874,10 @@ class Reports_model extends CI_Model
             $this->db->like('today_collection.payment_date', date('Y-m-d'));
         } 
         if($store_id){$this->db->where('today_collection.store_id', $store_id); }
+
+        if(!$this->Admin){
+        	$this->db->where('today_collection.store_id', $this->session->userdata('store_id'));
+        }
         $query = $this->db->get();
         return $query->result(); 
     }
@@ -889,6 +899,9 @@ class Reports_model extends CI_Model
             $data = $this->db->like('expenses.date', date('Y-m-d'));
         } 
         if($store_id){$this->db->where('expenses.store_id', $store_id); }
+        if(!$this->Admin){
+            $this->db->where('expenses.store_id', $this->session->userdata('store_id'));
+         }
         $query = $this->db->get();
         return $query->result(); 
     }
@@ -907,6 +920,9 @@ class Reports_model extends CI_Model
             $this->db->like('tranjiction.tran_date', date('Y-m-d'));
         } 
         if($store_id){$this->db->where('tranjiction.store_id', $store_id); }
+
+        if(! $this->Admin){$this->db->where('tranjiction.store_id', $this->session->userdata('store_id')); }
+
         $query = $this->db->get();
         return $query->result(); 
     }
@@ -925,6 +941,7 @@ class Reports_model extends CI_Model
         }    
 		$this->db->join('tranjiction','bank_account.bank_account_id=tranjiction.bank_account_id');
 		$this->db->from('bank_account');
+		if(!$this->Admin){$this->db->where('bank_account.store_id', $this->session->userdata('store_id')); }
 		$query = $this->db->get();
 		$result = $query->row();
 
@@ -943,6 +960,9 @@ class Reports_model extends CI_Model
 		$this->db->join('tranjiction','bank_account.bank_account_id=tranjiction.bank_account_id');
 		$this->db->from('bank_account');
         if($store_id){$this->db->where('bank_account.store_id', $store_id); }
+        
+        if(!$this->Admin){$this->db->where('bank_account.store_id', $this->session->userdata('store_id')); }
+        
 		$query = $this->db->get();
 		$result2 = $query->row(); 
 		return $result->tran_amount - $result2->tran_amount;
@@ -962,6 +982,7 @@ class Reports_model extends CI_Model
             $this->db->like('tranjiction.tran_date', date('Y-m-d'));
         } 
         if($store_id){$this->db->where('tranjiction.store_id', $store_id); }
+        if(! $this->Admin){$this->db->where('tranjiction.store_id', $this->session->userdata('store_id')); }
         $query = $this->db->get();
         return $query->result();
 
@@ -993,6 +1014,7 @@ class Reports_model extends CI_Model
             $data = $this->db->like('today_purchase_payment.payment_date', date('Y-m-d'));
         } 
         if($store_id){$this->db->where('today_purchase_payment.store_id', $store_id); }
+        if(! $this->Admin){$this->db->where('today_purchase_payment.store_id', $this->session->userdata('store_id')); }
         $query = $this->db->get();
         return $query->result(); 
     }
@@ -1187,7 +1209,10 @@ class Reports_model extends CI_Model
         // $this->db->join('customers','customers.id=sales.customer_id');
         $this->db->join('today_collection','today_collection.today_collect_id=sales.collection_id','left');  
         $this->db->join('bank_pending','bank_pending.collection_id=sales.collection_id','left');  
-        $this->db->join('bank_account','bank_pending.bank_id=bank_account.bank_account_id','left');  
+        $this->db->join('bank_account','bank_pending.bank_id=bank_account.bank_account_id','left');
+        
+      
+
         if($start_date && $end_date){ 
             $this->db->where('sales.date >=', $start_date.' 00:00:00'); 
             $this->db->where('sales.date <=', $end_date.' 23:59:59');   
@@ -1200,7 +1225,13 @@ class Reports_model extends CI_Model
 		else{
             $this->db->like('sales.date', date('Y-m-d'));
         }  
+        
         if($store_id){$this->db->where('sales.store_id', $store_id);  }
+        
+        if(!$this->Admin){
+            $this->db->where('sales.store_id', $this->session->userdata('store_id'));
+         }
+           
         $query = $this->db->get();
         return $query->result(); 
     }
@@ -1244,6 +1275,9 @@ class Reports_model extends CI_Model
 		else{
             $this->db->like('sales.date', date('Y-m-d'));
         }  
+        if(!$this->Admin){
+            $this->db->where('sales.store_id', $this->session->userdata('store_id'));
+         }
         $query = $this->db->get();
         return $query->result(); 
     }
@@ -1266,6 +1300,9 @@ class Reports_model extends CI_Model
 		else{
             $this->db->like('sales.date', date('Y-m-d'));
         }  
+        if(!$this->Admin){
+            $this->db->where('sales.store_id', $this->session->userdata('store_id'));
+         }
         $query = $this->db->get();
         return $query->result(); 
     }
@@ -1291,6 +1328,9 @@ class Reports_model extends CI_Model
 		else{
             $this->db->like('payments.date', date('Y-m-d'));
         }  
+        if(!$this->Admin){
+            $this->db->where('today_collection.store_id', $this->session->userdata('store_id'));
+         }
         $query = $this->db->get();
         return $query->result(); 
     }
@@ -1308,6 +1348,10 @@ class Reports_model extends CI_Model
 		$this->db->join('bank_pending','bank_pending.collection_id=today_collection.today_collect_id','left');  
         $this->db->join('bank_account','bank_pending.bank_id=bank_account.bank_account_id','left');  
 
+        if(!$this->Admin){
+            $this->db->where('today_collection.store_id', $this->session->userdata('store_id'));
+        }
+
         if($start_date && $end_date){ 
             $this->db->where('today_collection.payment_date >=', $start_date.' 00:00:00'); 
             $this->db->where('today_collection.payment_date <=', $end_date.' 23:59:59');   
@@ -1319,16 +1363,16 @@ class Reports_model extends CI_Model
 		}
 		else{
             $this->db->like('today_collection.payment_date', date('Y-m-d'));
-        }  
+        }   
         if($store_id){$this->db->where('today_collection.store_id', $store_id); }
         $this->db->where('today_collection.paid_from', 2); 
-        $this->db->group_by('collection_id,payment_amount,paid_by,payments_date,customers_name,bank_name'); 
 		// $this->db->where("`today_collect_id` NOT IN ($where_clause)", NULL, FALSE);
+	    $this->db->group_by('collection_id,payment_amount,paid_by,payments_date,customers_name,bank_name'); 
 
         $query = $this->db->get();
         return $query->result(); 
     }
-
+    
     public function collect_rpt_without_pos($start_date=NULL,$end_date=NULL,$store_id=0){
 
         $this->db->select('today_collection.today_collect_id as collection_id, today_collection.payment_amount,  today_collection.paid_by, today_collection.payment_date as payments_date, customers.name as customers_name, bank_account.bank_name '); 
@@ -1369,6 +1413,10 @@ class Reports_model extends CI_Model
             $this->db->where('sales.date <=', $end_date.' 23:59:59');   
         } 
         if($store_id){$this->db->where('sales.store_id', $store_id); }
+        
+        if(!$this->Admin){
+            $this->db->where('sales.store_id', $this->session->userdata('store_id'));
+         }
 
         $query = $this->db->get()->row(); 
         return $query; 
@@ -1384,6 +1432,10 @@ class Reports_model extends CI_Model
             $this->db->where('expenses.date <=', $end_date.' 23:59:59');   
         } 
         if($store_id){$this->db->where('expenses.store_id', $store_id); }
+        
+        if(!$this->Admin){
+            $this->db->where('expenses.store_id', $this->session->userdata('store_id'));
+         }
 
         $query = $this->db->get()->row(); 
         return $query; 
@@ -1392,6 +1444,12 @@ class Reports_model extends CI_Model
     public function getAllBank()
 	{
 		$q = $this->db->get('bank_account');
+
+        // if(!$this->Admin)
+        // {
+        //     $this->db->select("*")->from("bank_account")->where('store_id', $this->session->userdata('store_id'))->get();
+        // }
+        
 		if($q->num_rows() > 0) {
 			foreach (($q->result()) as $row) {
 				$data[] = $row;
@@ -1407,6 +1465,11 @@ class Reports_model extends CI_Model
         $this->db->select('bank_account.bank_account_id as bank_id, bank_account.bank_name, bank_account.account_no, tranjiction.tran_amount as amount, tranjiction.tran_type as payment_type,bank_account.create_date '); 
         $this->db->from('bank_account');  
 		$this->db->join('tranjiction','bank_account.bank_account_id =tranjiction.bank_account_id');
+
+        if(!$this->Admin)
+        {
+            $this->db->where('bank_account.store_id ',$id);  
+        }
 
         if($id){ 
             $this->db->where('bank_account.bank_account_id ',$id);   
@@ -1444,9 +1507,15 @@ class Reports_model extends CI_Model
         }  
 
         if($store_id){$this->db->where('stores.id', $store_id); }
+        
+        if(!$this->Admin){
+            $this->db->where('stores.id', $this->session->userdata('store_id'));
+         }
 
         $query = $this->db->get();
+        
         return $query->result(); 
+
     }
 }
 

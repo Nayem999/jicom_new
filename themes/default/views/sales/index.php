@@ -2,6 +2,16 @@
 
 $v = "?v=1";
 
+    if($this->input->post('store_id')){
+
+        $v .= "&store_id=".$this->input->post('store_id');
+
+    } 
+    if($this->input->post('customer')){
+
+        $v .= "&customer=".$this->input->post('customer');
+
+    } 
     if($this->input->post('warehouse')){
 
         $v .= "&warehouse=".$this->input->post('warehouse');
@@ -298,7 +308,7 @@ $(document).ready(function(){
 	});
 }); 
     $(function(){
-     $("#warehouse").change(function(){ 
+     $("#warehouse").change(function(){
          var warehouse = this.value; 
          var url = '<?php echo base_url('sales/customerInfoByStore') ?>'+'/'+warehouse;
          $('#customerInfo').load(url);

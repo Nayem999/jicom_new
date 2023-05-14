@@ -17,7 +17,7 @@
                                         <?= form_input('date', (isset($_POST['date']) ? $_POST['date'] : ""), 'class="form-control datetimepicker" id="date" required="required"'); ?>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <?= lang("Expenses For", "Expenses For"); ?>
                                     <?php
@@ -29,6 +29,13 @@
                                     <?= form_dropdown('employee_id', $emp, set_value('employee_id'), 'class="form-control select2 tip" id="employee_id"  required="required" style="width:100%;"'); ?>
                                 </div>
 
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <?= lang("Expense For", "Expense For"); ?>
+                                    <?= form_input('expense_for', (isset($_POST['expense_for']) ? $_POST['expense_for'] : ""), 'class="form-control " id=""'); ?>
+                                </div>
                             </div>
                         </div>
 
@@ -57,28 +64,30 @@
                         </div>
 
                         <div class="row" id='addMore'>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <?= lang('category', 'category'); ?>
-                                    <?php
-                                    $cat[0] = lang("select")." ".lang("category");
-                                    foreach($categories as $category) {
-                                        $cat[$category->cat_id] = $category->name;
-                                    }
-                                    ?>
-                                    <?= form_dropdown('category[]', $cat, set_value('category'), 'class="form-control select2 tip" id="category"  required="required" style="width:100%;"'); ?>
+                            <div class="addMoreItems">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <?= lang('category', 'category'); ?>
+                                        <?php
+                                        $cat[0] = lang("select")." ".lang("category");
+                                        foreach($categories as $category) {
+                                            $cat[$category->cat_id] = $category->name;
+                                        }
+                                        ?>
+                                        <?= form_dropdown('category[]', $cat, set_value('category'), 'class="form-control select2 tip" id="category"  required="required" style="width:100%;"'); ?>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <?= lang("amount", "amount"); ?>
-                                    <input name="amount[]" type="text" id="amount" value="" class="pa form-control kb-pad amount"
-                                    required="required"/>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <?= lang("amount", "amount"); ?>
+                                        <input name="amount[]" type="text" id="amount" value="" class="pa form-control kb-pad amount"
+                                        required="required"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-1">
-                                <a href='#' data-toggle='modal' data-target="#myModal"><i onclick="onClickAdd()" class="fa fa-2x fa-plus-circle" style="margin-top:25px" ></i></a> 
-                                <!-- <a href='#' data-toggle='modal' data-target="#myModal"><i onclick="onClickRemove()" class="fa fa-2x fa-minus-circle" style="margin-top:25px" ></i></a> -->
+                                <div class="col-md-1">
+                                    <a href='#' data-toggle='modal' data-target="#myModal"><i onclick="onClickAdd()" class="fa fa-2x fa-plus-circle" style="margin-top:25px" ></i></a> 
+                                    <a href='#' data-toggle='modal' data-target="#myModal"><i onclick="onClickRemove($(this))" class="fa fa-2x fa-minus-circle" style="margin-top:25px" ></i></a>
+                                </div>
                             </div>
                         </div>
 
@@ -129,6 +138,12 @@
         </div>
 </section>
 
+<style>
+    .remove_item_0{
+        display: none;
+    }
+</style>
+
 <script src="<?= $assets ?>plugins/bootstrap-datetimepicker/js/moment.min.js" type="text/javascript"></script>
 <script src="<?= $assets ?>plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -149,9 +164,33 @@
             });         
         });
     });
+
     var row = $("#addMore").html();
+
+    function checkItems() {
+        let minusSelector = document.getElementsByClassName("fa-minus-circle");
+        $('.fa-minus-circle').each(function(i, obj) {
+            if(i === 0){
+                $(this).addClass("remove_item_"+i);
+            }
+            $(this).attr("data-id", i);
+        });
+
+        $(".addMoreItems").each(function(i, obj) {
+            $(this).addClass("current_item_"+i);
+        });
+
+    }
+  
+    checkItems();
+    
     function onClickAdd() {
         $("#addMore").append(row);
+        checkItems();
+    }
+
+    function onClickRemove(t){
+        $(".current_item_"+t.data("id")).remove();
     }
 
 </script>

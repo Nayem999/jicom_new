@@ -258,8 +258,23 @@ class Sales extends MY_Controller {
             $this->session->set_flashdata('error', lang('disabled_in_demo')); 
             redirect(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : 'welcome'); 
         }
-
+        // getSaleByID
         $getSaleItemsBySaleId = $this->sales_model->getSaleItemsBySaleId($id);
+        $getSellInfo = $this->sales_model->getSaleByID($id);
+        $customer_id = $getSellInfo->customer_id;
+        $paid_amount = $getSellInfo->paid;
+
+        $matched_data_with_collection = $this->db->select("*")->from("today_collection")->where(["customer_id"=> $customer_id,'created_date'=> $getSellInfo->created_date,"payment_amount" => substr($paid_amount, 0, -3)])->get();
+
+        if($matched_data_with_collection){
+            $getResult = $matched_data_with_collection->row();
+            $this->db->where('today_collect_id', $getResult->today_collect_id);
+            $this->db->delete('today_collection');
+        }
+
+        // echo "<pre>";
+        // print_r($getSellInfo);
+        // die;
         //print_r();
        /* foreach ($getSaleItemsBySaleId as $key => $value) {
            
@@ -289,6 +304,17 @@ class Sales extends MY_Controller {
         $this->sales_model->sequenceUpdate($id,$dataUpdate);
 
         foreach ($getSaleItemsBySaleId as $key => $value) {
+
+            $this->db->select("*");
+            $this->db->from("sreturn_items");
+            $this->db->where(["sale_id"=>$id,"product_id"=>$value->product_id]);
+            $findIfAnySalesReturn = $this->db->get();
+
+            $rQty = 0;
+
+            if($findIfAnySalesReturn->num_rows() > 0){
+                $rQty = $findIfAnySalesReturn->result_array()[0]["return_qty"];
+            }
            
           $saleItmetbQty = $value->quantity;
 
@@ -298,10 +324,9 @@ class Sales extends MY_Controller {
           foreach ($getProductById as $key => $value) {
               $saleItmetbQty ;
               $proID = $value->id;
-              $proQty = $value->quantity + $saleItmetbQty;
+              $proQty = $value->quantity + $saleItmetbQty - $rQty;
               $data = array('quantity' =>$proQty , );
               $ProQtyUpdate = $this->sales_model->ProQtyUpdate($proID,$data);
-
           }  
           
         }
