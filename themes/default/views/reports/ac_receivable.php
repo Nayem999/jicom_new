@@ -34,6 +34,21 @@ $cid ='';
 
                         <?= form_open("reports/receivablelist");?> 
 
+                        <?php if($this->Admin){ ?>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                     <?= lang('Store','Store'); ?>
+                                    <?php
+                                    $wr[''] = lang("select")." ".lang("Store");
+                                    foreach($stores as $store) {
+                                        $wr[$store->id] = $store->name;
+                                    }
+                                    ?>
+                                    <?= form_dropdown('store_id', $wr, set_value('store_id'), 'class="form-control select2 tip" id="store_id" style="width:100%;"'); ?> 
+                                </div>
+                            </div> 
+                       <?php } ?>
+
                         <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">

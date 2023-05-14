@@ -2,72 +2,96 @@
 
 $v = "?v=1";
 
-    if($this->input->post('product')){
+if ($this->input->post('product')) {
 
-        $v .= "&product=".$this->input->post('product');
- 
-    }
+    $v .= "&product=" . $this->input->post('product');
+}
 
-    if($this->input->post('store_id')){
+if ($this->input->post('store_id')) {
 
-        $v .= "&store_id=".$this->input->post('store_id');
+    $v .= "&store_id=" . $this->input->post('store_id');
+}
 
-    }
+if ($this->input->post('start_date')) {
 
-    if($this->input->post('start_date')){
+    $v .= "&start_date=" . $this->input->post('start_date');
+}
 
-        $v .= "&start_date=".$this->input->post('start_date');
+if ($this->input->post('customer')) {
 
-    }
+    $v .= "&customer=" . $this->input->post('customer');
+}
 
-    if($this->input->post('customer')){
+if ($this->input->post('end_date')) {
 
-        $v .= "&customer=".$this->input->post('customer');
-
-    }
-
-    if($this->input->post('end_date')) {
-
-        $v .= "&end_date=".$this->input->post('end_date');
-
-    }
+    $v .= "&end_date=" . $this->input->post('end_date');
+}
 ?>
-
+<style>
+    .more {
+        display: none;
+    }
+</style>
 
 
 <script>
-
     $(document).ready(function() {
 
         function image(n) {
 
-            if(n !== null) {
+            if (n !== null) {
 
-                return '<div style="width:32px; margin: 0 auto;"><a href="<?=base_url();?>uploads/'+n+'" class="open-image"><img src="<?=base_url();?>uploads/thumbs/'+n+'" alt="" class="img-responsive"></a></div>';
+                return '<div style="width:32px; margin: 0 auto;"><a href="<?= base_url(); ?>uploads/' + n + '" class="open-image"><img src="<?= base_url(); ?>uploads/thumbs/' + n + '" alt="" class="img-responsive"></a></div>';
 
             }
 
             return '';
 
         }
+        var row = 0;
 
-        function method(n) {
+        function method(invoice_id) {
 
-            return (n == 0) ? '<span class="label label-primary"><?= lang('inclusive'); ?></span>' : '<span class="label label-warning"><?= lang('exclusive'); ?></span>';
+            row++;
+            var invoice_id_arr = invoice_id.split(",");
+            var rtn_val = "";
+            var tdd = invoice_id_arr.length - 1;
+            var span_close = false;
+            for (let index = 0; index < invoice_id_arr.length; index++) {
+                const element = invoice_id_arr[index];
+                rtn_val += `<a href='#' onClick=\"MyWindow=window.open('<?= base_url(); ?>pos/view/${element}/1', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=450,height=600'); return false;\"  class='tip btn btn-primary btn-xs'>${element}</a> `;
+                if (index == 7 && index < tdd) {
+                    span_close = true;
+                    rtn_val += `<span id="dots_${row}">...</span><span id="more_${row}" class="more">`;
+                }
+                if (index == tdd && span_close) {
+                    rtn_val += `</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <button onclick="fn_show_hide(${row})" id="myBtn_${row}" class='tip btn btn-success btn-xs'>Show more</button>`;
+                }
+            }
+
+            return rtn_val;
 
         }
 
-        $('#fileData').dataTable( {
 
-            "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, '<?= lang('all'); ?>']],
+        $('#fileData').dataTable({
 
-            "aaSorting": [[ 1, "asc" ]], "iDisplayLength": <?= $Settings->rows_per_page ?>,
+            "aLengthMenu": [
+                [10, 25, 50, 100, -1],
+                [10, 25, 50, 100, '<?= lang('all'); ?>']
+            ],
 
-            'bProcessing': true, 'bServerSide': true,
+            "aaSorting": [
+                [1, "asc"]
+            ],
+            "iDisplayLength": <?= $Settings->rows_per_page ?>,
 
-            'sAjaxSource': '<?= site_url('reports/get_products/'. $v) ?>',
+            'bProcessing': true,
+            'bServerSide': true,
 
-            'fnServerData': function (sSource, aoData, fnCallback) {
+            'sAjaxSource': '<?= site_url('reports/get_products/' . $v) ?>',
+
+            'fnServerData': function(sSource, aoData, fnCallback) {
 
                 aoData.push({
 
@@ -77,31 +101,67 @@ $v = "?v=1";
 
                 });
 
-                $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
+                $.ajax({
+                    'dataType': 'json',
+                    'type': 'POST',
+                    'url': sSource,
+                    'data': aoData,
+                    'success': fnCallback
+                });
 
             },
 
-            "aoColumns": [null, null,null, {"bSearchable": false},{"mRender":currencyFormat, "bSearchable": false},{"mRender":currencyFormat, "bSearchable": false}, {"mRender":currencyFormat, "bSearchable": false}, {"mRender":currencyFormat, "bSearchable": false},]
+            "aoColumns": [null, null, {
+                "mRender": method
+            }, null, {
+                "bSearchable": false
+            }, {
+                "mRender": currencyFormat,
+                "bSearchable": false
+            }, {
+                "mRender": currencyFormat,
+                "bSearchable": false
+            }, {
+                "mRender": currencyFormat,
+                "bSearchable": false
+            }, {
+                "mRender": currencyFormat,
+                "bSearchable": false
+            }, ]
 
         });
 
 
 
-});
+    });
 
+    function fn_show_hide(id) {
 
+        var dots = document.getElementById("dots_" + id);
+        var moreText = document.getElementById("more_" + id);
+        var btnText = document.getElementById("myBtn_" + id);
 
+        if (dots.style.display === "none") {
+            dots.style.display = "inline";
+            btnText.innerHTML = "Show more";
+            moreText.style.display = "none";
+        } else {
+            dots.style.display = "none";
+            btnText.innerHTML = "Show less";
+            moreText.style.display = "inline";
+        }
+
+    }
 </script>
 
 
 
 <script type="text/javascript">
-
-    $(document).ready(function(){
+    $(document).ready(function() {
 
         $('#form').hide();
 
-        $('.toggle_form').click(function(){
+        $('.toggle_form').click(function() {
 
             $("#form").slideToggle();
 
@@ -110,7 +170,6 @@ $v = "?v=1";
         });
 
     });
-
 </script>
 
 
@@ -124,10 +183,10 @@ $v = "?v=1";
             <div class="box box-primary">
 
                 <div class="box-header">
-                
+
                     <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button>
                     <a href="#" class="btn btn-default btn-sm toggle_form pull-right"><?= lang("show_hide"); ?></a>
-                	<button type="button" style="width:120px; float:right;" class="btn bg-default btn-sm" id="daily_sales">Print</button>
+                    <button type="button" style="width:120px; float:right;" class="btn bg-default btn-sm" id="daily_sales">Print</button>
 
                     <h3 class="box-title"><?= lang('customize_report'); ?></h3>
 
@@ -139,147 +198,143 @@ $v = "?v=1";
 
                         <div class="panel-body">
 
-                        <?= form_open("reports/products");?>
-                       <?php if($this->Admin){ ?>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                     <?= lang('Store','Store'); ?>
-                                    <?php
-                                    $wr[''] = lang("select")." ".lang("Store");
-                                    foreach($stores as $store) {
-                                        $wr[$store->id] = $store->name;
-                                    }
-                                    ?>
-                                    <?= form_dropdown('store_id', $wr, set_value('store_id'), 'class="form-control select2 tip" id="store_id" style="width:100%;"'); ?> 
+                            <?= form_open("reports/products"); ?>
+                            <?php if ($this->Admin) { ?>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <?= lang('Store', 'Store'); ?>
+                                        <?php
+                                        $wr[''] = lang("select") . " " . lang("Store");
+                                        foreach ($stores as $store) {
+                                            $wr[$store->id] = $store->name;
+                                        }
+                                        ?>
+                                        <?= form_dropdown('store_id', $wr, set_value('store_id'), 'class="form-control select2 tip" id="store_id" style="width:100%;"'); ?>
+                                    </div>
                                 </div>
-                            </div> 
-                       <?php } ?>
+                            <?php } ?>
 
-                        <div class="row">
+                            <div class="row">
 
-                            <div class="col-xs-2">
+                                <div class="col-xs-2">
 
-                                <div class="form-group">
+                                    <div class="form-group">
 
-                                    <label class="control-label" for="product"><?= lang("product"); ?></label>
+                                        <label class="control-label" for="product"><?= lang("product"); ?></label>
 
-                                    <?php
+                                        <?php
 
-                                    $pr[0] = lang("select")." ".lang("product");
+                                        $pr[0] = lang("select") . " " . lang("product");
 
-                                    foreach($products as $product){
+                                        foreach ($products as $product) {
 
-                                        $pr[$product->id] = $product->name;
+                                            $pr[$product->id] = $product->name;
+                                        }
 
-                                    }
+                                        echo form_dropdown('product', $pr, set_value('product'), 'class="form-control select2" style="width:100%" id="product"');
 
-                                    echo form_dropdown('product', $pr, set_value('product'), 'class="form-control select2" style="width:100%" id="product"');
+                                        ?>
 
-                                    ?>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-xs-2">
+
+                                    <div class="form-group">
+
+                                        <label class="control-label" for="customer"><?= lang("customer"); ?></label>
+
+                                        <?php
+
+                                        $cu[0] = lang("select") . " " . lang("customer");
+                                        foreach ($customers as $customer) {
+                                            $cu[$customer->id] = $customer->name;
+                                        }
+                                        echo form_dropdown('customer', $cu, set_value('customer'), 'class="form-control select2" style="width:100%" id="customer"');
+
+                                        ?>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-xs-2">
+
+                                    <div class="form-group">
+
+                                        <label class="control-label" for="start_date"><?= lang("start_date"); ?></label>
+
+                                        <?= form_input('start_date', set_value('start_date'), 'class="form-control datetimepicker" id="start_date"'); ?>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-xs-2">
+
+                                    <div class="form-group">
+
+                                        <label class="control-label" for="end_date"><?= lang("end_date"); ?></label>
+
+                                        <?= form_input('end_date', set_value('end_date'), 'class="form-control datetimepicker" id="end_date"'); ?>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-xs-12">
+
+                                    <button type="submit" class="btn btn-primary"><?= lang("submit"); ?></button>
 
                                 </div>
 
                             </div>
 
-                            <div class="col-xs-2">
-
-                                <div class="form-group">
-
-                                    <label class="control-label" for="customer"><?= lang("customer"); ?></label>
-
-                                    <?php
-
-                                    $cu[0] = lang("select")." ".lang("customer");
-                                    foreach($customers as $customer){
-                                        $cu[$customer->id] = $customer->name;
-                                    }
-                                    echo form_dropdown('customer', $cu, set_value('customer'), 'class="form-control select2" style="width:100%" id="customer"'); 
-
-                                    ?>
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-xs-2">
-
-                                <div class="form-group">
-
-                                    <label class="control-label" for="start_date"><?= lang("start_date"); ?></label>
-
-                                    <?= form_input('start_date', set_value('start_date'), 'class="form-control datetimepicker" id="start_date"');?>
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-xs-2">
-
-                                <div class="form-group">
-
-                                    <label class="control-label" for="end_date"><?= lang("end_date"); ?></label>
-
-                                    <?= form_input('end_date', set_value('end_date'), 'class="form-control datetimepicker" id="end_date"');?>
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-xs-12">
-
-                                <button type="submit" class="btn btn-primary"><?= lang("submit"); ?></button>
-
-                            </div>
+                            <?= form_close(); ?>
 
                         </div>
-
-                        <?= form_close();?>
-
-                    </div>
 
                     </div>
 
                     <div class="clearfix"></div>
 
 
-                    <?php 
-                        if($this->input->post('customer'))
-                        {
-                            $customer_Info= $this->customers_model->getCustomerByID($this->input->post('customer'));
-                            ?>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="table-responsive" id="page_content">
-                                        <table class="table table-striped table-bordered table-hover" style="margin-bottom:5px;">
-                                            <thead>
-                                                <tr class="active">
-                                                    <td>Total Product Wise Sale For <b><?=$customer_Info->name;?></b></td>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
+                    <?php
+                    if ($this->input->post('customer')) {
+                        $customer_Info = $this->customers_model->getCustomerByID($this->input->post('customer'));
+                    ?>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="table-responsive" id="page_content">
+                                    <table class="table table-striped table-bordered table-hover" style="margin-bottom:5px;">
+                                        <thead>
+                                            <tr class="active">
+                                                <td>Total Product Wise Sale For <b><?= $customer_Info->name; ?></b></td>
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 </div>
                             </div>
-                            <?php
-                        }
-                        else
-                        {
-                            ?>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="table-responsive" id="page_content">
-                                        <table class="table table-striped table-bordered table-hover" style="margin-bottom:5px;">
-                                            <thead>
-                                                <tr class="active">
-                                                    <td>Total Product Wise Sale For All Customer</td>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
+                        </div>
+                    <?php
+                    } else {
+                    ?>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="table-responsive" id="page_content">
+                                    <table class="table table-striped table-bordered table-hover" style="margin-bottom:5px;">
+                                        <thead>
+                                            <tr class="active">
+                                                <td>Total Product Wise Sale For All Customer</td>
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 </div>
                             </div>
-                            <?php
-                        }
+                        </div>
+                    <?php
+                    }
                     ?>
 
                     <div class="row" id="page_content1">
@@ -296,11 +351,12 @@ $v = "?v=1";
 
                                             <th><?= lang("name"); ?></th>
 
-                                            <th><?= lang("store_name"); ?></th>
+                                            <th class="col-xs-1">Store Name</th>
+                                            <th>Invoice Id</th>
 
-                                            <th class="col-xs-2"><?= lang("code"); ?></th>
+                                            <th class="col-xs-1"><?= lang("code"); ?></th>
 
-                                            <th class="col-xs-1"><?= lang("sold"); ?></th> 
+                                            <th class="col-xs-1"><?= lang("sold"); ?></th>
 
                                             <th class="col-xs-1"><?= lang("tax"); ?></th>
 
@@ -309,7 +365,7 @@ $v = "?v=1";
                                             <th class="col-xs-1"><?= lang("income"); ?></th>
 
                                             <th class="col-xs-1"><?= lang("profit"); ?></th>
-                                            
+
                                         </tr>
 
                                     </thead>
@@ -330,8 +386,8 @@ $v = "?v=1";
 
                         </div>
 
-                    </div> 
-                    
+                    </div>
+
                 </div>
 
             </div>
@@ -345,8 +401,7 @@ $v = "?v=1";
 
 <script src="<?= $assets ?>plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-
-    $(function () {
+    $(function() {
 
         $('.datetimepicker').datetimepicker({
 
@@ -355,13 +410,11 @@ $v = "?v=1";
         });
 
     });
-
 </script>
 <script>
+    $("#daily_sales").click(function() {
 
- $("#daily_sales").click(function () {
-	 
-	    $(".text-center a ").css("display", "none");
+        $(".text-center a ").css("display", "none");
         $(".dataTables_length ").css("display", "none");
         $(".dataTables_paginate ").css("display", "none");
         $("#fileData_filter ").css("display", "none");
@@ -378,14 +431,30 @@ $v = "?v=1";
         printWin.focus();
         printWin.print();
         printWin.close();
-        location.reload();  
-  });
+        location.reload();
+    });
 
-  $("#excelWindow").click(function () {  
-        var data=$("#product").val()+'_'+$("#warehouse").val()+'_'+$("#start_date").val()+'_'+$("#end_date").val()+'_'+$("#customer").val();    
-        var url='<?=site_url('reports/get_excel_products/');?>'+'/'+data;
+    $("#excelWindow").click(function() {
+        var data = $("#store_id").val() + '_' + $("#product").val() + '_' + $("#start_date").val() + '_' + $("#end_date").val() + '_' + $("#customer").val();
+        var url = '<?= site_url('reports/get_excel_products/'); ?>' + '/' + data;
         location.replace(url);
 
-    }); 
-</script>
+    });
 
+
+    function myFunction() {
+        var dots = document.getElementById("dots");
+        var moreText = document.getElementById("more");
+        var btnText = document.getElementById("myBtn");
+
+        if (dots.style.display === "none") {
+            dots.style.display = "inline";
+            btnText.innerHTML = "Read more";
+            moreText.style.display = "none";
+        } else {
+            dots.style.display = "none";
+            btnText.innerHTML = "Read less";
+            moreText.style.display = "inline";
+        }
+    }
+</script>

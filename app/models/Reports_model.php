@@ -611,13 +611,17 @@ class Reports_model extends CI_Model
 		return $results;
 	}
 
-    public function recablelist($id = NULL){
+    public function recablelist($id = NULL,$sid = NULL){
     	if(!$this->Admin){
 	        $this->db->where('store_id',$this->session->userdata('store_id'));
 	    }
-	    if($id){
-	    	$this->db->where('id',$id);
-	    }
+        else
+        {
+            if($sid){ $this->db->where('store_id',$sid); }
+        }
+
+	    if($id){ $this->db->where('id',$id); }
+        
         $this->db->from('customers');  
         $this->db->group_by('id');     
         $query = $this->db->get();
