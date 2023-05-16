@@ -20,10 +20,7 @@ class Collection extends MY_Controller
         $this->load->model('sales_model');
         $this->load->model('bank_model');
         $this->load->model('purchases_model');
-        $this->load->model('marge_model');
-        $ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
-        $this->session->unset_userdata($ses_unset);
-        
+        $this->load->model('marge_model');       
     }
     
     public function collectionlist($today=NULL) {    
@@ -360,9 +357,7 @@ class Collection extends MY_Controller
           $cheque_no=$this->input->post('cheque_no');
             if((!$bankID)||(!$cheque_no)){
               $this->session->set_flashdata('error', lang('Bank or Cheque no empty'));
-              // redirect('collection/collectionpayment');
-              $this->collectionpayment();
-
+              redirect('collection/collectionpayment');
             }
 
         }
@@ -374,6 +369,12 @@ class Collection extends MY_Controller
             $paymentAmount = $totalDeu;           
         } else {
             $paymentAmount = $this->input->post('colAmount');             
+        }
+
+        if($type=="Adjustment" && $paidamount>$totalDeu)
+        {
+          $this->session->set_flashdata('error', lang('Sorry, You collection over due amount'));
+          redirect('collection/collectionpayment');
         }
           // tranjiction_id //tran_amount
          $payPaymentdata = array(
@@ -388,134 +389,112 @@ class Collection extends MY_Controller
           ); 
         $collect_id = $this->sales_model->payPayment($payPaymentdata);
 
-        foreach ($salesCustomers as $key => $value) {
-          //  $purchase = $value->customer_id;
-           $total = $value->grand_total;
-           $deu = $value->deu;
-           $paid = $value->paid;  
-
-           if(($total > $paid) && ($paidamount  > 0) ){
-                if($paidamount < $value->deu ){                   
-                    $payAmount = $paidamount;
-                    $newpaid = $value->paid + $paidamount;
-                    $newDeu = $value->deu - $paidamount;
-
-                    if($value->grand_total == $newpaid){
+          foreach ($salesCustomers as $key => $value) {
+            //  $purchase = $value->customer_id;
+             $total = $value->grand_total;
+             $deu = $value->deu;
+             $paid = $value->paid;  
+  
+             if(($total > $paid) && ($paidamount  > 0) ){
+                  if($paidamount < $value->deu ){                   
+                      $payAmount = $paidamount;
+                      $newpaid = $value->paid + $paidamount;
+                      $newDeu = $value->deu - $paidamount;
+  
+                      if($value->grand_total == $newpaid){
+                          $status = 'paid';
+                        } else {
+                            $status = 'partial';
+                        }
+                      $data  = array(
+                          'paid' => $newpaid,
+                          'status' => $status
+                          );                   
+                      $this->sales_model->UpdateCustomerDeu($data,$value->id);
+                      $addPayData = array(
+                            'date' => date('Y-m-d H:i'),
+                            'sale_id' => $value->id,
+                            'customer_id' => $this->input->post('customer'),
+                            'paid_by' => $type,
+                            'amount' => $paidamount,
+                            'created_by' => $this->session->userdata('user_id'),
+                            'store_id' => $customers->store_id,
+                            'payment_type' => 'sale',
+                            'collect_id'  => $collect_id
+                          );                    
+                     $this->sales_model->addPayment($addPayData);                     
+                     $paidamount = 0;                   
+                  } else {  
+  
+                     $payAmount = $value->deu;
+                     $bigAmount = $paidamount - $value->deu;
+                     $odlNewPaid = $value->paid + $value->deu;
+                     if($value->grand_total == $odlNewPaid){
                         $status = 'paid';
                       } else {
                           $status = 'partial';
                       }
-                    $data  = array(
-                        'paid' => $newpaid,
-                        'status' => $status
-                        );                   
-                    $this->sales_model->UpdateCustomerDeu($data,$value->id);
-                    $addPayData = array(
-                          'date' => date('Y-m-d H:i'),
-                          'sale_id' => $value->id,
-                          'customer_id' => $this->input->post('customer'),
-                          'paid_by' => $type,
-                          'amount' => $paidamount,
-                          'created_by' => $this->session->userdata('user_id'),
-                          'store_id' => $customers->store_id,
-                          'payment_type' => 'sale',
-                          'collect_id'  => $collect_id
-                        );                    
-                   $this->sales_model->addPayment($addPayData);                     
-                   $paidamount = 0;                   
-                } else {  
-
-                   $payAmount = $value->deu;
-                   $bigAmount = $paidamount - $value->deu;
-                   $odlNewPaid = $value->paid + $value->deu;
-                   if($value->grand_total == $odlNewPaid){
-                      $status = 'paid';
-                    } else {
-                        $status = 'partial';
-                    }
-                   $data  = array(
-                        'paid' => $odlNewPaid,
-                        'status' => $status);
-                   $this->sales_model->UpdateCustomerDeu($data,$value->id);
-                   $addPayData = array(
-                          'date' => date('Y-m-d H:i'),
-                          'sale_id' => $value->id,
-                          'customer_id' => $this->input->post('customer'),
-                          'paid_by' => $type,
-                          'amount' => $value->deu,
-                          'created_by' => $this->session->userdata('user_id'),
-                          'store_id' => $customers->store_id,
-                          'payment_type' => 'sale',
-                          'collect_id'  => $collect_id
-                        );            
-                    $this->sales_model->addPayment($addPayData);                  
-                   $paidamount = $bigAmount;
+                     $data  = array(
+                          'paid' => $odlNewPaid,
+                          'status' => $status);
+                     $this->sales_model->UpdateCustomerDeu($data,$value->id);
+                     $addPayData = array(
+                            'date' => date('Y-m-d H:i'),
+                            'sale_id' => $value->id,
+                            'customer_id' => $this->input->post('customer'),
+                            'paid_by' => $type,
+                            'amount' => $value->deu,
+                            'created_by' => $this->session->userdata('user_id'),
+                            'store_id' => $customers->store_id,
+                            'payment_type' => 'sale',
+                            'collect_id'  => $collect_id
+                          );            
+                      $this->sales_model->addPayment($addPayData);                  
+                     $paidamount = $bigAmount;
+                        
+                  }        
+  
+              }
                       
-                }        
-
-            }
-                    
-        } 
-        $advData = array(
-          'customer_id'     => $this->input->post('customer'),
-          'adv_collection'  => $paidamount,
-          'total_collection' => $this->input->post('colAmount'),
-          'add_date'        => date('Y-m-d H:i:s'),
-          'today_collect_id' => $collect_id,
-          'store_id'        => $customers->store_id,
-          'note'            => $this->input->post('note'),
-          'paid_by'         => $type,
-        );
-        $this->sales_model->addAdvCollec($advData);
-
-        $odlNewPaid = $value->paid + $value->deu;
-        
-        $grand_total  = 0;
-
-        if($type=='Cheque' || $type=='card' || $type=='TT' || $type == 'Deposit'){
-          $bankPending = array(
-            'customer_id'  => $this->input->post('customer'),
-            'amount'       => $this->input->post('colAmount'),
-            'bank_id'      => $this->input->post('bank'),
-            'cheque_no'    => $this->input->post('cheque_no'),
-            'insert_date'  => date('Y-m-d H:i:s'),
-            'type'         => 'pending',
-            'collection_id' => $collect_id,
-            'store_id'       => 1,
-            'payment_type' =>  1,
-          );
-
-          $this->bank_model->bankPendingTranjection($bankPending);
+          } 
           
+        if($type!="Adjustment")
+        {
+          $advData = array(
+            'customer_id'     => $this->input->post('customer'),
+            'adv_collection'  => $paidamount,
+            'total_collection' => $this->input->post('colAmount'),
+            'add_date'        => date('Y-m-d H:i:s'),
+            'today_collect_id' => $collect_id,
+            'store_id'        => $customers->store_id,
+            'note'            => $this->input->post('note'),
+            'paid_by'         => $type,
+          );
+          $this->sales_model->addAdvCollec($advData);
+  
+          $odlNewPaid = $value->paid + $value->deu;
+          
+          $grand_total  = 0;
+  
+          if($type=='Cheque' || $type=='card' || $type=='TT' || $type == 'Deposit'){
+            $bankPending = array(
+              'customer_id'  => $this->input->post('customer'),
+              'amount'       => $this->input->post('colAmount'),
+              'bank_id'      => $this->input->post('bank'),
+              'cheque_no'    => $this->input->post('cheque_no'),
+              'insert_date'  => date('Y-m-d H:i:s'),
+              'type'         => 'pending',
+              'collection_id' => $collect_id,
+              'store_id'       => 1,
+              'payment_type' =>  1,
+            );
+  
+            $this->bank_model->bankPendingTranjection($bankPending);
+            
+          }
         }
-        // else if($type=='Deposit')
-        // {
-        //   $bankPending = array(
-        //     'customer_id'  => $this->input->post('customer'),
-        //     'amount'       => $this->input->post('colAmount'),
-        //     'bank_id'      => $this->input->post('bank'),
-        //     'cheque_no'    => $this->input->post('cheque_no'),
-        //     'insert_date'  => date('Y-m-d H:i:s'),
-        //     'type'         => 'Approved',
-        //     'collection_id' => $collect_id,
-        //     'store_id'       => 1,
-        //     'payment_type' =>  1,
-        //   );
 
-        //   $cid=$this->bank_model->bankPendingTranjection($bankPending);
-        //   // echo $cid;die;
-        //   $dataTransaction = array(
-        //     'bank_account_id'   => $cid,
-        //     'tran_amount'  => $this->input->post('current_amount'),			
-        //     'tran_type'    => 1,				
-        //     'tran_date'    => date('Y-m-d H:i:s'),	
-
-        //   );
         
-        //   $this->site->insertQuery($dataTransaction) ;
-        // }
-
-        // echo '32*';die;
         
         $this->session->set_flashdata('message', lang('Payment Collection submited successfully'));
         redirect('collection');

@@ -29,11 +29,7 @@ class Supplierpayment extends MY_Controller
 
         $this->load->model('marge_model');
 
-        $this->allowed_types = 'gif|jpg|png|pdf|doc|docx|xls|xlsx|zip';
-        
-        $ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
-        $this->session->unset_userdata($ses_unset);
-        
+        $this->allowed_types = 'gif|jpg|png|pdf|doc|docx|xls|xlsx|zip';    
     }
     function getSupplierByStore($id){
       return $id;
@@ -341,7 +337,12 @@ class Supplierpayment extends MY_Controller
             $paymentAmount = $totalDeu;           
         } else {
              $paymentAmount = $this->input->post('paidamount');             
-        }        
+        }     
+        if($type=="Adjustment" && $paidamount>$totalDeu)
+        {
+          $this->session->set_flashdata('error', lang('Sorry, You payment over due amount'));
+          redirect('collection');
+        }   
         $payPaymentdata = array(
                         'payment_date' => date('Y-m-d H:i:s'),
                         'payment_amount' => $this->input->post('paidamount'),
@@ -355,12 +356,13 @@ class Supplierpayment extends MY_Controller
         //if($totalDeu =='0'){redirect('supplierpayment/purchase_payment');}
         $todayPurchasePayment = $this->purchases_model->payPayment($payPaymentdata);
 
+       
         foreach ($suppliers as $key => $value) {
-           $purchase = $value->id;
-           $total = $value->total;
-           $deu = $value->deu;
-           $paid = $value->paid; 
-           if(($total > $paid) && ($paidamount  > 0) ){
+            $purchase = $value->id;
+            $total = $value->total;
+            $deu = $value->deu;
+            $paid = $value->paid; 
+            if(($total > $paid) && ($paidamount  > 0) ){
                 if($paidamount < $value->deu ){                   
                     $payAmount = $paidamount;
                     $newpaid = $value->paid+$paidamount;
@@ -385,15 +387,15 @@ class Supplierpayment extends MY_Controller
                     
                     $paidamount = 0;                   
                 } else {                   
-                   $payAmount = $value->deu;
-                   $bigAmount = $paidamount - $value->deu;
-                   $odlNewPaid = $value->paid + $value->deu;
-                   
-                   $data  = array(
+                    $payAmount = $value->deu;
+                    $bigAmount = $paidamount - $value->deu;
+                    $odlNewPaid = $value->paid + $value->deu;
+                    
+                    $data  = array(
                         'paid' => $odlNewPaid,
                         'deu' => '0');
-                   $this->purchases_model->UpdateSupplierDeu($data,$value->id);
-                   $addPayData = array(
+                    $this->purchases_model->UpdateSupplierDeu($data,$value->id);
+                    $addPayData = array(
                         'date' => date('Y-m-d H:i'),
                         'purchases_id' => $value->id,
                         'supplier_id' => $this->input->post('supplier'),
@@ -404,41 +406,46 @@ class Supplierpayment extends MY_Controller
                         'store_id'       => $supplierStore_id,
                         'todayP_Payment' => $todayPurchasePayment,
                         );   
-                             
-                   $this->purchases_model->addPayment($addPayData);                  
-                   $paidamount = $bigAmount;
+                              
+                    $this->purchases_model->addPayment($addPayData);                  
+                    $paidamount = $bigAmount;
                       
                 }        
 
             }
                     
         } 
-        $advData = array(
-        	'suppliers_id'  => $this->input->post('supplier'),
-        	'adv_amount'    => $paidamount,
-        	'total_payment' => $this->input->post('paidamount'),
-        	'add_date'      => date('Y-m-d H:i:s'),
-        	'today_payment_id' => $todayPurchasePayment,
-        	'note'		    => $this->input->post('note'),
-          'store_id'    => $supplierStore_id,
-        	);        
-        $this->purchases_model->addAdvPayment($advData);
-        $odlNewPaid = $value->paid + $value->deu;
-        $total      = 0;
-        if($type=='Cheque'){
-	        $bankPending = array(
-	        	'supplier_id'  => $this->input->post('supplier'),
-	        	'amount'  	   => $this->input->post('paidamount'),
-	        	'bank_id'      => $this->input->post('bank'),
-	        	'cheque_no'    => $this->input->post('cheque_no'),
-	        	'insert_date'  => date('Y-m-d H:i:s'),
-	        	'type' 		     => 'pending',
-	        	'todayP_Payment' => $todayPurchasePayment,
-            'store_id'       => $supplierStore_id,
-            'payment_type' =>  2,
-	        	);
-	        $this->bank_model->bankPendingTranjection($bankPending);
-    		}
+
+        if($type!="Adjustment")
+        {   
+            $advData = array(
+              'suppliers_id'  => $this->input->post('supplier'),
+              'adv_amount'    => $paidamount,
+              'total_payment' => $this->input->post('paidamount'),
+              'add_date'      => date('Y-m-d H:i:s'),
+              'today_payment_id' => $todayPurchasePayment,
+              'note'		    => $this->input->post('note'),
+              'store_id'    => $supplierStore_id,
+              );        
+            $this->purchases_model->addAdvPayment($advData);
+            $odlNewPaid = $value->paid + $value->deu;
+            $total      = 0;
+            if($type=='Cheque'){
+              $bankPending = array(
+                'supplier_id'  => $this->input->post('supplier'),
+                'amount'  	   => $this->input->post('paidamount'),
+                'bank_id'      => $this->input->post('bank'),
+                'cheque_no'    => $this->input->post('cheque_no'),
+                'insert_date'  => date('Y-m-d H:i:s'),
+                'type' 		     => 'pending',
+                'todayP_Payment' => $todayPurchasePayment,
+                'store_id'       => $supplierStore_id,
+                'payment_type' =>  2,
+                );
+              $this->bank_model->bankPendingTranjection($bankPending);
+            }
+
+        }
         $this->session->set_flashdata('message', lang('Purchases Payment submited successfully'));
         redirect('supplierpayment/purchase_payment');
     }
