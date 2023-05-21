@@ -21,8 +21,6 @@ class Reports extends MY_Controller
         $this->load->library('form_validation');
         $this->load->model('categories_model');
 
-        $ses_unset = array('error' => 'error', 'success' => 'success', 'message' => 'message');
-        $this->session->unset_userdata($ses_unset);
     }
     public function cash_book()
     {
@@ -1696,11 +1694,14 @@ class Reports extends MY_Controller
         if (!$this->Admin) {
             $store_id = $this->session->userdata('store_id');
         } else {
-            $store_id = $this->input->post('store_id');
+            $store_id = $this->input->post('store_id') ? $this->input->post('store_id') : 0;
         }
 
+        $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : null;
+        $end_date = $this->input->post('end_date') ? $this->input->post('end_date') : null;
+
         // $this->data['stores'] = $this->site->getAllStores();
-        $this->data['results'] = $this->reports_model->saleAndPurseCount($store_id);
+        $this->data['results'] = $this->reports_model->saleAndPurseCount($store_id,$start_date,$end_date);
         $this->data['products'] = $this->reports_model->getAllProducts();
         $this->data['page_title'] = $this->lang->line("Sold and Purchase");
         $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('Sold and Purchase')));
@@ -1711,6 +1712,7 @@ class Reports extends MY_Controller
     function excel_sold_purchase($data = '')
     {
 
+        $data=explode("__",$data);
         if ((!$this->Admin) && (!$this->Manager)) {
             $this->session->set_flashdata('error', lang("access_denied"));
             redirect($_SERVER["HTTP_REFERER"]);
@@ -1719,10 +1721,12 @@ class Reports extends MY_Controller
         if (!$this->Admin) {
             $warehouse = $this->session->userdata('store_id');
         } else {
-            $warehouse = $data;
+            $warehouse = $data[0];
         }
+        $start_date = $data[1] ? $data[1] : null;
+        $end_date = $data[2] ? $data[2] : null;
 
-        $query_data = $this->reports_model->saleAndPurseCount($warehouse);
+        $query_data = $this->reports_model->saleAndPurseCount($warehouse,$start_date,$end_date);
         $fileName = "sold_purchase_report_" . date('Y-m-d_h_i_s') . ".xls";
 
         $fields = array('Sold and Purchase');
@@ -1731,6 +1735,14 @@ class Reports extends MY_Controller
             $store_info = $this->site->getAllStores($warehouse);
             $fields = array('Store Name', $store_info[0]->name);
             $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if ($start_date) {
+            $fields = array('Start Date', $start_date);
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if ($end_date) {
+            $fields = array('End Date', $end_date);
+            $excelData .= implode("\t", array_values($fields)) . "\n";;
         }
 
         $fields = array('NAME', 'CODE', 'SOLD', 'PURCHASES');

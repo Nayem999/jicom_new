@@ -104,9 +104,33 @@ $v = "?v=1";
                                         $wr[$store->id] = $store->name;
                                     }
                                     ?>
-                                    <?= form_dropdown('store_id', $wr, set_value('store_id'), 'class="form-control select2 tip" id="store_id" required="required" style="width:100%;"'); ?> 
+                                    <?= form_dropdown('store_id', $wr, set_value('store_id'), 'class="form-control select2 tip" id="store_id"  style="width:100%;"'); ?> 
                                 </div>
-                            </div>                           
+                            </div>   
+
+                            <div class="col-sm-4">
+
+                                    <div class="form-group">
+
+                                        <label class="control-label" for="start_date"><?= lang("start_date"); ?></label>
+
+                                        <?= form_input('start_date', set_value('start_date'), 'class="form-control datetimepicker" id="start_date"'); ?>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-sm-4">
+
+                                    <div class="form-group">
+
+                                        <label class="control-label" for="end_date"><?= lang("end_date"); ?></label>
+
+                                        <?= form_input('end_date', set_value('end_date'), 'class="form-control datetimepicker" id="end_date"'); ?>
+
+                                    </div>
+
+                                </div>                        
 
                             <div class="col-xs-12">
 
@@ -228,7 +252,7 @@ $v = "?v=1";
             
   });
   $("#excelWindow").click(function () {  
-        var data=$("#warehouse").val();    
+        var data=$("#warehouse").val()+"__"+$("#start_date").val()+"__"+$("#end_date").val();    
         var url='<?=site_url('reports/excel_sold_purchase/');?>'+'/'+data;
         location.replace(url);
 
