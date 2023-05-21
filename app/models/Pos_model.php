@@ -816,12 +816,10 @@ class Pos_model extends CI_Model
                 }
 
                 $item['sale_id'] = $sale_id;
-
                 $item['store_id'] = $store_id;
-
-                $this->storeProQtyUpdate($item['product_id'],$item['quantity']);
-
+                
                 if($this->db->insert('sale_items', $item)) {
+                    $this->storeProQtyUpdate($item['product_id'],$item['quantity']);
                     $item['sale_log_id'] = $sale_log_id;
                     $this->db->insert('sale_items_log', $item);
                     $product = $this->site->getProductByID($item['product_id']);
@@ -985,7 +983,6 @@ class Pos_model extends CI_Model
 
 
     public function updateSale($id, $data, $items)
-
     {
 
         $oitems = $this->getAllSaleItems($id);
@@ -1036,9 +1033,9 @@ class Pos_model extends CI_Model
             $this->db->insert('sales_log', $data);
             $sale_log_id = $this->db->insert_id(); 
             foreach ($items as $item) { 
-                $this->storeProQtyUpdate($item['product_id'],$item['quantity']);
                 $item['sale_id'] = $id;
                 if($this->db->insert('sale_items', $item)) { 
+                    $this->storeProQtyUpdate($item['product_id'],$item['quantity']);
                     $item['sale_log_id'] = $sale_log_id;
                     $this->db->insert('sale_items_log', $item);
                     $product = $this->site->getProductByID($item['product_id']);
