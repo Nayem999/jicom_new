@@ -19,8 +19,7 @@ class Mf_production extends MY_Controller
         // $this->load->model('products_model');
         $this->load->model('mf_recipe_model');
         $this->load->model('mf_production_model');
-        $ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
-		$this->session->unset_userdata($ses_unset);
+
     }
 
     function index() {

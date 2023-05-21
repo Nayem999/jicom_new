@@ -18,11 +18,6 @@ class Service extends MY_Controller
         $this->load->model('service_model');
 		
 		$this->load->model('purchases_model');
-
-		
-		$ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
-		$this->session->unset_userdata($ses_unset);
-
     }
 
     function index()

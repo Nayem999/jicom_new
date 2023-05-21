@@ -25,9 +25,6 @@ class Mf_suppliers extends MY_Controller
         $this->load->model('mf_suppliers_model');
 		// $this->load->model('purchases_model');
 		
-		$ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
-		$this->session->unset_userdata($ses_unset);
-
     }
 
 

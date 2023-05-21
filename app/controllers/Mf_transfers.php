@@ -24,10 +24,7 @@ class Mf_transfers extends MY_Controller
         $this->load->model('transfers_model');
         
         $this->allowed_types = 'gif|jpg|png|pdf|doc|docx|xls|xlsx|zip';
-              
-		$ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
-		$this->session->unset_userdata($ses_unset);
-        
+                      
     } 
 
     function index() { 

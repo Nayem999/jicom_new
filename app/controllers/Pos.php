@@ -21,8 +21,8 @@ class Pos extends MY_Controller {
 		$this->load->model('settings_model');
 		$this->load->model('bank_model');
 		
-		$ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
-		$this->session->unset_userdata($ses_unset);
+		/* $ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
+		$this->session->unset_userdata($ses_unset); */
 
 	} 
 

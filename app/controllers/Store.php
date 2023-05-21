@@ -20,10 +20,7 @@ class Store extends MY_Controller
           redirect();
         }
         $this->load->library('form_validation'); 
-        $this->load->model('store_model');
-		
-		$ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
-		$this->session->unset_userdata($ses_unset);       
+        $this->load->model('store_model');   
 
     }
 

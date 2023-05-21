@@ -14,8 +14,7 @@ class Customers extends MY_Controller
         $this->load->library('form_validation');
         $this->load->model('customers_model');
         $this->load->model('sales_model');
-		$ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
-		$this->session->unset_userdata($ses_unset);
+
     }
     function index()
     {

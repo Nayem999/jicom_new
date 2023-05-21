@@ -16,10 +16,7 @@ class Quotation extends MY_Controller {
 		$this->load->model('quotation_model');
 
 		$this->digital_file_types = 'zip|pdf|doc|docx|xls|xlsx|jpg|png|gif';
-        
-		$ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
-		$this->session->unset_userdata($ses_unset);
-
+     
 	}
 
 	function index(){         

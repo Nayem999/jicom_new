@@ -15,10 +15,8 @@ class Mf_report extends MY_Controller
         }
         $this->load->model('mf_report_model');
         $this->load->library('form_validation');
+        // $this->load->helper('update_helper');
  
-        
-        $ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
-		$this->session->unset_userdata($ses_unset);
     }
     
     function index() {

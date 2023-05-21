@@ -10,9 +10,7 @@ class Loan extends MY_Controller
         } 
         $this->load->library('form_validation');
         $this->load->model('bank_model');
-        
-		$ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
-		$this->session->unset_userdata($ses_unset);
+
 	}
 
 	public function index() {  
