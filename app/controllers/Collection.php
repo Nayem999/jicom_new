@@ -371,11 +371,11 @@ class Collection extends MY_Controller
             $paymentAmount = $this->input->post('colAmount');             
         }
 
-        if($type=="Adjustment" && $paidamount>$totalDeu)
+        /* if($type=="Adjustment" && $paidamount>$totalDeu)
         {
           $this->session->set_flashdata('error', lang('Sorry, You collection over due amount'));
           redirect('collection/collectionpayment');
-        }
+        } */
           // tranjiction_id //tran_amount
          $payPaymentdata = array(
             'payment_date' => date('Y-m-d H:i:s'),

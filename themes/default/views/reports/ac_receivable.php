@@ -237,7 +237,7 @@ $cid ='';
   });
 
     $("#excelWindow").click(function() {
-        var data = $("#customer").val() ;
+        var data = $("#customer").val()+"__"+$("#store_id").val() ;
         var url = '<?= site_url('reports/excel_receivablelist/'); ?>' + '/' + data;
         location.replace(url);
     });
