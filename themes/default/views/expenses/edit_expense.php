@@ -40,7 +40,7 @@
                             <?php } ?> 
                             <div class="form-group">
                                 <?= lang('type', 'type'); ?>*
-                                <?php $opts = array('cash' => lang('Cash'), 'cheque' => lang('Cheque'), 'card' => lang('Card')); ?>
+                                <?php $opts = array('cash' => lang('Cash'), 'cheque' => lang('Cheque'), 'TT' => lang('TT'), 'RDGS' => lang('RDGS')); ?>
                                 <?= form_dropdown('type', $opts, set_value('type', $expense->paid_by), 'class="form-control tip select2" id="type"  required="required" style="width:100%;"'); ?>
                             </div>
                             <div id="bankInfo"></div> 
@@ -56,6 +56,21 @@
                                 <?= form_dropdown('warehouse', $wr, set_value('warehouse',$expense->store_id), 'class="form-control select2 tip" id="from-warehouse" required="required" style="width:100%;"'); ?> 
                             </div>
                             <?php } ?>
+
+                            <div class="form-group">
+                                <?= lang("Expenses For", "Expenses For"); ?>
+                                <?php
+                                $emp[0] = lang("select") . " " . lang("Employee");
+                                foreach ($employee as $employee_val) {
+                                    $emp[$employee_val->id] = $employee_val->name;
+                                }
+                                ?>
+                                <?= form_dropdown('employee_id', $emp, $expense->employee_id, 'class="form-control select2 tip" id="employee_id"  required="required" style="width:100%;"'); ?>
+                            </div>
+                            <div class="form-group">
+                                <?= lang("Expense For", "Expense For"); ?>
+                                <?= form_input('expense_for', $expense->expense_for, 'class="form-control " id=""'); ?>
+                            </div>
 
                             <div class="form-group">
                                     <?= lang('category', 'category'); ?>

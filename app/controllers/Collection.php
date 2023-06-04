@@ -563,8 +563,8 @@ class Collection extends MY_Controller
       //$suppliers = $this->purchases_model->getSupplierByID($sid);
       
       $banks = $this->site->get_bank_with_store(); 
-    
-      if($type == 'Cheque' || $type == 'TT' || $type == 'Deposit'){
+      
+      if($type == 'Cheque' || $type == 'cheque' || $type == 'TT' || $type == 'Deposit' || $type == 'RDGS'){
         $output= '<div class="form-group">
                 <label>Bank information </label> 
                 <select class="form-control select2 tip" name="bank" required="required" id="type">
@@ -573,7 +573,8 @@ class Collection extends MY_Controller
             foreach ($banks as $key => $bank) {
               $output .='<option value="'.$bank->bank_account_id.'">'.$bank->bank_name .' ('.$bank->account_name.' ) ( '.$bank->account_no.')</option>';
             }
-        if($type == 'Cheque')  {
+
+        if($type == 'Cheque' || $type == 'cheque')  {
           $output .='</select></div>
                   <div class="form-group">
                   <label>Cheque No </label>
@@ -591,6 +592,13 @@ class Collection extends MY_Controller
             $output .='</select></div>
             <div class="form-group">
             <label>Deposit No </label>
+        <input type="text" name="cheque_no" class="form-control" required="required">
+            </div>'; 
+        }  
+        else if($type == 'RDGS'){
+            $output .='</select></div>
+            <div class="form-group">
+            <label>RDGS No </label>
         <input type="text" name="cheque_no" class="form-control" required="required">
             </div>'; 
         }  
