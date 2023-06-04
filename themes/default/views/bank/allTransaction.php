@@ -50,10 +50,10 @@
                 </div>
 
                 <div class="box-body">
-                      <ul class="nav nav-tabs">
+                      <!-- <ul class="nav nav-tabs">
                             <li class="<?php if($active == 1){ echo 'active' ;} ?>"><a href="<?php echo base_url($tabPath.'/1') ?>"  >Cash in</a></li>
                             <li class="<?php if($active == 0){ echo 'active' ;} ?>"><a href="<?php echo base_url($tabPath.'/0') ?>"  >Cash Out</a></li>
-                      </ul>
+                      </ul> -->
                       <br /><br />
 
                       <div class="table-responsive">

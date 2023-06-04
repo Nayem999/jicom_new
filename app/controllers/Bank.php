@@ -466,7 +466,7 @@ class Bank extends MY_Controller
 
 		$this->db->join('stores', 'stores.id=tranjiction.store_id', 'left'); 
 
-		$this->db->where("bank_pending.bank_id", $id)->limit(20);
+		$this->db->where("bank_pending.bank_id", $id)->limit(20)->order_by('tid','desc');
 
 		$getData = $this->db->get()->result();
 
@@ -584,7 +584,7 @@ class Bank extends MY_Controller
 
 			$this->datatables->where("bank_pending.bank_id", $account_id);
 
-			$this->datatables->where('tranjiction.tran_type', $tran_type);
+			// $this->datatables->where('tranjiction.tran_type', $tran_type);
 
 			$this->datatables->unset_column('tid');
 			

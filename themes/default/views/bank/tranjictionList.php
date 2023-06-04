@@ -18,11 +18,11 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
         <div class="modal-body">
 
             <div class="table-responsive">
-           				 <ul class="nav nav-tabs">
+           				 <!-- <ul class="nav nav-tabs">
                             <li id="cashIn" class="active"><a href="javascript:;" onclick="cashIn()" >Cash in</a></li>
                             <li id="cashOut"><a href="javascript:;" onclick="cashOut()" >Cash Out</a></li>
                             
-                        </ul>
+                        </ul> -->
 
                 <table cellspacing="0" cellpadding="0" border="0" class="table table-bordered table-hover table-striped" id="CompTable">
 
@@ -58,7 +58,8 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
 							$i++;
 							?>
 
-                            <tr class="row<?php echo $i ; if($value->tran_type ==0){ echo ' Cash_Out displyOut' ; }else{ echo ' Cash_In ';}  ?>">
+                            <!-- <tr class="row<?php echo $i ; if($value->tran_type ==0){ echo ' Cash_Out displyOut' ; }else{ echo ' Cash_In ';}  ?>"> -->
+                            <tr class="row<?php echo $i ?>">
                             
                                 <td><?= date("d-m-Y" ,strtotime($value->tran_date)) ?></td>
 
