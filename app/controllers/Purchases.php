@@ -26,7 +26,7 @@ class Purchases extends MY_Controller
         $this->allowed_types = 'gif|jpg|png|pdf|doc|docx|xls|xlsx|zip';
 
         $incSequence = null;
-  
+
     }
     
     public function today() { 

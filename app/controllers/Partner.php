@@ -20,6 +20,8 @@ class Partner extends MY_Controller
 		$this->load->model('purchases_model');
 
 		$this->load->model('categories_model');
+
+
     }
 
     function index()  {

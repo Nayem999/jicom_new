@@ -2610,17 +2610,11 @@ class Reports extends MY_Controller
     public function excel_receivablelist($data)
     {
 
-        $cID = $sID = NULL;
-        /* if ($this->input->post('customer')) {
-            $cID = $this->input->post('customer');
-        }
-        if ($this->input->post('store_id')) {
-            $sID = $this->input->post('store_id');
-        } */
         $data=explode("__",$data);
         $cID = $data[0];
         $sID = $data[1];
         $recivabl = $this->reports_model->recablelist($cID, $sID);
+
         // $customer = $this->reports_model->recablelist($cID); 
         // $tDue = $customer[0]['due']; 
         // $cID = $this->site->findMergeIdbycp('customer_id',$this->input->post('customer'));

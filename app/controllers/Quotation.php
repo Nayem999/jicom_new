@@ -16,7 +16,7 @@ class Quotation extends MY_Controller {
 		$this->load->model('quotation_model');
 
 		$this->digital_file_types = 'zip|pdf|doc|docx|xls|xlsx|jpg|png|gif';
-     
+        
 	}
 
 	function index(){         

@@ -15,8 +15,7 @@ class Mf_report extends MY_Controller
         }
         $this->load->model('mf_report_model');
         $this->load->library('form_validation');
-        // $this->load->helper('update_helper');
- 
+
     }
     
     function index() {

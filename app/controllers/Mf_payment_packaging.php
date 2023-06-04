@@ -24,8 +24,9 @@ class Mf_payment_packaging extends MY_Controller
         $this->load->model('suppliers_model');
         $this->load->model('bank_model');
 
+
         $this->allowed_types = 'gif|jpg|png|pdf|doc|docx|xls|xlsx|zip';
-             
+        
     }
     function getSupplierByStore($id){
       return $id;

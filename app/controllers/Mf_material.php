@@ -25,6 +25,10 @@ class Mf_material extends MY_Controller
         $this->load->model('mf_categories_model');
         $this->load->model('mf_material_model');
 		// $this->load->model('purchases_model');
+		
+		/* $ses_unset=array('error'=>'error','success'=>'success','message'=>'message');
+		$this->session->unset_userdata($ses_unset); */
+
     }
 
 

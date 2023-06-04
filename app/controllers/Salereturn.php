@@ -28,7 +28,7 @@ class Salereturn extends MY_Controller
 		$this->load->model('categories_model');
 
 		$this->load->model('sales_model');
-		
+
     }
 
     function index() {   

@@ -24,7 +24,8 @@ class Mf_transfers extends MY_Controller
         $this->load->model('transfers_model');
         
         $this->allowed_types = 'gif|jpg|png|pdf|doc|docx|xls|xlsx|zip';
-                      
+
+        
     } 
 
     function index() { 

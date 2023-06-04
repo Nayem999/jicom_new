@@ -23,7 +23,6 @@ class Sales extends MY_Controller {
         $this->load->model('pos_model');
 
 		$this->digital_file_types = 'zip|pdf|doc|docx|xls|xlsx|jpg|png|gif';
-        
 	}
 
 	function index(){         

@@ -20,7 +20,7 @@ class Store extends MY_Controller
           redirect();
         }
         $this->load->library('form_validation'); 
-        $this->load->model('store_model');   
+        $this->load->model('store_model');
 
     }
 

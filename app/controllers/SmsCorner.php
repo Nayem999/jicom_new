@@ -14,6 +14,7 @@ class SmsCorner extends MY_Controller
         $this->load->model('purchases_model');
         $this->load->model('bank_model');
         $this->load->library('form_validation');
+        
 
     }
     public function cash_book(){

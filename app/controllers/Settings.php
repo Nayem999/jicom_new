@@ -12,7 +12,7 @@ class Settings extends MY_Controller {
         $this->load->library('form_validation');
         $this->load->library('encryption');
         $this->load->model('settings_model');
-
+        
     }
 
     function index() { 

@@ -17,13 +17,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | environments.
 |
 */
-
-$config['base_url'] = 'http://localhost/jicom/';
 // $config['base_url'] = 'https://timesavedhaka.com/jicom/';
 //  $config['base_url'] = 'http://localhost:8012/jicom/';
 // $config['base_url'] = 'http://192.168.31.164/jicom/';
 // $config['base_url'] = 'https://devjicom.gdnserver.com/';
 // $config['base_url'] = 'https://jicom.gdnserver.com/';
+$config['base_url'] = 'http://localhost/jicom/';
 
 /*
 |--------------------------------------------------------------------------
@@ -217,7 +216,7 @@ $config['directory_trigger'] = 'd';
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+$config['log_threshold'] = 1;
 
 /*
 |--------------------------------------------------------------------------

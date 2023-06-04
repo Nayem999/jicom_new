@@ -1,0 +1,1 @@
+ERROR - 2023-06-04 10:31:32 --> Severity: Warning --> Undefined property: Bank::$Admin D:\xampp\htdocs\jicom\lib\core\Model.php 77

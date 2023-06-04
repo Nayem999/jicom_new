@@ -25,6 +25,7 @@ class Products extends MY_Controller
         $this->load->library('form_validation');
         $this->load->model('products_model');
 
+
     }
 
     function index() {
