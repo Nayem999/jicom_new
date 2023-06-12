@@ -68,9 +68,9 @@ class Collection extends MY_Controller
         }  
         // $this->datatables->add_column();   
         // $this->datatables->group_by('today_collection.today_collect_id, customers.name, stores.name, today_collection.payment_date, today_collection.payment_amount, today_collection.payment_note, today_collection.paid_by, bank_pending.type, today_collection.payment_status');   
-        $this->datatables->unset_column('id');   
-        // echo $this->db->last_query();die;     
+        // $this->datatables->unset_column('id');  
         echo $this->datatables->generate();              
+        // echo $this->db->last_query();die;     
         
     } 
 

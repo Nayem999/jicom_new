@@ -53,7 +53,7 @@
                 });
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
             },
-            "aoColumns": [{"mRender":hrld}, null, {"mRender":currencyFormat},null, null, null,null, {"mRender":attach, "bSortable":false, "bSearchable": false},{"bSortable":false, "bSearchable": false}]
+            "aoColumns": [{"mRender":hrld}, null, null,{"mRender":currencyFormat},null, null, null,null, {"mRender":attach, "bSortable":false, "bSearchable": false},{"bSortable":false, "bSearchable": false}]
         });
 
     });
@@ -161,10 +161,11 @@
                         <thead>
                         <tr class="active">
                             <th class="col-xs-2"><?php echo $this->lang->line("date"); ?></th>
+                            <th class="col-xs-2"><?php echo $this->lang->line("Expense For"); ?></th>
                             <th class="col-xs-2"><?php echo $this->lang->line("reference"); ?></th>
                             <th class="col-xs-1"><?php echo $this->lang->line("amount"); ?></th>
                             <th class="col-xs-1"><?php echo $this->lang->line("Category"); ?></th>
-                            <th class="col-xs-4"><?php echo $this->lang->line("note"); ?></th>
+                            <th class="col-xs-2"><?php echo $this->lang->line("note"); ?></th>
                             <th class="col-xs-4"><?php echo $this->lang->line("Paid_By"); ?></th>
                             <th class="col-xs-2"><?php echo $this->lang->line("Created By"); ?></th>
                             <th style="min-width:30px; width: 30px; text-align: center;"><i class="fa fa-chain"></i></th>

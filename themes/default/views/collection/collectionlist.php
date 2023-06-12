@@ -56,7 +56,7 @@ $v = "?v=1";
 
         $('#purData').dataTable({
             "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, '<?= lang('all'); ?>']],
-            "aaSorting": [[ 2, "desc" ]], "iDisplayLength": <?= $Settings->rows_per_page ?>,
+            "aaSorting": [[ 0, "desc" ]], "iDisplayLength": <?= $Settings->rows_per_page ?>,
             'bProcessing': true, 'bServerSide': true,
             'sAjaxSource': '<?= site_url('collection/collectionlist/'. $v) ?>',
             'fnServerData': function (sSource, aoData, fnCallback) {
@@ -69,7 +69,7 @@ $v = "?v=1";
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
 
             },
-            "aoColumns": [ null,null, null, null, null,null,null,null,null]
+            "aoColumns": [ null,null,null, null, null, null,null,null,null,null]
 
         });
 
@@ -191,6 +191,7 @@ $v = "?v=1";
 
                             <tr class="active">
 
+                                <th class="col-xs-1">ID</th>
                                 <th class="col-xs-2">Customar name</th>
 
                                 <th class="col-xs-2">Store name</th>
@@ -199,7 +200,7 @@ $v = "?v=1";
                                 
                                 <th class="col-xs-1">Amount</th>
 
-                                <th class="col-xs-2">Note</th> 
+                                <th class="col-xs-1">Note</th> 
 
                                 <th class="col-xs-1">Paid By</th> 
 

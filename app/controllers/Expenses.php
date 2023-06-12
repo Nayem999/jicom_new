@@ -72,7 +72,9 @@ class Expenses extends MY_Controller
         </ul></div></div>'; */
         $this->load->library('datatables');
         $this->datatables->select(
-            $this->db->dbprefix('expenses') . ".id as id, date, reference, amount," .
+            $this->db->dbprefix('expenses') . ".id as id, date,CONCAT(".
+            $this->db->dbprefix('employee') . ".name,' ',".
+            $this->db->dbprefix('expenses') . ".expense_for) as expense_for, reference, amount," .
                 $this->db->dbprefix('expens_category') . ".name as category, note," .
                 $this->db->dbprefix('expenses') . ".paid_by, CONCAT(" .
                 $this->db->dbprefix('users') . ".first_name, ' ', " .
@@ -82,6 +84,7 @@ class Expenses extends MY_Controller
         $this->datatables->from('expenses');
         $this->datatables->join('users', 'users.id=expenses.created_by', 'left');
         $this->datatables->join('expens_category', 'expens_category.cat_id=expenses.c_id', 'left');
+        $this->datatables->join('employee', 'employee.id=expenses.employee_id', 'left');
         $this->datatables->group_by('expenses.id');
 
         if ($category) {
