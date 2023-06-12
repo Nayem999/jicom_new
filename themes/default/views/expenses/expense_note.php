@@ -17,7 +17,9 @@
     <section class="content">
         <div class="row">
             <div class="col-xs-12">
-                <h1><?= $Settings->site_name == 'SimplePOS' ? 'Simple<b>POS</b>' : '<img src="'.base_url('uplaods/'.$Settings->logo).'" alt="'.$Settings->site_name.'" />'; ?></h1>
+                <h1><?= $Settings->site_name == 'SimplePOS' ? 'Simple<b>POS</b>' : '<img width=100%;
+height=150px; src="https://jicom.gdnserver.com/themes/default/assets/images/chalan.png" />'; ?></h1>
+                <!-- <h1><?= $Settings->site_name == 'SimplePOS' ? 'Simple<b>POS</b>' : '<img src="'.base_url('uplaods/'.$Settings->logo).'" alt="'.$Settings->site_name.'" />'; ?></h1> -->
                 <div class="box box-primary">
                     <div class="box-header">
                         <h3 class="box-title"><?= lang('expense').' # '.$expense->id; ?></h3>
@@ -31,8 +33,20 @@
                                         <td><strong class="text-right"><?php echo $this->tec->hrld($expense->date); ?></strong></td>
                                     </tr>
                                     <tr>
+                                        <td><strong><?= lang("Store Name"); ?></strong></td>
+                                        <td><strong class="text-right"><?php echo $expense->store_name; ?></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><?= lang("Expenses For"); ?></strong></td>
+                                        <td><strong class="text-right"><?php echo $expense->employee_name.' '.$expense->expense_for; ?></strong></td>
+                                    </tr>
+                                    <tr>
                                         <td><strong><?= lang("reference"); ?></strong></td>
                                         <td><strong class="text-right"><?php echo $expense->reference; ?></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong><?= lang("Category"); ?></strong></td>
+                                        <td><strong class="text-right"><?php echo $expense->category_name; ?></strong></td>
                                     </tr>
                                     <tr>
                                         <td><strong><?= lang("amount"); ?></strong></td>
@@ -40,7 +54,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2"><?php echo $expense->note; ?></td>
+                                        <td colspan="2"><?php if($expense->note) echo '<strong>NB: </strong>'.$expense->note; ?></td>
                                     </tr>
                                 </tbody>
                             </table>

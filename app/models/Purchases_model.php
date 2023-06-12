@@ -444,7 +444,14 @@ class Purchases_model extends CI_Model
 
     public function getExpenseByID($id) {
 
-        $q = $this->db->get_where('expenses', array('id' => $id), 1);
+        // $q = $this->db->get_where('expenses', array('id' => $id), 1);
+        $this->db->select('expenses.*, expens_category.name as category_name, stores.name as store_name, employee.name as employee_name');
+		$this->db->from('expenses');
+        $this->db->join('employee', 'employee.id=expenses.employee_id', 'left');
+        $this->db->join('stores', 'stores.id=expenses.store_id', 'left');
+        $this->db->join('expens_category', 'expens_category.cat_id=expenses.c_id', 'left');
+        $this->db->where('expenses.id', $id);
+		$q = $this->db->get();
 
         if ($q->num_rows() > 0) {
 
