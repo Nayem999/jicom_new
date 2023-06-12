@@ -252,7 +252,7 @@ $v = "?v=1";
             
   });
   $("#excelWindow").click(function () {  
-        var data=$("#warehouse").val()+"__"+$("#start_date").val()+"__"+$("#end_date").val();    
+        var data=$("#store_id").val()+"__"+$("#start_date").val()+"__"+$("#end_date").val();    
         var url='<?=site_url('reports/excel_sold_purchase/');?>'+'/'+data;
         location.replace(url);
 
