@@ -34,7 +34,7 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
                         <th >Account Name</th>
                         <th >Cheque No</th>
                         <th >Store name</th>
-                        <th >Payment Type</th>
+                        <th >Transaction Type</th>
                         <th >Supplier name</th>
                         <th >Customer name</th>
                         <th >Amount</th>

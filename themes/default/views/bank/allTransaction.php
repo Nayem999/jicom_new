@@ -81,7 +81,8 @@
 
                             <th><?php echo 'Cheque No'; ?></th>
 
-                            <th><?php echo 'Payment Type'; ?></th>
+                            <th><?php echo 'Transaction Type'; ?></th>
+                            
                             <th><?php echo 'Supplier'; ?></th>
 
                             <th><?php echo 'Customer'; ?></th>
