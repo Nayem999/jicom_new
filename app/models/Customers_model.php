@@ -85,7 +85,7 @@ class Customers_model extends CI_Model
 
 	}
 
-public function getCustomerLaserByCid($cusromer){
+public function getCustomerLaserByCid($cusromer,$start_date,$end_date){
 
         $addArarr = array();
         $salesid = array();
@@ -107,11 +107,16 @@ public function getCustomerLaserByCid($cusromer){
                 }  
             }
         $this->db->select('*'); 
+        if($start_date!=NULL && $end_date!=NULL) {
+            $this->db->where('date_submit >=', $start_date);
+            $this->db->where('date_submit <=', $end_date);
+        }
         $qs = $this->db->get_where('salesreturn', array('customer_id' => $cusromer));
             if($qs->num_rows() > 0) {
                 foreach (($qs->result()) as $row) {  
                     $this->db->select('return_amount as return_amount'); 
                     $this->db->where('return_amount !=', '0'); 
+                    
                      $ritem = $this->db->get_where('sreturn_items', array('sreturn_id' => $row->sreturn_id));
                         if($ritem->num_rows() > 0) {
                             foreach (($ritem->result()) as $ritems) { 
@@ -128,6 +133,10 @@ public function getCustomerLaserByCid($cusromer){
                     }
                 } 
          $this->db->select('*'); 
+        if($start_date!=NULL && $end_date!=NULL) {
+            $this->db->where('date_submit >=', $start_date);
+            $this->db->where('date_submit <=', $end_date);
+        }
         $qs = $this->db->get_where('salesreturn', array('customer_id' => $cusromer));
             if($qs->num_rows() > 0) {
                 foreach (($qs->result()) as $row) {  
@@ -154,7 +163,10 @@ public function getCustomerLaserByCid($cusromer){
         $this->db->from('sales');
         
         $this->db->join('bank_pending','bank_pending.collection_id=sales.collection_id','left');
-        
+        if($start_date!=NULL && $end_date!=NULL) {
+            $this->db->where('date >=', $start_date);
+            $this->db->where('date <=', $end_date);
+        }
         $this->db->where(['sales.customer_id'=>$cusromer,'sales.sales_type'=>'sale']);
         
         $q = $this->db->get()->result();
@@ -174,6 +186,10 @@ public function getCustomerLaserByCid($cusromer){
             }          
         } 
         $this->db->select('sales.id, sales.date as datetime, sales.grand_total');
+        if($start_date!=NULL && $end_date!=NULL) {
+            $this->db->where('date >=', $start_date);
+            $this->db->where('date <=', $end_date);
+        }
         $q = $this->db->get_where('sales', array('customer_id' => $cusromer,'sales_type'=>'service'));
         if($q->num_rows() > 0) {
             foreach (($q->result()) as $row) {
@@ -196,7 +212,11 @@ public function getCustomerLaserByCid($cusromer){
   
         $this->db->select("today_collection.today_collect_id, today_collection.paid_by as paid_by, today_collection.payment_date as datetime, if((paid_by='TT' ||paid_by='Cheque') && type='Approved',today_collection.payment_amount,0) as chk_amount, if( paid_by='Cash' || paid_by='Adjustment' || paid_by='Deposit', today_collection.payment_amount ,0) as other_amount ");     
         $this->db->join("bank_pending","bank_pending.collection_id=today_collection.today_collect_id and bank_pending.customer_id=$cusromer and bank_pending.payment_type=1 and bank_pending.type='Approved'",'left');    
-        $this->db->order_by("today_collect_id","DESC");  
+        $this->db->order_by("today_collect_id","DESC"); 
+        if($start_date!=NULL && $end_date!=NULL) {
+            $this->db->where('payment_date >=', $start_date);
+            $this->db->where('payment_date <=', $end_date);
+        } 
         $q = $this->db->get_where('today_collection', array('today_collection.customer_id' => $cusromer,));
         // echo $this->db->last_query();die;
 

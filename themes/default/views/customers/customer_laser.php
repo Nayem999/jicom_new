@@ -40,7 +40,7 @@
 
                                         <label class="control-label" for="start_date"><?= lang("start_date"); ?></label>
 
-                                        <?= form_input('start_date', set_value('start_date'), 'class="form-control datepicker" id="start_date"'); ?>
+                                        <?= form_input('start_date', $start_date, 'class="form-control datepicker" id="start_date"'); ?>
 
                                     </div>
 
@@ -52,7 +52,7 @@
 
                                         <label class="control-label" for="end_date"><?= lang("end_date"); ?></label>
 
-                                        <?= form_input('end_date', set_value('end_date'), 'class="form-control datepicker" id="end_date"'); ?>
+                                        <?= form_input('end_date', $end_date, 'class="form-control datepicker" id="end_date"'); ?>
 
                                     </div>
 
@@ -235,6 +235,15 @@
     </div>
 
 </section>
+<script src="<?= $assets ?>plugins/bootstrap-datetimepicker/js/moment.min.js" type="text/javascript"></script>
+<script src="<?= $assets ?>plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script type="text/javascript"> 
+    $(function () { 
+        $('.datepicker').datetimepicker({ 
+            format: 'YYYY-MM-DD' 
+        }); 
+    }); 
+</script>
 <script>
     $("#daily_sales").click(function() {
         $(".dataTables_info").css("display", "none");
@@ -259,7 +268,7 @@
     });
 
     $("#excelWindow").click(function() {
-        var data = '<?= $customer[0]->id; ?>';
+        var data = '<?= $customer[0]->id; ?>'+'__'+$("#start_date").val()+'__'+$("#end_date").val();
         var url = '<?= site_url('customers/excel_customer_laser/'); ?>' + '/' + data;
         location.replace(url);
     });

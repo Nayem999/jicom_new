@@ -235,26 +235,34 @@ class Customers extends MY_Controller
 
 	public function customer_laser($id){
 		$this->data['results'] = '';  
+
+		$start_date=isset($_POST['start_date'])?$_POST['start_date']:null;
+		$end_date=isset($_POST['end_date'])?$_POST['end_date']:null;		
 		$this->data['customer'] = $this->sales_model->getCustomerByID($id);    
         if($id !=''){ 
-        	$this->data['results'] = $this->customers_model->getCustomerLaserByCid($id);  
+        	$this->data['results'] = $this->customers_model->getCustomerLaserByCid($id,$start_date,$end_date);  
         }  
-
+		
 		// echo "<pre>";
 		// print_r($this->data['results']);
 		// die;
 		$this->data['customer_id'] = $id; 
+		$this->data['start_date'] = $start_date; 
+		$this->data['end_date'] = $end_date; 
 
         $this->data['page_title'] = $this->lang->line("Customer Laser List"); 
         $bc = array(array('link' => '#', 'page' => lang('merge')), array('link' => '#', 'page' => lang('Customer Laser list')));
         $meta = array('page_title' => lang('Customer Laser List'), 'bc' => $bc);        
         $this->page_construct('customers/customer_laser', $this->data, $meta);
 	} 
-	public function excel_customer_laser($id){
- 
+	public function excel_customer_laser($data){
+		$data=explode("__",$data);
+		$id=$data[0];
+		$start_date=$data[1];
+		$end_date=$data[2];
 		$customer = $this->sales_model->getCustomerByID($id);    
         if($id !=''){ 
-        	$results = $this->customers_model->getCustomerLaserByCid($id);  
+        	$results = $this->customers_model->getCustomerLaserByCid($id,$start_date,$end_date);  
         }  
 		$emptyvalue = 0;
 		$gtotal =0;
