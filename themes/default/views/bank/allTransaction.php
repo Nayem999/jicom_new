@@ -1,6 +1,14 @@
 
 <script>
 
+    function paymenttype(n) {
+        if(n==1 || n==3){
+            return 'In';
+        }else{
+            return 'Out';
+        }
+    }
+
     $(document).ready(function () {
 
         $('#CuData').dataTable({
@@ -27,7 +35,7 @@
 
             },
 
-            "aoColumns": [{"mRender":hrld}, null, null,null, null,null,null, null, {"bSortable":false, "bSearchable": false}]
+            "aoColumns": [{"mRender":hrld}, null, null,null, {"mRender": paymenttype}, null,null,null, null, {"bSortable":false, "bSearchable": false}]
 
         });
 
@@ -73,6 +81,7 @@
 
                             <th><?php echo 'Cheque No'; ?></th>
 
+                            <th><?php echo 'Payment Type'; ?></th>
                             <th><?php echo 'Supplier'; ?></th>
 
                             <th><?php echo 'Customer'; ?></th>

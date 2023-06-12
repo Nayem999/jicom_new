@@ -561,6 +561,8 @@ class Bank extends MY_Controller
 			
 			".$this->db->dbprefix('bank_pending').".cheque_no as cheque_no ,
 
+			".$this->db->dbprefix('bank_pending').".payment_type as payment_type,
+
 			".$this->db->dbprefix('suppliers').".name as supplier ,
 
 			".$this->db->dbprefix('customers').".name as customer ,

@@ -29,24 +29,16 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
                     <thead>
 
                     <tr>
-
                         <th>Date</th>
-
                         <th >Bank Name</th>
-
                         <th >Account Name</th>
-
                         <th >Cheque No</th>
-
                         <th >Store name</th>
-
+                        <th >Payment Type</th>
                         <th >Supplier name</th>
-
                         <th >Customer name</th>
-
                         <th >Amount</th>
-
-
+                        <th >Action</th>
                     </tr>
 
                     </thead>
@@ -71,6 +63,7 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
 
                                 <td><?= $value->store_name ?></td>
 
+                                <td><?php if($value->payment_type==1 || $value->payment_type==3){echo "In";}else{echo "Out";} ?></td>
                                 <td><?= $value->supplier ?></td>
 
                                 <td><?= $value->customer ?></td>
