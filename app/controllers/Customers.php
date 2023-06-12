@@ -243,6 +243,7 @@ class Customers extends MY_Controller
 		// echo "<pre>";
 		// print_r($this->data['results']);
 		// die;
+		$this->data['customer_id'] = $id; 
 
         $this->data['page_title'] = $this->lang->line("Customer Laser List"); 
         $bc = array(array('link' => '#', 'page' => lang('merge')), array('link' => '#', 'page' => lang('Customer Laser list')));
@@ -299,8 +300,15 @@ class Customers extends MY_Controller
 				}
 
 				$gtotal = $sgtotal - $pgtotal;
+				if($value['type'] =='collection')
+				{
+					$lineData = array($i++,$this->tec->hrld($value['datetime']), $value['type'].'/'.$value['paid_type'] , $dr_val, $cr_val, $gtotal); 
+				}
+				else
+				{
+					$lineData = array($i++,$this->tec->hrld($value['datetime']), $value['type'] , $dr_val, $cr_val, $gtotal); 
+				}
 
-                $lineData = array($i++,$this->tec->hrld($value['datetime']), $value['type'] , $dr_val, $cr_val, $gtotal); 
                 $excelData .= implode("\t", array_values($lineData)) . "\n"; 
             } 
 
