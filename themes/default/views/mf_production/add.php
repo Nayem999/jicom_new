@@ -38,7 +38,7 @@
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <?= lang('Store', 'Store'); ?>
+                                    <?= lang('Warehouse', 'Warehouse'); ?>
                                     <?php
                                     // $sr[''] = lang("Select") . " " . lang("Store");
                                     foreach ($factory_stores as $factory_store_arr) {
