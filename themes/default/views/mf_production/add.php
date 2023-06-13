@@ -72,9 +72,9 @@
                                         $ur[$all_uom_arr->id] = $all_uom_arr->name;
                                     }
                                     ?><br>
-                                    <?= form_input('target_qty_h', set_value('target_qty', 1), 'class="form-control tip target_qty" id="target_qty" required="required" style="width:60%;display:inline;" onkeyup="fn_cal()" disabled' ); ?>
+                                    <?= form_input('target_qty_h', set_value('target_qty', 1), 'class="form-control tip target_qty" id="target_qty" required="required" style="width:60%;display:inline;" onkeyup="fn_cal()" disabled'); ?>
                                     <input type="hidden" name="target_qty" class="target_qty">
-                                    
+
                                     <?= form_dropdown('uom_name', $ur, set_value('uom_name'), 'class="form-control uom_name" required="required"  style="width:30%;display:inline;" disabled'); ?>
                                     <input type="hidden" name="product_id" id="product_id">
                                     <input type="hidden" name="uom_id" id="uom_id">
@@ -140,6 +140,7 @@
 
                         </div>
 
+
                         <div class="row">
 
                             <div class="col-md-5"> </div>
@@ -150,6 +151,25 @@
                                 </div>
                             </div>
 
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5"> </div>
+                            <div class="col-md-3">Packaging Materials</div>
+                            <div class="col-md-4" id="addMore">
+                                <div class="input-group mb-3" style="display:flex;margin-bottom: 5vh; gap: 1rem;">
+                                    <?php
+                                    $pk[''] = lang("select") . " " . lang("Packaging materials");
+                                    foreach ($packaging_items as $k => $v) {
+                                        $pk[$v->id] = $v->name;
+                                    }
+                                    ?>
+                                    <?= form_dropdown('packaging_material[]', $pk, '', 'class="form-control" id="packagingMaterial" style="width:100%;" required="required"'); ?>
+                                    <input type="text" class="form-control" name="pk_quantity[]" id="basic-url" aria-describedby="basic-addon3" placeholder="Enter Quantity" required>
+                                    <a href='javascript:void(0)' data-target="#myModal"><i onclick="onClickAdd()" class="fa fa-2x fa-plus-circle"></i></a>
+                                    <a href='javascript:void(0)' class="removeItem"><i class="fa fa-2x fa-minus-circle"></i></a>
+                                </div>
+                            </div>
                         </div>
 
 
@@ -194,7 +214,7 @@
                         if (data[i].brand_name != null) {
                             html += data[i].brand_name;
                         }
-                        html += '</td> <td>' + data[i].stock_qty + ' ' + data[i].unit_name + '</td> <td><input type="text" name="qty[]" id="qty_' + i + '" value="' + data[i].qty + '" readonly></td> <td><input type="text" name="cost[]" id="cost_' + i + '" value="' + data[i].cost*data[i].qty + '" readonly></td> <input type="hidden" name="material_id[]" id="material_id_' + i + '" value="' + data[i].material_id + '"> <input type="hidden" name="material_stock_id[]" id="material_stock_id_' + i + '" value="' + data[i].material_stock_id + '"> <input type="hidden" name="recipe_dtls_id[]" id="recipe_dtls_id_' + i + '" value="' + data[i].recipe_dtls_id + '"> <input type="hidden" name="hidden_qty[]" id="hidden_qty_' + i + '" value="' + data[i].qty + '" readonly> <input type="hidden" name="hidden_cost[]" id="hidden_cost_' + i + '" value="' + data[i].cost*data[i].qty + '" readonly> </tr>';
+                        html += '</td> <td>' + data[i].stock_qty + ' ' + data[i].unit_name + '</td> <td><input type="text" name="qty[]" id="qty_' + i + '" value="' + data[i].qty + '" readonly></td> <td><input type="text" name="cost[]" id="cost_' + i + '" value="' + data[i].cost * data[i].qty + '" readonly></td> <input type="hidden" name="material_id[]" id="material_id_' + i + '" value="' + data[i].material_id + '"> <input type="hidden" name="material_stock_id[]" id="material_stock_id_' + i + '" value="' + data[i].material_stock_id + '"> <input type="hidden" name="recipe_dtls_id[]" id="recipe_dtls_id_' + i + '" value="' + data[i].recipe_dtls_id + '"> <input type="hidden" name="hidden_qty[]" id="hidden_qty_' + i + '" value="' + data[i].qty + '" readonly> <input type="hidden" name="hidden_cost[]" id="hidden_cost_' + i + '" value="' + data[i].cost * data[i].qty + '" readonly> </tr>';
 
                         if (sl == 1) {
                             $(".uom_name").val(data[i].uom_id);
@@ -222,13 +242,49 @@
         });
     }
 
-    $(document).ready(function(){
+    $(document).ready(function() {
         var actual_output, target_qty
-        $(document).on('keyup','#actual_output, #target_qty',function(){
-            target_qty=$("#target_qty").val();
-            actual_output=$("#actual_output").val();
-            $("#wasted").val(target_qty-actual_output);
+        $(document).on('keyup', '#actual_output, #target_qty', function() {
+            target_qty = $("#target_qty").val();
+            actual_output = $("#actual_output").val();
+            $("#wasted").val(target_qty - actual_output);
 
         })
     })
+    var row = $("#addMore").html();
+
+    function checkItems() {
+        let minusSelector = document.getElementsByClassName("fa-minus-circle");
+        $('.fa-minus-circle').each(function(i, obj) {
+            if (i === 0) {
+                $(this).addClass("remove_item_" + i);
+            }
+            $(this).attr("data-id", i);
+        });
+
+        $(".addMoreItems").each(function(i, obj) {
+            $(this).addClass("current_item_" + i);
+        });
+
+    }
+
+    checkItems();
+
+    function onClickAdd() {
+        $("#addMore").append(row);
+        checkItems();
+    }
+
+    function onClickRemove(t) {
+        $(".current_item_" + t.data("id")).remove();
+    }
+
+    $(document).on("click", ".removeItem", function() {
+        $(this).parent("div").remove()
+    })
 </script>
+<style>
+    .remove_item_0{
+        display: none;
+    }
+</style>

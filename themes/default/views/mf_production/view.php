@@ -121,6 +121,31 @@
 
                       </table>
                     </div>
+
+                    <table class="table table-bordered">
+                        <thead>
+                          <tr class="active">
+                            <th class="col-xs-1">SL</th>
+                            <th class="col-xs-3">Matrial Packaging Name</th>
+                            <th class="col-xs-1">Quantity</th>
+                          </tr>
+                        </thead>
+                      <tbody>
+                        <?php 
+                        $i=1;
+                        foreach($packaging_dtls as $key=>$val){
+                          ?>
+                          <tr>
+                            <td class="col-xs-1 text-center"><?=$i++;?></td>
+                            <td class="col-xs-3 text-center" ><?= $val->name; ?></td>
+                            <td class="col-xs-1 text-center"><?= $val->quantity; ?></td>
+                          </tr>
+                          <?php
+                         }
+                        ?>
+                      </tbody>
+                    </table>
+
                   </div>
                 </div>
               </div>

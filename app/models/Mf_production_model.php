@@ -69,7 +69,7 @@ class Mf_production_model extends CI_Model
 
     }
 
-    public function add_production($data, $items) {  
+    public function add_production($data, $items,$packing) {  
 
         if ($this->db->insert('mf_production_mst', $data)) {
             $production_id = $this->db->insert_id();
@@ -77,6 +77,12 @@ class Mf_production_model extends CI_Model
 
                 $item['production_id'] = $production_id;
                 $this->db->insert('mf_production_dtls', $item);
+
+            }
+            foreach ($packing as $item) {
+
+                $item['production_id'] = $production_id;
+                $this->db->insert('mf_production_material_packaging', $item);
 
             }
             return true;
@@ -123,13 +129,34 @@ class Mf_production_model extends CI_Model
 
     }
 
-    public function updateProduction($id, $data = NULL, $items = array()) {
+    public function getProductionPackagingDtlsByID($id) {
 
-        if ($this->db->update('mf_production_mst', $data, array('id' => $id)) && $this->db->update('mf_production_dtls', array('active_status'=>0), array('production_id' => $id))) {
+        $this->db->select('mf_production_material_packaging.* , mf_material_packaging.name');
+        $this->db->join('mf_material_packaging','mf_material_packaging.id=mf_production_material_packaging.material_packaging_id');
+        $q = $this->db->get_where('mf_production_material_packaging', array('mf_production_material_packaging.production_id' => $id,'mf_production_material_packaging.active_status'=>1));
+        // echo 
+        if( $q->num_rows() > 0 ) {
+            foreach (($q->result()) as $row){  
+                $data[] = $row;  
+            }
+            return $data;
+        }
+
+        return FALSE;
+
+    }
+
+    public function updateProduction($id, $data = NULL, $items = array(), $packing = array()) {
+
+        if ($this->db->update('mf_production_mst', $data, array('id' => $id)) && $this->db->update('mf_production_dtls', array('active_status'=>0), array('production_id' => $id)) && $this->db->update('mf_production_material_packaging', array('active_status'=>0), array('production_id' => $id))) {
 
             foreach ($items as $item) {
                 $item['production_id'] = $id;
                 $this->db->insert('mf_production_dtls', $item);
+            }
+            foreach ($packing as $item) {
+                $item['production_id'] = $id;
+                $this->db->insert('mf_production_material_packaging', $item);
             }
 
             return true;
@@ -142,7 +169,7 @@ class Mf_production_model extends CI_Model
 
     public function deleteProduction($id,$data,$data2) {
 
-        if ($this->db->update('mf_production_mst', $data, array('id' => $id)) && $this->db->update('mf_production_dtls', $data2, array('production_id' => $id))) {
+        if ($this->db->update('mf_production_mst', $data, array('id' => $id)) && $this->db->update('mf_production_dtls', $data2, array('production_id' => $id)) && $this->db->update('mf_production_material_packaging', $data2, array('production_id' => $id))) {
             return true;
         }
         return false;

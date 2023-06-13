@@ -90,6 +90,7 @@ class Transfers extends MY_Controller
           $this->session->set_flashdata('error', lang('access_denied'));
           redirect();
         }
+
         if(!$this->session->userdata('from_warehouse')){
             $this->form_validation->set_rules('warehouse', lang('warehouse'), 'required');
             if ($this->form_validation->run() == true) {
@@ -105,7 +106,7 @@ class Transfers extends MY_Controller
             $this->data['page_title'] = lang('Products Transfers');
             // $this->data['warehouses'] = $this->site->getAllStores(); 
             $this->data['warehouses'] = $this->site->getAllFactoryStores();
-            $this->load->view($this->theme.'transfers/fromWarehouse', $this->data, $meta); 
+            $this->load->view($this->theme.'transfers/fromWarehouse', $this->data); 
         } else {
         $this->form_validation->set_rules('date', lang('date'), 'required');
 
