@@ -90,6 +90,7 @@ class Customers extends MY_Controller
 				'cf2' => $this->input->post('cf2'), 
 				'credit_limit' => $credit_limit, 
 				'opening_blance' => $opening_blance,
+				'transport' => $this->input->post('transport'), 
 			);
 			if($this->session->userdata('store_id') !=0){
 				$data['store_id'] = $this->session->userdata('store_id');
@@ -174,7 +175,8 @@ class Customers extends MY_Controller
 				'cf1' => $this->input->post('cf1'),
 				'cf2' => $this->input->post('cf2'),				
 				'credit_limit' => $this->input->post('credit_limit'), 
-				'opening_blance' => $this->input->post('opening_blance')
+				'opening_blance' => $this->input->post('opening_blance'),
+				'transport' => $this->input->post('transport'), 
 			); 
 			if(($this->session->userdata('store_id') !=0) && ($this->session->userdata('store_id') !='')){
 				$data['store_id'] = $this->session->userdata('store_id');

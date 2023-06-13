@@ -207,6 +207,7 @@ if ($modal) {
                 <?php if($result->cf1){ echo '<strong> Address: </strong> '.$result->cf1.'<br>'; }?>
                 <?php if($result->cf2){ echo '<strong> Address: </strong> '.$result->cf2.'<br>'; }?>
                 <?= '<strong> Phone: </strong> '.$result->phone; ?><br>  
+                <?php if($result->transport){ echo '<strong> Transport: </strong> '.$result->transport; }?>
                 </p>
                 </span>
                 <span style="float:right;">
@@ -234,13 +235,13 @@ if ($modal) {
 
                     <tr>
 
-                        <th class="text-center col-xs-2">Sl. No.</th>
+                        <th class="text-center col-xs-1">Sl. No.</th>
 
-                        <th class="text-center col-xs-3"><?=lang('description');?></th>
+                        <th class="text-center col-xs-5"><?=lang('description');?></th>
 
                        <!--  <th class="text-center col-xs-3"><?=lang('Warranty');?></th> -->
-                       <th class="text-center col-xs-3">Specification</th>
-                        <th class="text-center col-xs-2"><?=lang('quantity');?></th>
+                       <th class="text-center col-xs-2"><?=lang('quantity');?></th>
+                       <th class="text-center col-xs-2">Specification</th>
 
                          <!-- <th class="text-center col-xs-1"><?=lang('price');?></th>
 
@@ -262,7 +263,7 @@ if ($modal) {
                 }else{
                   $rowClass = 'class="row-itemall"'; 
                 }
-                
+
                 foreach ($rows as $row) {
                     $sequence = $this->site->getWhereDataByElement('pro_sequence','pro_id','sales_id',$row->product_id,$row->sale_id); 
                     $i++;
@@ -280,14 +281,14 @@ if ($modal) {
                             }
                        }
                     echo '</td>';                   
-
+                    echo '<td class="text-center">' . str_replace('.00','',$row->quantity) . '</td>';
                     echo '<td class="text-center">';
                      
-                    if($row->qnty_type){echo $qnty_type[$row->qnty_type]." (".$row->per_type_qnty.")";}
+                    if($row->qnty_type){echo $qnty_type[$row->qnty_type]." (".number_format($row->per_type_qnty,0).")";}
 
                     echo'</td>';
 
-                    echo '<td class="text-center">' . str_replace('.00','',$row->quantity) . '</td>';
+                    
 
                    
                  echo '</tr>';
