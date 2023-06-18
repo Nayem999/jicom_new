@@ -771,15 +771,19 @@ class Reports_model extends CI_Model
     	return $query->result();
     }
 
-    public function invoiceProfit($store_id=0){ 
+    public function invoiceProfit($store_id=0,$start_date=null,$end_date=null){ 
     	$store_id_per = $this->session->userdata('store_id');
+        $start_date_con=$end_date_con='';
+        if($start_date) { $start_date_con=" and PR.date >= '$start_date  00:00:00'"; }
+        if($end_date) { $end_date_con=" and PR.date <= '$end_date 23:59:59'"; }
+
     	if(!$this->Admin){
-    		$query = $this->db->query("SELECT PR.id,PR.date,PR.customer_name,PR.total,PR.store_id,( SELECT COALESCE(sum(sa.quantity*sa.cost), 0) FROM tec_sale_items sa WHERE sa.sale_id=PR.id ) as cost_price,( SELECT COALESCE(sum(sa.quantity), 0) FROM tec_sale_items sa WHERE sa.sale_id=PR.id ) as qty FROM tec_sales PR WHERE PR.store_id=$store_id_per group by PR.id");
+    		$query = $this->db->query("SELECT PR.id,PR.date,PR.customer_name,PR.total,PR.store_id,( SELECT COALESCE(sum(sa.quantity*sa.cost), 0) FROM tec_sale_items sa WHERE sa.sale_id=PR.id ) as cost_price,( SELECT COALESCE(sum(sa.quantity), 0) FROM tec_sale_items sa WHERE sa.sale_id=PR.id ) as qty FROM tec_sales PR WHERE PR.store_id=$store_id_per $start_date_con $end_date_con group by PR.id");
 
     	}else{
-            if($store_id){$filterStore=" WHERE PR.store_id=$store_id ";}else{$filterStore='';}
+            if($store_id){$filterStore=" and PR.store_id=$store_id ";}else{$filterStore='';}
 
-    		$query = $this->db->query("SELECT PR.id,PR.date,PR.customer_name,PR.total,PR.store_id,( SELECT COALESCE(sum(sa.quantity*sa.cost), 0) FROM tec_sale_items sa WHERE sa.sale_id=PR.id ) as cost_price,( SELECT COALESCE(sum(sa.quantity), 0) FROM tec_sale_items sa WHERE sa.sale_id=PR.id ) as qty FROM tec_sales PR $filterStore group by PR.id");
+    		$query = $this->db->query("SELECT PR.id,PR.date,PR.customer_name,PR.total,PR.store_id,( SELECT COALESCE(sum(sa.quantity*sa.cost), 0) FROM tec_sale_items sa WHERE sa.sale_id=PR.id ) as cost_price,( SELECT COALESCE(sum(sa.quantity), 0) FROM tec_sale_items sa WHERE sa.sale_id=PR.id ) as qty FROM tec_sales PR WHERE 1=1 $filterStore $start_date_con $end_date_con group by PR.id");
     	}
     	
         $query->result_array();  

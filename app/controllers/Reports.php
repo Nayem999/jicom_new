@@ -100,8 +100,27 @@ class Reports extends MY_Controller
 
         $fileName = "daily_statement_" . date('Y-m-d_h_i_s') . ".xls";
         // Column names 
-        $fields = array('Date', 'Customer', 'Collections', 'Cash Sale', 'Total Cash', 'Exp-Descriptions', 'Bank Pay', 'Expenses');
+        $fields = array('Report Name', 'Daily Statement');
         $excelData = implode("\t", array_values($fields)) . "\n";
+        if($store_id)
+        {
+            $store_info=$this->site->whereRow("stores","id",$store_id);
+            $fields = array('Store Name', "$store_info->name");
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if($start_date)
+        {
+            $fields = array('Start Date', $start_date);
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if($end_date)
+        {
+            $fields = array('End Date', $end_date);
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+
+        $fields = array('Date', 'Customer', 'Collections', 'Cash Sale', 'Total Cash', 'Exp-Descriptions', 'Bank Pay', 'Expenses');
+        $excelData .= implode("\t", array_values($fields)) . "\n";
         $totalCcolled = 0;
         $totalCashColled = 0;
         $totalExpenses = 0;
@@ -230,7 +249,7 @@ class Reports extends MY_Controller
         $file_name  = 'daily_statement_report_' . date('d_m_Y');
         header('Content-type: text/xls');
         header('Content-disposition: attachment;filename=' . $file_name . '.xls');
-?>
+        ?>
         <h2 style="text-align: center; margin: 0; padding: 0;"><?= $this->Settings->site_name ?> <br>
             Daily Statement
         </h2>
@@ -460,13 +479,11 @@ class Reports extends MY_Controller
                 </tr>
             </tbody>
         </table>
-<?php
+        <?php
     }
 
     function daily_sales()
     {
-
-
 
         $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');
         $end_date = $this->input->post('end_date') ? $this->input->post('end_date') : date('Y-m-d');
@@ -1374,8 +1391,11 @@ class Reports extends MY_Controller
 
         $fileName = "sales_report_" . date('Y-m-d_h_i_s') . ".xls";
 
+        $fields = array('Report Name', 'Master Sales Report');
+        $excelData = implode("\t", array_values($fields)) . "\n";
+
         $date_fields = array('Date : ', $start_date, 'TO', $end_date);
-        $excelData = implode("\t", array_values($date_fields)) . "\n";
+        $excelData .= implode("\t", array_values($date_fields)) . "\n";
 
         $fields = array('Name');
         foreach ($productArr as $key => $val) {
@@ -1636,7 +1656,8 @@ class Reports extends MY_Controller
         $query_data = $this->db->get()->result();
         // echo $this->db->last_query();die;
         $fileName = "product_report_" . date('Y-m-d_h_i_s') . ".xls";
-        $excelData = '';
+        $fields = array('REPORT NAME', 'Customer Wise Products Report');
+        $excelData = implode("\t", array_values($fields)) . "\n";
         if ($product) {
             $pval = $this->site->whereRow('products', 'id', $product);
             $fields = array('PRODUCT NAME', $pval->name);
@@ -1730,7 +1751,7 @@ class Reports extends MY_Controller
         $query_data = $this->reports_model->saleAndPurseCount($warehouse,$start_date,$end_date);
         $fileName = "sold_purchase_report_" . date('Y-m-d_h_i_s') . ".xls";
 
-        $fields = array('Sold and Purchase');
+        $fields = array('Report Name','Sold and Purchase');
         $excelData = implode("\t", array_values($fields)) . "\n";
         if ($warehouse) {
             $store_info = $this->site->getAllStores($warehouse);
@@ -2621,8 +2642,11 @@ class Reports extends MY_Controller
         // $cID = $this->site->findMergeIdbycp('customer_id',$this->input->post('customer'));
 
         $fileName = "account_receivable_" . date('Y-m-d_h_i_s') . ".xls";
-        $fields = array('Customer Name', 'Store Name', 'Grand total', 'Paid', 'Balance');
+        $fields = array('Report Name', 'Account Receivable');
         $excelData = implode("\t", array_values($fields)) . "\n";
+
+        $fields = array('Customer Name', 'Store Name', 'Grand total', 'Paid', 'Balance');
+        $excelData .= implode("\t", array_values($fields)) . "\n";
 
         if (count($recivabl) > 0) {
             foreach ($recivabl as $key => $recabl) {
@@ -2707,8 +2731,11 @@ class Reports extends MY_Controller
 
 
         $fileName = "account_payable_" . date('Y-m-d_h_i_s') . ".xls";
-        $fields = array('Supplier Name', 'Store name', 'Grand total', 'Paid', 'Balance');
+        $fields = array('Report Name', 'Account Payable');
         $excelData = implode("\t", array_values($fields)) . "\n";
+        
+        $fields = array('Supplier Name', 'Store name', 'Grand total', 'Paid', 'Balance');
+        $excelData .= implode("\t", array_values($fields)) . "\n";
 
         if (count($payabl) > 0) {
             foreach ($payabl as $key => $pyabl) {
@@ -2730,6 +2757,8 @@ class Reports extends MY_Controller
     public function invoiceProfit()
     {
         $store_id = $this->input->post('store_id') ? $this->input->post('store_id') : 0;
+        $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : null;
+        $end_date = $this->input->post('end_date') ? $this->input->post('end_date') : null;
         $this->data['page_title'] = 'Invoice Profit';
         $bc = array(
             array(
@@ -2741,21 +2770,32 @@ class Reports extends MY_Controller
             'page_title' => 'Invoice Profit',
             'bc' => $bc
         );
-        $this->data['results'] = $this->reports_model->invoiceProfit($store_id);
+        $this->data['results'] = $this->reports_model->invoiceProfit($store_id,$start_date,$end_date);
         // $this->data['stores'] = $this->site->getAllStores();
         $this->page_construct('reports/invoiceFrofit', $this->data, $meta);
     }
 
-    public function excel_invoiceProfit($store_id = 0)
+    public function excel_invoiceProfit($data)
     {
-
-        $query_data = $this->reports_model->invoiceProfit($store_id);
+        $data=explode('__',$data);
+        $store_id=$data[0];
+        $start_date=$data[1];
+        $end_date=$data[2];
+        $query_data = $this->reports_model->invoiceProfit($store_id,$start_date,$end_date);
         $fileName = "invoice_profit_data_" . date('Y-m-d_h_i_s') . ".xls";
-        $fields = array('Invoice Profit Report');
+        $fields = array('Report Name','Invoice Profit Report');
         $excelData = implode("\t", array_values($fields)) . "\n";
         if ($store_id) {
             $store_info = $this->site->getAllStores($store_id);
             $fields = array('Store Name', $store_info[0]->name);
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if ($start_date) {
+            $fields = array('Start Date', $start_date);
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if ($end_date) {
+            $fields = array('End Date', $end_date);
             $excelData .= implode("\t", array_values($fields)) . "\n";
         }
 
@@ -2973,9 +3013,12 @@ class Reports extends MY_Controller
         $bank_data = $this->reports_model->getAllBankInfo($data);
 
         $fileName = "bank_balance_report" . date('Y-m-d_h_i_s') . ".xls";
-        $fields = array('Date', 'Bank name', 'Dr.', 'Cr.', 'Balance');
 
+        $fields = array('Report Name ', 'Bank Balance Report');
         $excelData = implode("\t", array_values($fields)) . "\n";
+
+        $fields = array('Date', 'Bank name', 'Dr.', 'Cr.', 'Balance');
+        $excelData .= implode("\t", array_values($fields)) . "\n";
 
         if (count($bank_data) > 0) {
             $total_balance = 0;

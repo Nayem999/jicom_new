@@ -733,7 +733,7 @@ class Mf_report extends MY_Controller
             echo $excelData;
         }
     }
-    public function exp_supplier_payment_report($supplierId)
+    public function exp_supplier_payment_report($supplierId=0)
     {
         $this->load->model('mf_payment_model');
 
