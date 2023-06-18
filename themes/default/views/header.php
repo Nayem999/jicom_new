@@ -366,7 +366,13 @@
                   <li id="reports_aging_rpt"><a href="<?= site_url('reports/aging_rpt'); ?>"><i class="fa fa-circle-o"> </i>Aging Report</a></li>
   
                   <li id="reports_bank_balance"><a href="<?= site_url('reports/bank_balance'); ?>"><i class="fa fa-circle-o"></i>
-                      <?= lang('Bank Balance'); ?>
+                      <?=lang('Bank Balance'); ?>
+                    </a></li>
+                  <li id="reports_collection_adjustment_rpt"><a href="<?= site_url('reports/collection_adjustment_rpt'); ?>"><i class="fa fa-circle-o"></i>
+                      <?=lang('Collection Adjustment Report'); ?>
+                    </a></li>
+                  <li id="reports_supplier_payment_adjustment"><a href="<?= site_url('reports/supplier_payment_adjustment'); ?>"><i class="fa fa-circle-o"></i>
+                      <?=lang('Supplier Payment Adjustment'); ?>
                     </a></li>
                 <?php } ?>
               </ul>

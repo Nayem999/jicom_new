@@ -1101,6 +1101,7 @@ class Reports extends MY_Controller
         $meta = array('page_title' => lang('daily_sales'), 'bc' => $bc);
         $this->page_construct('reports/daily', $this->data, $meta);
     }
+    
     public function hand_cash($id = NULL)
     {
         $this->form_validation->set_rules('amount', lang('amount'), 'required');
@@ -3059,6 +3060,148 @@ class Reports extends MY_Controller
                 $lineData = array(date('d-M-Y', strtotime($result->date)), $result->invoice, $result->customer_name, $result->storename, $result->phone, $result->total, $result->total_tax, $result->total_discount, $result->grand_total, $result->paid, $result->paid_by, $result->grand_total - $result->paid, $result->status, $result->type, ' ' . $day_diff . '/' . $result->aging_day);
 
 
+                $excelData .= implode("\t", array_values($lineData)) . "\n";
+            }
+        } else {
+            $excelData .= 'No records found...' . "\n";
+        }
+
+        // Headers for download 
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$fileName\"");
+
+        // Render excel data 
+        echo $excelData;
+    }
+        
+    public function collection_adjustment_rpt()
+    {
+        $store_id = $this->input->post('store_id') ? $this->input->post('store_id') : 0;
+        $customer_id = $this->input->post('customer_id') ? $this->input->post('customer_id') : 0;
+        $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');
+        $end_date = $this->input->post('end_date') ? $this->input->post('end_date') : date('Y-m-d');
+        $this->data['start_date'] = $start_date;
+        $this->data['end_date'] = $end_date;
+        $this->data['customer_arr'] = $this->reports_model->getAllCustomers();
+        $this->data['result_arr'] = $this->reports_model->getCollectionAdjustment($store_id,$customer_id,$start_date,$end_date);
+        $this->data['page_title'] = 'Customer Payment Adjustment Report';
+        $bc = array(array('link' => '#', 'page' => lang('Collection Adjustment Report')), array('link' => '#', 'page' => lang('Collection Adjustment Report')));
+        $meta = array('page_title' => lang('Collection Adjustment Report'), 'bc' => $bc);
+        $this->page_construct('reports/collection_adjustment_rpt', $this->data, $meta);
+    }
+    public function excel_collection_adjustment_rpt($data)
+    {
+        $data=explode('__',$data);
+        $store_id=$data[0];
+        $customer_id=$data[1];
+        $start_date=$data[2];
+        $end_date=$data[3];
+
+        $result_arr = $this->reports_model->getCollectionAdjustment($store_id,$customer_id,$start_date,$end_date);
+
+        $fileName = "collection_adjustment_report_" . date('Y-m-d_h_i_s') . ".xls";
+        $fields = array('Report Name', 'Collection Adjustment Report');
+        $excelData = implode("\t", array_values($fields)) . "\n";
+        if($store_id)
+        {
+            $store_info=$this->site->whereRow("stores","id",$store_id);
+            $fields = array('Store Name', "$store_info->name");
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if($customer_id)
+        {
+            $customer_info=$this->site->whereRow("customers","id",$customer_id);
+            $fields = array('Customer Name', "$customer_info->name");
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if($start_date)
+        {
+            $fields = array('Start Date', "$start_date");
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if($end_date)
+        {
+            $fields = array('End Date', "$end_date");
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+
+        $fields = array('ID', 'Customer Name', 'Store Name', 'Date and Time', 'Amount', 'Note');
+        $excelData .= implode("\t", array_values($fields)) . "\n";
+
+        if (count($result_arr) > 0) {
+            foreach ($result_arr as $key => $val) {
+                $lineData = array($val->collection_id, $val->customer_name, $val->store_name, $val->payments_date, $val->payment_amount, $val->payment_note );
+                $excelData .= implode("\t", array_values($lineData)) . "\n";
+            }
+        } else {
+            $excelData .= 'No records found...' . "\n";
+        }
+
+        // Headers for download 
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$fileName\"");
+
+        // Render excel data 
+        echo $excelData;
+    }
+    
+    public function supplier_payment_adjustment()
+    {
+        $store_id = $this->input->post('store_id') ? $this->input->post('store_id') : 0;
+        $supplier_id = $this->input->post('supplier_id') ? $this->input->post('supplier_id') : 0;
+        $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');
+        $end_date = $this->input->post('end_date') ? $this->input->post('end_date') : date('Y-m-d');
+        $this->data['start_date'] = $start_date;
+        $this->data['end_date'] = $end_date;
+        $this->data['supplier_arr'] = $this->reports_model->getAllSupplier();
+        $this->data['result_arr'] = $this->reports_model->getSupplierPaymentAdjustment($store_id,$supplier_id,$start_date,$end_date);
+        $this->data['page_title'] = 'Supplier Payment Adjustment Report';
+        $bc = array(array('link' => '#', 'page' => lang('Supplier Payment Adjustment Report')), array('link' => '#', 'page' => lang('Supplier Payment Adjustment Report')));
+        $meta = array('page_title' => lang('Supplier Payment Adjustment Report'), 'bc' => $bc);
+        $this->page_construct('reports/supplier_payment_adjustment', $this->data, $meta);
+    }
+    public function excel_supplier_payment_adjustment($data)
+    {
+        $data=explode('__',$data);
+        $store_id=$data[0];
+        $supplier_id=$data[1];
+        $start_date=$data[2];
+        $end_date=$data[3];
+
+        $result_arr = $this->reports_model->getSupplierPaymentAdjustment($store_id,$supplier_id,$start_date,$end_date);
+
+        $fileName = "supplier_payment_adjustment_report_" . date('Y-m-d_h_i_s') . ".xls";
+        $fields = array('Report Name ', 'Supplier Payment Adjustment Report');
+        $excelData = implode("\t", array_values($fields)) . "\n";
+        if($store_id)
+        {
+            $store_info=$this->site->whereRow("stores","id",$store_id);
+            $fields = array('Store Name', "$store_info->name");
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if($supplier_id)
+        {
+            $supplier_info=$this->site->whereRow("suppliers","id",$supplier_id);
+            $fields = array('Supplier Name', "$supplier_info->name");
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if($start_date)
+        {
+            $fields = array('Start Date', "$start_date");
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if($end_date)
+        {
+            $fields = array('End Date', "$end_date");
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+
+        $fields = array('ID', 'Supplier Name', 'Store Name', 'Date and Time', 'Amount', 'Note');
+        $excelData .= implode("\t", array_values($fields)) . "\n";
+
+        if (count($result_arr) > 0) {
+            foreach ($result_arr as $key => $val) {
+                $lineData = array($val->payment_id, $val->supplier_name, $val->store_name, $val->payments_date, $val->payment_amount, $val->payment_note );
                 $excelData .= implode("\t", array_values($lineData)) . "\n";
             }
         } else {

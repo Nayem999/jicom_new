@@ -84,6 +84,20 @@ class Reports_model extends CI_Model
 		}
 	}
 
+	public function getAllSupplier() {
+		if(!$this->Admin){
+            $this->db->where('store_id',$this->session->userdata('store_id'));
+         }
+		$q = $this->db->get('suppliers');
+
+		if($q->num_rows() > 0) {
+			foreach (($q->result()) as $row) {
+				$data[] = $row;
+			}
+			return $data;
+		}
+	}
+
 	public function topProducts($store_id) {
 		$m = date('Y-m');
 		$this->db->select($this->db->dbprefix('products').".code as product_code, ".$this->db->dbprefix('products').".name as product_name, sum(".$this->db->dbprefix('sale_items').".quantity) as quantity")
@@ -1538,6 +1552,63 @@ class Reports_model extends CI_Model
         
         return $query->result(); 
 
+    }
+
+
+    public function getCollectionAdjustment($store_id=0,$customer_id=0,$start_date=NULL,$end_date=NULL){
+
+        $this->db->select('today_collection.today_collect_id as collection_id, today_collection.payment_amount,  today_collection.payment_note, today_collection.payment_date as payments_date, customers.name as customer_name,stores.name as store_name'); 
+        $this->db->from('today_collection');  
+		$this->db->join('stores','stores.id=today_collection.store_id');
+		$this->db->join('customers','customers.id=today_collection.customer_id');
+
+        if($start_date && $end_date){ 
+            $this->db->where('today_collection.payment_date >=', $start_date.' 00:00:00'); 
+            $this->db->where('today_collection.payment_date <=', $end_date.' 23:59:59');   
+        }
+		elseif($start_date)
+		{
+            $this->db->where('today_collection.payment_date >=', $start_date.' 00:00:00'); 
+            $this->db->where('today_collection.payment_date <=', $start_date.' 23:59:59');  
+		}
+		else{
+            $this->db->like('today_collection.payment_date', date('Y-m-d'));
+        }  
+
+        if($store_id){$this->db->where('today_collection.store_id', $store_id); }
+        if($customer_id){$this->db->where('customers.id', $customer_id); }
+        $this->db->where('today_collection.paid_by', 'Adjustment'); 
+
+        $query = $this->db->get();
+        return $query->result(); 
+    }
+
+    public function getSupplierPaymentAdjustment($store_id=0,$supplier_id=0,$start_date=NULL,$end_date=NULL){
+
+        $this->db->select('today_purchase_payment.today_payment_id as payment_id, today_purchase_payment.payment_amount,  today_purchase_payment.payment_note, today_purchase_payment.payment_date as payments_date, suppliers.name as supplier_name, stores.name as store_name'); 
+        $this->db->from('today_purchase_payment');  
+		$this->db->join('stores','stores.id=today_purchase_payment.store_id');
+		$this->db->join('suppliers','suppliers.id=today_purchase_payment.supplier_id');
+
+        if($start_date && $end_date){ 
+            $this->db->where('today_purchase_payment.payment_date >=', $start_date.' 00:00:00'); 
+            $this->db->where('today_purchase_payment.payment_date <=', $end_date.' 23:59:59');   
+        }
+		elseif($start_date)
+		{
+            $this->db->where('today_purchase_payment.payment_date >=', $start_date.' 00:00:00'); 
+            $this->db->where('today_purchase_payment.payment_date <=', $start_date.' 23:59:59');  
+		}
+		else{
+            $this->db->like('today_purchase_payment.payment_date', date('Y-m-d'));
+        }  
+
+        if($store_id){$this->db->where('today_purchase_payment.store_id', $store_id); }
+        if($supplier_id){$this->db->where('suppliers.id', $supplier_id); }
+        $this->db->where('today_purchase_payment.type', 'Adjustment'); 
+
+        $query = $this->db->get();
+        return $query->result(); 
     }
 }
 

@@ -13,8 +13,7 @@ class MY_Controller extends CI_Controller {
         $this->data['Settings'] = $this->Settings;
         $this->loggedIn = $this->tec->logged_in();
         $this->data['loggedIn'] = $this->loggedIn;
-        $this->data['stores'] = $this->site->getAllStores();
-        $this->data['employees'] = $this->site->getAllEmployees();
+
         $this->data['factory_stores'] = $this->site->getAllFactoryStores();
         $this->data['outlet_stores'] = $this->site->getAllOutletStores();
         $this->data['categories'] = $this->site->getAllCategories();
@@ -24,7 +23,8 @@ class MY_Controller extends CI_Controller {
         $this->data['Admin'] = $this->Admin;
         $this->Manager = $this->tec->in_group('manager') ? TRUE : NULL;
         $this->data['Manager'] = $this->Manager;
-
+        $this->data['employees'] = $this->site->getAllEmployees();
+        $this->data['stores'] = $this->site->getAllStores();
         
         $this->permissionData = $this->site->permission_data();
         $this->data['permissionData'] = $this->permissionData;
