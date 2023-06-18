@@ -138,10 +138,12 @@
                                     <?= lang('Form Warehouse', 'Form Warehouse'); ?>
                                     <p><?php  echo $from_warehouseInfo->name;?></p>
                                     <a href="javascript:;" onclick="productsTransfer()">Change Warehouse</a>
+                                    <input type="hidden" name="customer_id" id="customer_id" value="0">
+                                    
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <!-- <div class="col-md-3">
                                 <div class="form-group">
                                     <?= lang('customer', 'customer'); ?>
                                     <?php
@@ -152,7 +154,7 @@
                                     ?>
                                     <?= form_dropdown('customer_id', $cr, set_value('customer_id'), 'class="form-control select2" id="customer_id" style="width:100%;" required="required"'); ?>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <?= lang('To Warehouse', 'To Warehouse'); ?>
@@ -162,11 +164,12 @@
                                             $wr[$warehouse->id] = $warehouse->name;
                                         }
                                     ?>
-                                    <?= form_dropdown('towarehouse', $wr, set_value('warehouse'), 'class="form-control select2 tip" id="towarehouse" style="width:100%;" required="required"'); ?>
+                                    <?= form_dropdown('towarehouse', $wr, set_value('towarehouse'), 'class="form-control select2 tip" id="towarehouse" style="width:100%;" required="required"'); ?>
+                                    <input type="hidden" name="supplier_id" id="supplier_id" value="0">
                                 </div>
                             </div>
 
-                            <div class="col-md-3" id="supplierInfo">
+                            <!-- <div class="col-md-3" id="supplierInfo">
                                 <div class="form-group">
                                     <?= lang('Supplier', 'Supplier'); ?>
                                     <?php
@@ -174,7 +177,7 @@
                                     ?>
                                     <?= form_dropdown('supplier_id', $sr, set_value('supplier_id'), 'class="form-control" id="supplier_id" style="width:100%;" required="required"'); ?>
                                 </div>
-                            </div>
+                            </div> -->
 
                         </div>
                         <div class="form-group">
@@ -246,13 +249,13 @@
         });
     });
 
-    $(function(){
+    /* $(function(){
      $("#towarehouse").change(function(){
          var tostore = this.value;
          var url = '<?php echo base_url('transfers/fn_supplierInfo') ?>'+'/'+tostore;
          $('#supplierInfo').load(url);         
         });
-    });
+    }); */
 
 </script>
 

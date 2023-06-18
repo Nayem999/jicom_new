@@ -216,7 +216,7 @@ class Transfers extends MY_Controller
                                 $pkLogData["comment"] = "Finish goods transfer with packaging material";
                                 $pkLogData["date"] = date("Y-m-d");
 
-                                $insertIntoMaterialAdjust = $this->db->insert("mf_packaging_material_log",$pkLogData);
+                                $this->db->insert("mf_packaging_material_log",$pkLogData);
                                 // insert data into material adjust log
                             }
                             

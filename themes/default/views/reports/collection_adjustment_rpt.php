@@ -177,7 +177,7 @@
     }); */
     $("#excelWindow").click(function() {
         var data = $("#store_id").val()+'__'+$("#customer_id").val()+'__'+$("#start_date").val()+'__'+$("#end_date").val();
-        var url = '<?= site_url('reports/collection_adjustment_rpt/'); ?>' + '/' + data;
+        var url = '<?= site_url('reports/excel_collection_adjustment_rpt/'); ?>' + '/' + data;
         location.replace(url);
     });
 </script>
