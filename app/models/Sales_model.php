@@ -549,11 +549,16 @@ public function salesProfitByDate($start,$end,$store_id=NULL){
        }
        return false;
     }
-    public function pattycashdelete($id){
+    public function pattycashdelete($id,$tranjiction_id){
         $this->db->where('pettycash_id', $id);
-        if($this->db->delete('pettycash')) 
+        if($this->db->delete('pettycash')){
+            $this->db->where('tranjiction_id', $tranjiction_id);
+            $this->db->delete('tranjiction');
             return true;         
-        else return false;
+        } 
+        else{ 
+            return false;
+        }
     }    
 
     public function lastReceivable($id) {

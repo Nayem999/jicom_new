@@ -661,7 +661,7 @@ class Bank extends MY_Controller
 	}
 
 	function bankTransfer(){
-		$this->data['warehouses'] = $this->site->getAllStores();
+		$this->data['warehouses'] = $this->site->getAllOutletStores();
         $store_id = $this->input->post('warehouse') ? $this->input->post('warehouse') : NULL;		 
 		$this->data['bankAcount']  = $this->site->getAllBanks();		
 		$this->data['title'] = 'Pettycash to bank Payment Transfer'; 
@@ -696,6 +696,11 @@ class Bank extends MY_Controller
 			'tran_date'    		=> date('Y-m-d H:i:s'),
 			'store_id'			=> $this->input->post('warehouse'),		
 			); 
+		$data_pettycash = array(
+			'amount'  		=> $amount,			
+			'note'   		=> $this->input->post('tran_note'),
+			'entry_date'    => date('Y-m-d H:i:s'),
+			);
 		$bank = $this->bank_model->getBankByID($this->input->post('bank'));
 		$bankTAmount = $bank->current_amount+$this->input->post('amount');
 		$bankData = array(
@@ -703,14 +708,14 @@ class Bank extends MY_Controller
 			);
 		
 		$this->bank_model->editBank($bankData,$bankID);	 
-		$this->bank_model->pettyTobank($data);
+		$this->bank_model->pettyTobank($data,$data_pettycash);
 		$this->session->set_flashdata('message', lang('Pettycash Bank to payment transfer success!'));
 		redirect('reports/pettycash');
 
 	}
 
 	public function pettyTransfer(){ 
-		$this->data['warehouses'] = $this->site->getAllStores();
+		$this->data['warehouses'] = $this->site->getAllOutletStores();
         $store_id = $this->input->post('warehouse') ? $this->input->post('warehouse') : NULL;
 		$this->data['bankAcount']  = $this->site->getAllBanks();		
 		$this->data['title'] = 'Bank To Petty cash Payment Transfer'; 
@@ -724,11 +729,16 @@ class Bank extends MY_Controller
 		$data = array(
 		    'bank_account_id'   => $bankID,
 			'tran_amount'  		=> $amount,			
-			'pettytobankt' 		=> '0',
+			'pettytobankt' 		=> '2',
 			'tran_type'	   		=> '0',		
 			'tran_note'   		=> $this->input->post('tran_note'),
 			'tran_date'    		=> date('Y-m-d H:i:s'),
 			'store_id'			=> $this->input->post('warehouse'),	
+			);
+		$data_pettycash = array(
+			'amount'  		=> $amount,			
+			'note'   		=> $this->input->post('tran_note'),
+			'entry_date'    => date('Y-m-d H:i:s'),
 			);
  
 		$bank = $this->bank_model->getBankByID($this->input->post('bank'));
@@ -744,7 +754,7 @@ class Bank extends MY_Controller
 			);
 		
 		$this->bank_model->editBank($bankData,$bankID);	 
-		$this->bank_model->pettyTobank($data);
+		$this->bank_model->pettyTobank($data,$data_pettycash);
 		$this->session->set_flashdata('message', lang('Bank to pettycash payment transfer success!'));
 		redirect('reports/pettycash');
 	
@@ -772,7 +782,7 @@ class Bank extends MY_Controller
          $this->datatables->join('stores', 'stores.id=tranjiction.store_id');
 
          $this->datatables->from('bank_account');
-         $this->datatables->where('pettytobankt','0');
+         $this->datatables->where('pettytobankt','2');
          if(!$this->Admin){$this->datatables->where('bank_account.stores',$this->session->userdata('store_id'));}
          $this->datatables->group_by('tranjiction.tranjiction_id');
 		

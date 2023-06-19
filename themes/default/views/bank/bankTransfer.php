@@ -32,7 +32,7 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
                         $sp[$bank->bank_account_id] = $bank->bank_name .' ('.$bank->account_name.' ) ( '.$bank->account_no.')';
                     } ?>
                     <?= form_dropdown('bank', $sp, set_value('bank'), 'class="form-control select2 tip" required="required" style="width:100%;" '); ?>
-              </div> -->  
+              </div>  --> 
               </div>
               <div class="col-sm-8">
                 <div class="form-group">
@@ -43,7 +43,7 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
               <div class="form-group">
               <div class="col-sm-10">
                 <label for="note">Note</label>
-                 <?= form_textarea('tran_note', set_value('tran_note',$transaction->tran_note), 'class="form-control tip redactor" id="tran_note"'); ?>
+                 <?= form_textarea('tran_note', set_value('tran_note'), 'class="form-control tip redactor" id="tran_note"'); ?>
               </div>
               </div>
               <div class="col-sm-12">

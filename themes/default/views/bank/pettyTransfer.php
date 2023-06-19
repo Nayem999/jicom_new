@@ -43,7 +43,7 @@ data-easein="flipYIn" class="modal posModal in" style="display: block; padding-l
               <div class="form-group">
               <div class="col-sm-10">
                 <label for="note">Note</label>
-                 <?= form_textarea('tran_note', set_value('tran_note',$transaction->tran_note), 'class="form-control tip redactor" id="tran_note"'); ?>
+                 <?= form_textarea('tran_note', set_value('tran_note'), 'class="form-control tip redactor" id="tran_note"'); ?>
               </div>
               </div>
               <div class="col-sm-12">

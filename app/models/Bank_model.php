@@ -174,9 +174,13 @@ public function  deleteTransaction($id)
         }
         return FALSE;  
 	}
-	public function pettyTobank($data){
+	public function pettyTobank($data,$data_pettycash){
 		   if($this->db->insert('tranjiction', $data)) {		
-			return $this->db->insert_id();		
+			$tranjiction_id= $this->db->insert_id();	
+
+			$data_pettycash["tranjiction_id "]=	$tranjiction_id;
+			$this->db->insert('pettycash', $data_pettycash);
+			return true;		
 		}
 		
 		return false;
@@ -200,7 +204,7 @@ public function  deleteTransaction($id)
 	}
 	public function banktopettyAmount($store_id=NULL){
 		$this->db->select_sum('tran_amount', 'bamount');
-		$this->db->where('pettytobankt','0');
+		$this->db->where('pettytobankt','2');
 		if(!$this->Admin){$this->db->where('store_id',$this->session->userdata('store_id'));}
 		if($store_id !=NULL){$this->db->where('store_id',$store_id);}
 		$query = $this->db->get('tranjiction');

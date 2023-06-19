@@ -2390,7 +2390,26 @@ class Reports extends MY_Controller
     public function pattycashdelete($id)
     {
 
-        $this->sales_model->pattycashdelete($id);
+        $pattyCashInfo = $this->site->whereRow('pettycash','pettycash_id',$id);
+        $tranInfo = $this->site->whereRow('tranjiction','tranjiction_id',$pattyCashInfo->tranjiction_id);
+
+        $bank = $this->bank_model->getBankByID($tranInfo->bank_account_id);
+        $bankTAmount = $bank->current_amount;
+        if($tranInfo->pettytobankt==1)
+        {
+            $bankTAmount = $bankTAmount-$pattyCashInfo->amount;
+        }
+        if($tranInfo->pettytobankt==2)
+        {
+            $bankTAmount = $bankTAmount+$pattyCashInfo->amount;
+        }
+		$bankData = array(
+			'current_amount' => $bankTAmount,
+			);
+		
+		$this->bank_model->editBank($bankData,$tranInfo->bank_account_id);	 
+
+        $this->sales_model->pattycashdelete($id,$pattyCashInfo->tranjiction_id);
 
         redirect('reports/pettycashlist');
     }
