@@ -90,7 +90,11 @@ class Products extends MY_Controller
 
         $action="<div class='text-center'><div class='btn-group'>";
 		if($this->site->route_permission('products_view')) {
-			$action.="<a href='".site_url('products/view/$1')."' title='" . lang("view") . "' class='tip btn btn-primary btn-xs' data-toggle='ajax'><i class='fa fa-file-text-o'></i></a><a onclick=\"window.open('".site_url('products/single_barcode/$1')."', 'pos_popup', 'width=900,height=600,menubar=yes,scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#' title='".lang('print_barcodes')."' class='tip btn btn-default btn-xs'><i class='fa fa-print'></i></a> <a onclick=\"window.open('".site_url('products/single_label/$1')."', 'pos_popup', 'width=900,height=600,menubar=yes,scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#' title='".lang('print_labels')."' class='tip btn btn-default btn-xs'><i class='fa fa-print'></i></a> <a id='$4 ($3)' href='" . site_url('products/php_barcode/$3/$5') . "' title='" . lang("view_barcode") . "' class='barcode tip btn btn-primary btn-xs'><i class='fa fa-barcode'></i></a> <a class='tip image btn btn-primary btn-xs' id='$4 ($3)' href='" . base_url('uploads/$2') . "' title='" . lang("view_image") . "'><i class='fa fa-picture-o'></i></a> ";
+			$action.="<a href='".site_url('products/view/$1')."' title='" . lang("view") . "' class='tip btn btn-primary btn-xs' data-toggle='ajax'><i class='fa fa-file-text-o'></i></a>
+            <a onclick=\"window.open('".site_url('products/single_barcode/$1')."', 'pos_popup', 'width=900,height=600,menubar=yes,scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#' title='".lang('print_barcodes')."' class='tip btn btn-default btn-xs'><i class='fa fa-print'></i></a> 
+            <a onclick=\"window.open('".site_url('products/single_label/$1')."', 'pos_popup', 'width=900,height=600,menubar=yes,scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#' title='".lang('print_labels')."' class='tip btn btn-default btn-xs'><i class='fa fa-print'></i></a> 
+            <a id='$4 ($3)' href='" . site_url('products/php_barcode/$3/$5') . "' title='" . lang("view_barcode") . "' class='barcode tip btn btn-primary btn-xs'><i class='fa fa-barcode'></i></a> 
+            <a class='tip image btn btn-primary btn-xs' id='$4 ($3)' href='" . base_url('uploads/$2') . "' title='" . lang("view_image") . "'><i class='fa fa-picture-o'></i></a> ";
 		}
 		if($this->site->route_permission('products_edit')) {
 			$action.="<a href='" . site_url('products/edit/$1') . "' title='" . lang("edit_product") . "' class='tip btn btn-warning btn-xs'><i class='fa fa-edit'></i></a> ";
@@ -1118,7 +1122,7 @@ class Products extends MY_Controller
         }
      }
 
-     function php_barcode( $text="0", $code_type="code39", $size="20", $filepath="", $orientation="horizontal", $print=true, $SizeFactor=1 ) {
+    function php_barcode( $text="0", $code_type="code39", $size="20", $filepath="", $orientation="horizontal", $print=true, $SizeFactor=1 ) {
         $code_string = "";
         // Translate the $text into barcode the correct $code_type
         if ( in_array(strtolower($code_type), array("code128", "code128b")) ) {
