@@ -229,7 +229,7 @@ class Salereturn extends MY_Controller
 					$cost = $_POST['cost'][$i];
 					$store_id = $_POST['store_id'][$i];
 					$sale_id = $_POST['sales_id'][$i];
-					$return_amount = $_POST['return_amount'][$i];
+					$return_amount = $_POST['return_amount'][$i]>0?$_POST['return_amount'][$i]:0;
 					$return_qty = $_POST['return_qty'][$i];
 					$problem = $_POST['problem'][$i];	
 					$item_id = $_POST['item_id'][$i]; 

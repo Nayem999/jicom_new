@@ -147,16 +147,23 @@
                                                 } else {
                                                     echo '<td class="center"> DC</td>';
                                                 }
+                                            } else if($value['type'] == 'Sales Return' || $value['type'] == 'Sales Return Amount'){
+                                                echo '<td class="center"> INVOICE NO: ' . $value['invoice_id'] . '</td>';
                                             } else {
                                                 echo '<td class="center"> </td>';
                                             }
                                         }
 
-                                        if (($value['type'] == 'collection') || ($value['type'] == 'Advance Collection') || ($value['type'] == 'Advance Payment')) {
+                                        if (($value['type'] == 'collection') || ($value['type'] == 'Advance Collection') || ($value['type'] == 'Advance Payment') || $value['type'] == 'Sales Return' || $value['type'] == 'Sales Return Amount') {
                                             if (($value['type'] == 'collection')) {
                                                 $url = base_url('collection/view');
                                                 echo "<td class=\"center\">
                                             <a onclick=\"window.open('" . $url . '/' . $value['id'] . "', 'pos_popup', 'scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#'>" . $value['type'].'/'.$value['paid_type'] . '</a>
+                                            </td>';
+                                            } else if (($value['type'] == 'Sales Return') || ($value['type'] == 'Sales Return Amount')) {
+                                                $url = base_url('salereturn/view');
+                                                echo "<td class=\"center\">
+                                            <a onclick=\"window.open('" . $url . '/' . $value['id'] . "/1', 'pos_popup', 'scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#'>" . $value['type'].'</a>
                                             </td>';
                                             } else {
                                                 echo "<td class=\"center\">" . $value['type'] . '</td>';
@@ -179,7 +186,7 @@
                                         if (($value['type'] == 'Opening balance') && (1 > $value['total'])) {
                                             echo '<td class="center">' . $emptyvalue . '</td>';
                                         } else {
-                                            echo '<td class="center">' . $value['total'] . '</td>';
+                                            echo '<td class="center">' .number_format($value['total']). '</td>';
                                         }
 
 

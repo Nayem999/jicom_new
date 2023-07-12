@@ -155,11 +155,11 @@
 
                         <div class="row">
                             <div class="col-md-5"> </div>
-                            <div class="col-md-3">Packaging Materials</div>
+                            <div class="col-md-3">Packaging</div>
                             <div class="col-md-4" id="addMore">
                                 <div class="input-group mb-3" style="display:flex;margin-bottom: 5vh; gap: 1rem;">
                                     <?php
-                                    $pk[''] = lang("select") . " " . lang("Packaging materials");
+                                    $pk[''] = lang("select") . " " . lang("Packaging");
                                     foreach ($packaging_items as $k => $v) {
                                         $pk[$v->id] = $v->name;
                                     }

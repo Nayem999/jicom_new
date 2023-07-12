@@ -114,7 +114,7 @@ public function getCustomerLaserByCid($cusromer,$start_date,$end_date){
         $qs = $this->db->get_where('salesreturn', array('customer_id' => $cusromer));
             if($qs->num_rows() > 0) {
                 foreach (($qs->result()) as $row) {  
-                    $this->db->select('return_amount as return_amount'); 
+                    $this->db->select('sale_id,return_amount as return_amount'); 
                     $this->db->where('return_amount !=', '0'); 
                     
                      $ritem = $this->db->get_where('sreturn_items', array('sreturn_id' => $row->sreturn_id));
@@ -124,7 +124,8 @@ public function getCustomerLaserByCid($cusromer,$start_date,$end_date){
                                 $rows['total'] = $ritems->return_amount;
                                 $rows['pgtotal'] = $ritems->return_amount;
                                 $rows['type'] = 'Sales Return Amount'; 
-                                $rows['id'] = '';
+                                $rows['id'] = $row->sreturn_id;
+                                $rows['invoice_id'] = $ritems->sale_id;
                                 if($ritems->return_amount !=''){
                                 $results[] = $rows ; 
                                 }
@@ -140,7 +141,7 @@ public function getCustomerLaserByCid($cusromer,$start_date,$end_date){
         $qs = $this->db->get_where('salesreturn', array('customer_id' => $cusromer));
             if($qs->num_rows() > 0) {
                 foreach (($qs->result()) as $row) {  
-                    $this->db->select('(real_unit_price * return_qty) as returnamount'); 
+                    $this->db->select('sale_id,(real_unit_price * return_qty) as returnamount'); 
                     //$this->db->where('return_amount !=', '0'); 
                     $ritem = $this->db->get_where('sreturn_items', array('sreturn_id' => $row->sreturn_id));
                         if($ritem->num_rows() > 0) {
@@ -148,7 +149,8 @@ public function getCustomerLaserByCid($cusromer,$start_date,$end_date){
                                 $rows['datetime'] = $row->date_submit;
                                 $rows['total'] = $ritems->returnamount;
                                 $rows['pgtotal'] = $ritems->returnamount;
-                                $rows['id'] = '';
+                                $rows['id'] = $row->sreturn_id;
+                                $rows['invoice_id'] = $ritems->sale_id;
                                 $rows['type'] = 'Sales Return'; 
                                 if($ritems->returnamount !=''){
                                 $results[] = $rows ; 
