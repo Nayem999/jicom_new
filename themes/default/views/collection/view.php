@@ -138,6 +138,10 @@
             <table class="table table-striped table-bordered" width="800px"> 
                 <tbody>
                     <tr>
+                        <td><strong>Collection No</strong> </td>
+                        <td><?= $collect_id; ?></td>
+                    </tr>
+                    <tr>
                         <td><strong>Date time</strong> </td>
                         <td><?= $this->tec->hrld($customer->payment_date); ?></td>
                     </tr>

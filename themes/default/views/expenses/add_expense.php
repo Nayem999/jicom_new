@@ -53,7 +53,7 @@
                                     <option value="cash">Cash</option>
                                     <option value="cheque">Cheque</option>
                                     <option value="TT">TT</option>
-                                    <option value="RDGS">RDGS</option>
+                                    <option value="RTGS">RTGS</option>
                                 </select>
                             </div>
                         </div>

@@ -247,7 +247,7 @@ class Expenses extends MY_Controller
                         'expense_for' => $expense_for
                     );
                     $expenses_id = $this->site->insertQuery('expenses', $data);
-                    if (($payment_type == 'cheque') || ($payment_type == 'TT') || ($payment_type == 'RDGS')) {
+                    if (($payment_type == 'cheque') || ($payment_type == 'TT') || ($payment_type == 'RTGS')) {
                         $bankPendingExpenses = array(
                             'expenses_id' => $expenses_id,
                             'expens_category_id'  => $_POST['category'][$r],
@@ -363,7 +363,7 @@ class Expenses extends MY_Controller
         }
         $pending = $this->site->whereRow('bank_pending_expenses', 'expenses_id', $id);
         if ($this->form_validation->run() == true && $this->purchases_model->updateExpense($id, $data)) {
-            if (($payment_type == 'cheque') || ($payment_type == 'TT') || ($payment_type == 'RDGS')) {
+            if (($payment_type == 'cheque') || ($payment_type == 'TT') || ($payment_type == 'RTGS')) {
                 if ($pending) {
                     if ($pending->bank_status == 'Approved') {
                         $transactions = $this->site->whereRow('tranjiction', 'tranjiction_id', $pending->transactions_id);
@@ -723,7 +723,7 @@ class Expenses extends MY_Controller
         $banks = $this->site->get_bank_with_store();
         // $banks = $this->site->wheres_rows('bank_account',null); 
 
-        if ($type == 'cheque' || $type == 'TT' || $type == 'RDGS') {
+        if ($type == 'cheque' || $type == 'TT' || $type == 'RTGS') {
             $output = '<div class="col-md-6"><div class="form-group">
                   <label>Bank information </label> 
                    <select class="form-control select2 tip" name="bank" required="required" id="type">
@@ -744,10 +744,10 @@ class Expenses extends MY_Controller
                     <label>TT No </label>
                     <input type="text" name="cheque_no" class="form-control" required="required">
                 </div></div>';
-            } else if ($type == 'RDGS') {
+            } else if ($type == 'RTGS') {
                 $output .= '</select></div></div>
                 <div class="col-md-6"><div class="form-group">
-                    <label>RDGS No </label>
+                    <label>RTGS No </label>
                     <input type="text" name="cheque_no" class="form-control" required="required">
                 </div></div>';
             }

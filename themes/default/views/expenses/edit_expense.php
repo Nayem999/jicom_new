@@ -40,7 +40,7 @@
                             <?php } ?> 
                             <div class="form-group">
                                 <?= lang('type', 'type'); ?>*
-                                <?php $opts = array('cash' => lang('Cash'), 'cheque' => lang('Cheque'), 'TT' => lang('TT'), 'RDGS' => lang('RDGS')); ?>
+                                <?php $opts = array('cash' => lang('Cash'), 'cheque' => lang('Cheque'), 'TT' => lang('TT'), 'RTGS' => lang('RTGS')); ?>
                                 <?= form_dropdown('type', $opts, set_value('type', $expense->paid_by), 'class="form-control tip select2" id="type"  required="required" style="width:100%;"'); ?>
                             </div>
                             <div id="bankInfo"></div> 

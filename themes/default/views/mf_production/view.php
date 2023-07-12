@@ -126,7 +126,7 @@
                         <thead>
                           <tr class="active">
                             <th class="col-xs-1">SL</th>
-                            <th class="col-xs-3">Matrial Packaging Name</th>
+                            <th class="col-xs-3">Packaging Name</th>
                             <th class="col-xs-1">Quantity</th>
                           </tr>
                         </thead>

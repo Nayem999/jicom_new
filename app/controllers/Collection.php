@@ -552,6 +552,7 @@ class Collection extends MY_Controller
     }
     $this->data['advamount'] = $this->sales_model->getCusAdv($invs->customer_id);   
     $this->data['deuamount'] = $this->sales_model->salesDeuByCustomer($invs->customer_id);    
+    $this->data['collect_id'] = $collect_id;    
     $this->data['admin'] = $this->sales_model->getUserInfo($this->session->userdata('user_id'));
     $this->data['page_title'] = lang("Collection invoice");
 
@@ -564,7 +565,7 @@ class Collection extends MY_Controller
       
       $banks = $this->site->get_bank_with_store(); 
       
-      if($type == 'Cheque' || $type == 'cheque' || $type == 'TT' || $type == 'Deposit' || $type == 'RDGS'){
+      if($type == 'Cheque' || $type == 'cheque' || $type == 'TT' || $type == 'Deposit' || $type == 'RTGS'){
         $output= '<div class="form-group">
                 <label>Bank information </label> 
                 <select class="form-control select2 tip" name="bank" required="required" id="type">
@@ -595,10 +596,10 @@ class Collection extends MY_Controller
         <input type="text" name="cheque_no" class="form-control" required="required">
             </div>'; 
         }  
-        else if($type == 'RDGS'){
+        else if($type == 'RTGS'){
             $output .='</select></div>
             <div class="form-group">
-            <label>RDGS No </label>
+            <label>RTGS No </label>
         <input type="text" name="cheque_no" class="form-control" required="required">
             </div>'; 
         }  
