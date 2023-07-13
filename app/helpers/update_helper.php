@@ -24,3 +24,30 @@ if(! function_exists('save_remote_file')) {
         return true;
     }
 }
+
+if(! function_exists('get_all_months')) {
+    function get_all_months(){
+        $allMonth =  [
+            1=>'January',
+            2=>'February',
+            3=>'March',
+            4=>'April',
+            5=>'May',
+            6=>'June',
+            7=>'July',
+            8=>'August',
+            9=>'September',
+            10=>'October',
+            11=>'November',
+            12=>'December'
+          ];
+
+          return $allMonth;
+    }
+}
+if(! function_exists('get_year')) {
+    function get_year(){
+        $yearRange = range(2022, date("Y"));
+        return $yearRange;
+    }
+}

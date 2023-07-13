@@ -903,6 +903,14 @@
                     <li id="mf_report_profit_n_loss_rpt"><a href="<?= site_url('mf_report/packaging_material'); ?>">
                       <i class="fa fa-circle-o"></i> Packaging Material </a>
                     </li>
+                    
+                    <li id="mf_report_packaging_material"><a href="<?= site_url('mf_report/packaging_material'); ?>">
+                      <i class="fa fa-circle-o"></i> Monthly Packaging Report </a>
+                    </li>
+
+                    <li id="mf_report_monthly_production"><a href="<?= site_url('mf_report/monthly_production'); ?>">
+                      <i class="fa fa-circle-o"></i> Monthly Production Report </a>
+                    </li>
 
                   <?php } ?>   
                   <li class="divider"></li>

@@ -70,7 +70,7 @@ class Mf_purchases_packaging extends MY_Controller
 
         $action="<div class='text-center'><div class='btn-group'>";
 		if($this->site->route_permission('mf_purchases_packaging_view')) {
-			// $action.="<a onclick=\"window.open('" . site_url('mf_purchases_packaging/view/$1') . "', 'pos_popup', 'width=900,height=600,menubar=yes,scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#' title='Print Purchase' class='tip btn btn-primary btn-xs'><i class='fa fa-file-text-o'></i></a> ";
+			$action.="<a onclick=\"window.open('" . site_url('mf_purchases_packaging/view/$1') . "', 'pos_popup', 'width=900,height=600,menubar=yes,scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#' title='Print Purchase' class='tip btn btn-primary btn-xs'><i class='fa fa-file-text-o'></i></a> ";
 		}
 		if($this->site->route_permission('mf_purchases_packaging_edit')) {
 			$action.="<a href='" . site_url('mf_purchases_packaging/edit/$1') . "' title='" . lang("edit_purchase") . "' class='tip btn btn-warning btn-xs'><i class='fa fa-edit'></i></a>";
@@ -151,7 +151,7 @@ class Mf_purchases_packaging extends MY_Controller
             $total = 0;
             $store_id=$this->input->post('store_id');
             $i = isset($_POST['product_id']) ? sizeof($_POST['product_id']) : 0;            
-            
+            // echo $i.'**';die();
             for ($r = 0; $r < $i; $r++) {
 
                 $item_id = $_POST['product_id'][$r];
@@ -161,7 +161,7 @@ class Mf_purchases_packaging extends MY_Controller
                 
                 if ($item_id && $item_qty ) { 
                     
-                    if (!$this->site->getMaterialByID($item_id)) {                        
+                    if (!$this->site->getPackagingMaterialByID($item_id)) {                        
                         $this->session->set_flashdata('error', $this->lang->line("product_not_found") . " ( " . $item_id . " ).");
                         redirect('mf_purchases_packaging/add');
                     }      
