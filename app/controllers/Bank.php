@@ -488,15 +488,26 @@ class Bank extends MY_Controller
 		$this->data['bank_info'] = $this->bank_model->getBankByID($id);
 	    $this->load->view($this->theme . 'bank/tranjictionList',$this->data); 
 	 }
- 	function allTransaction($account_id,$tran_type = NULL ){
+ 	function allTransaction($account_id,$tran_type=NULL){
 	 
-	 if($tran_type == NULL){
-		 $tran_type = 1;
+	 /* if($date != NULL){
+		//  $tran_type = 1;
+		$data=explode("_",$date);
+		$start_date=$data[0];
+		$end_date=$data[1];
 	  }
-	
+	  else
+	  {
+		  $start_date = $this->input->post('start_date') ? $this->input->post('start_date') . " 00:00:00" : NULL;
+		  $end_date = $this->input->post('end_date') ? $this->input->post('end_date') . " 23:59:59" : NULL;
+	  } */
+	  $start_date = $this->input->post('start_date') ? $this->input->post('start_date') . " 00:00:00" : NULL;
+	  $end_date = $this->input->post('end_date') ? $this->input->post('end_date') . " 23:59:59" : NULL;
+
 	    $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
 	
-		$this->data['path'] = 'bank/get_Tr_records/'.$account_id.'/'.$tran_type;
+		// $this->data['path'] = 'bank/get_Tr_records/'.$account_id.'/'.$tran_type;
+		$this->data['path'] = 'bank/get_Tr_records/'.$account_id.'/'.$start_date.'_'.$end_date;
 		
 		$this->data['tabPath'] = 'bank/allTransaction/'.$account_id;
 		
@@ -504,7 +515,10 @@ class Bank extends MY_Controller
 		
 		$bank_info = $this->bank_model->getBankByID($bank_id[0]->bank_account_id);
 		
-		$this->data['active'] = $tran_type ;
+		// $this->data['active'] = $tran_type ;
+		$this->data['account_id'] = $account_id ;
+		$this->data['start_date'] = $start_date ;
+		$this->data['end_date'] = $end_date ;
 		
     	$this->data['page_title'] = 'All Transaction';
 
@@ -545,7 +559,11 @@ class Bank extends MY_Controller
 
     }
 
-	function get_Tr_records($account_id,$tran_type = NULL) {
+	function get_Tr_records($account_id,$date) {
+
+		$data=explode("_",$date);
+		if($data[0]){$data2=explode("%",$data[0]);$start_date=$data2[0];}else{$start_date=null;}
+		if($data[1]){$data3=explode("%",$data[1]);$end_date=$data3[0];}else{$end_date=null;}
 
 		$this->load->library('datatables');
 
@@ -590,12 +608,14 @@ class Bank extends MY_Controller
 
 			$this->datatables->unset_column('tid');
 			
+			if($start_date && $end_date ){ 
+				$this->datatables->where("tranjiction.tran_date  >=", $start_date.' 00:00:00');
+				$this->datatables->where("tranjiction.tran_date <=", $end_date.' 23:59:59');
+			}
 
-         $actdata = "<a class='tip btn btn-warning btn-xs' data-toggle='ajax' onclick='editTransaction($1)' href='javascript:;'> <i class='fa fa-edit'></i></a>";
+        $actdata = "<a class='tip btn btn-warning btn-xs' data-toggle='ajax' onclick='editTransaction($1)' href='javascript:;'> <i class='fa fa-edit'></i></a>";
 
-         $actdata .= "<a href='" . site_url('bank/deleteTransaction/$1') . "' onClick=\"return confirm('". $this->lang->line('alert_x_customer') ."')\" class='tip btn btn-danger btn-xs' title='Delete bank Transaction'>
-		 <i class='fa fa-trash-o'></i>
-	   </a>";
+        $actdata .= "<a href='" . site_url('bank/deleteTransaction/$1') . "' onClick=\"return confirm('". $this->lang->line('alert_x_customer') ."')\" class='tip btn btn-danger btn-xs' title='Delete bank Transaction'><i class='fa fa-trash-o'></i></a>";
 
          $this->datatables->add_column("Actions", "<div class='text-center'><div class='btn-group'>".$actdata."</div></div>", "bid");
 

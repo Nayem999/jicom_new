@@ -1,27 +1,32 @@
-
 <script>
-
     function paymenttype(n) {
-        if(n==1 || n==3){
+        if (n == 1 || n == 3) {
             return 'In';
-        }else{
+        } else {
             return 'Out';
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
         $('#CuData').dataTable({
 
-            "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, '<?= lang('all'); ?>']],
+            "aLengthMenu": [
+                [10, 25, 50, 100, -1],
+                [10, 25, 50, 100, '<?= lang('all'); ?>']
+            ],
 
-            "aaSorting": [[ 0, "desc" ]], "iDisplayLength": <?= $Settings->rows_per_page ?>,
+            "aaSorting": [
+                [0, "desc"]
+            ],
+            "iDisplayLength": <?= $Settings->rows_per_page ?>,
 
-            'bProcessing': true, 'bServerSide': true,
+            'bProcessing': true,
+            'bServerSide': true,
 
             'sAjaxSource': '<?= site_url($path) ?>',
 
-            'fnServerData': function (sSource, aoData, fnCallback) {
+            'fnServerData': function(sSource, aoData, fnCallback) {
 
                 aoData.push({
 
@@ -31,16 +36,28 @@
 
                 });
 
-                $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
+                $.ajax({
+                    'dataType': 'json',
+                    'type': 'POST',
+                    'url': sSource,
+                    'data': aoData,
+                    'success': fnCallback
+                });
 
             },
 
-            "aoColumns": [{"mRender":hrld}, null, null,null, {"mRender": paymenttype}, null,null,null, null, {"bSortable":false, "bSearchable": false}]
+            "aoColumns": [{
+                "mRender": hrld
+            }, null, null, null, {
+                "mRender": paymenttype
+            }, null, null, null, null, {
+                "bSortable": false,
+                "bSearchable": false
+            }]
 
         });
 
     });
-
 </script>
 
 <section class="content">
@@ -58,58 +75,99 @@
                 </div>
 
                 <div class="box-body">
-                      <!-- <ul class="nav nav-tabs">
-                            <li class="<?php if($active == 1){ echo 'active' ;} ?>"><a href="<?php echo base_url($tabPath.'/1') ?>"  >Cash in</a></li>
-                            <li class="<?php if($active == 0){ echo 'active' ;} ?>"><a href="<?php echo base_url($tabPath.'/0') ?>"  >Cash Out</a></li>
+                    <!-- <ul class="nav nav-tabs">
+                            <li class="<?php if ($active == 1) {
+                                            echo 'active';
+                                        } ?>"><a href="<?php echo base_url($tabPath . '/1') ?>"  >Cash in</a></li>
+                            <li class="<?php if ($active == 0) {
+                                            echo 'active';
+                                        } ?>"><a href="<?php echo base_url($tabPath . '/0') ?>"  >Cash Out</a></li>
                       </ul> -->
-                      <br /><br />
 
-                      <div class="table-responsive">
-                        
+                    <div id="form" class="panel panel-warning">
 
-                    <table id="CuData" class="table table-bordered table-hover table-striped">
+                        <div class="panel-body">
 
-                        <thead>
+                            <?= form_open("bank/allTransaction/".$account_id); ?>
 
-                        <tr>
-                        
-                            <th><?php echo 'Date' ?></th>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="start_date"><?= lang("start_date"); ?></label>
+                                        <?= form_input('start_date', $start_date, 'class="form-control datepicker" id="start_date"'); ?>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="end_date"><?= lang("end_date"); ?></label>
+                                        <?= form_input('end_date', $end_date, 'class="form-control datepicker" id="end_date"'); ?>
+                                    </div>
+                                </div>
 
-                            <th><?php echo 'Bank Name' ; ?></th>
+                                <div class="col-sm-12">
 
-                            <th><?php echo 'Account Name'; ?></th>
+                                    <button type="submit" class="btn btn-primary"><?= lang("submit"); ?></button>
 
-                            <th><?php echo 'Cheque No'; ?></th>
+                                </div>
 
-                            <th><?php echo 'Transaction Type'; ?></th>
-                            
-                            <th><?php echo 'Supplier'; ?></th>
+                            </div>
+                            <?= form_close(); ?>
 
-                            <th><?php echo 'Customer'; ?></th>
+                        </div>
 
-                            <th><?php echo 'Amount'; ?></th>
+                    </div>
 
-                            <th><?php echo 'Type'; ?></th>
 
-                            <th style="width:100px;"><?php echo $this->lang->line("actions"); ?></th>
 
-                        </tr>
 
-                        </thead>
+                    <br /><br />
 
-                        <tbody>
+                    <div class="table-responsive">
 
-                            <tr>
 
-                                <td colspan="6" class="dataTables_empty"><?= lang('loading_data_from_server') ?></td>
+                        <table id="CuData" class="table table-bordered table-hover table-striped">
 
-                            </tr>
+                            <thead>
 
-                        </tbody>
+                                <tr>
 
-                    </table>
+                                    <th><?php echo 'Date' ?></th>
 
-                </div>
+                                    <th><?php echo 'Bank Name'; ?></th>
+
+                                    <th><?php echo 'Account Name'; ?></th>
+
+                                    <th><?php echo 'Cheque No'; ?></th>
+
+                                    <th><?php echo 'Transaction Type'; ?></th>
+
+                                    <th><?php echo 'Supplier'; ?></th>
+
+                                    <th><?php echo 'Customer'; ?></th>
+
+                                    <th><?php echo 'Amount'; ?></th>
+
+                                    <th><?php echo 'Type'; ?></th>
+
+                                    <th style="width:100px;"><?php echo $this->lang->line("actions"); ?></th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td colspan="6" class="dataTables_empty"><?= lang('loading_data_from_server') ?></td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
 
                     <div class="clearfix"></div>
 
@@ -123,5 +181,18 @@
 
 </section>
 
+<script src="<?= $assets ?>plugins/bootstrap-datetimepicker/js/moment.min.js" type="text/javascript"></script>
+<script src="<?= $assets ?>plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script type="text/javascript">
 
+    $(function () {
 
+        $('.datepicker').datetimepicker({
+
+            format: 'YYYY-MM-DD'
+
+        });
+
+    });
+
+</script>
