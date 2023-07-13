@@ -45,7 +45,7 @@ class Mf_purchases_packaging extends MY_Controller
         );
         
         $meta = array(
-            'page_title' => lang('purchases'),
+            'page_title' => lang('List Purchases Packaging'),
             'bc' => $bc
         );
         

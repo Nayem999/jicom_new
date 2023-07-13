@@ -191,7 +191,7 @@
                         <div id="addMore">
                             <div class="input-group mb-3" style="display:flex;margin-bottom: 5vh; gap: 1rem;">
                                 <?php
-                                        $pk[''] = lang("select") . " " . lang("Packaging materials");
+                                        $pk[''] = lang("select") . " " . lang("Packaging ");
                                         foreach ($packaging_items as $k=>$v) {
                                             $pk[$v->id] = $v->name . " (" . $v->quantity . ' ' .$v->unit. ") ";
                                         }

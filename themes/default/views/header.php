@@ -662,10 +662,10 @@
                 </span> <i class="fa fa-angle-left pull-right"></i> </a>
               <ul class="treeview-menu">
                 <?php if ($this->site->route_permission('mf_purchases_packaging_view')) {?>
-                  <li id="mf_purchases_packaging_index"><a href="<?= site_url('mf_purchases_packaging'); ?>"><i class="fa fa-circle-o"></i><?= lang('list_purchases_packaging'); ?></a></li>
+                  <li id="mf_purchases_packaging_index"><a href="<?= site_url('mf_purchases_packaging'); ?>"><i class="fa fa-circle-o"></i>List Purchases Packaging</a></li>
                 <?php } ?>  
                 <?php if ($this->site->route_permission('mf_purchases_packaging_add')) {?>
-                  <li id="mf_purchases_packaging_add"><a href="<?= site_url('mf_purchases_packaging/add'); ?>"><i class="fa fa-circle-o"></i> <?= lang('add_purchase_packaging'); ?></a> </li>
+                  <li id="mf_purchases_packaging_add"><a href="<?= site_url('mf_purchases_packaging/add'); ?>"><i class="fa fa-circle-o"></i>Add Purchase Packaging</a> </li>
                 <?php } ?>  
                 <li class="divider"></li>
               </ul>
@@ -900,9 +900,9 @@
                       <i class="fa fa-circle-o"></i> Supplier payment </a>
                     </li>
 
-                    <li id="mf_report_profit_n_loss_rpt"><a href="<?= site_url('mf_report/packaging_material'); ?>">
+                    <!-- <li id="mf_report_profit_n_loss_rpt"><a href="<?= site_url('mf_report/packaging_material'); ?>">
                       <i class="fa fa-circle-o"></i> Packaging Material </a>
-                    </li>
+                    </li> -->
                     
                     <li id="mf_report_packaging_material"><a href="<?= site_url('mf_report/packaging_material'); ?>">
                       <i class="fa fa-circle-o"></i> Monthly Packaging Report </a>

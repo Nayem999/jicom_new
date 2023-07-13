@@ -34,7 +34,7 @@ class Mf_finish_good_stock extends MY_Controller
 
         $this->data['page_title'] = $this->lang->line("finish_goods_stock");
         $bc = array(array('link' => '#', 'page' => lang('reports')), array('link' => '#', 'page' => lang('finish_goods_stock')));
-        $meta = array('page_title' => lang('finish_goods_stock'), 'bc' => $bc);
+        $meta = array('page_title' => lang('Finish Goods Stock'), 'bc' => $bc);
         $this->page_construct('mf_finish_good_stock/stock_list', $this->data, $meta);
 
     }

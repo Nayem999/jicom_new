@@ -161,7 +161,7 @@
                                     <?php
                                     $pk[''] = lang("select") . " " . lang("Packaging");
                                     foreach ($packaging_items as $k => $v) {
-                                        $pk[$v->id] = $v->name;
+                                        $pk[$v->id] = $v->name . " (" . $v->quantity . ' ' .$v->unit. ") ";
                                     }
                                     ?>
                                     <?= form_dropdown('packaging_material[]', $pk, '', 'class="form-control" id="packagingMaterial" style="width:100%;" required="required"'); ?>
