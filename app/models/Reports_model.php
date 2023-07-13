@@ -1499,20 +1499,25 @@ class Reports_model extends CI_Model
 		}
 	}
 
-    public function getAllBankInfo($id=null)
+    public function getAllBankInfo($id=null,$start_date=NULL,$end_date=NULL)
 	{ 
 
-        $this->db->select('bank_account.bank_account_id as bank_id, bank_account.bank_name, bank_account.account_no, tranjiction.tran_amount as amount, tranjiction.tran_type as payment_type,bank_account.create_date '); 
+        $this->db->select('bank_account.bank_account_id as bank_id, bank_account.bank_name, bank_account.account_no, tranjiction.tran_amount as amount, tranjiction.tran_type as payment_type,tranjiction.tran_date '); 
         $this->db->from('bank_account');  
 		$this->db->join('tranjiction','bank_account.bank_account_id =tranjiction.bank_account_id');
 
         if(!$this->Admin)
         {
-            $this->db->where('bank_account.store_id ',$id);  
+            $this->db->where('bank_account.store_id ',$this->session->userdata('store_id'));  
         }
 
         if($id){ 
             $this->db->where('bank_account.bank_account_id ',$id);   
+        }
+
+        if($start_date && $end_date){ 
+            $this->db->where('tranjiction.tran_date >=', $start_date.' 00:00:00'); 
+            $this->db->where('tranjiction.tran_date <=', $end_date.' 23:59:59');   
         }
   
 		$this->db->order_by("bank_account.bank_account_id", 'asc');

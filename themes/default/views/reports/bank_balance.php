@@ -29,28 +29,42 @@
                         <?= form_open("reports/bank_balance");?> 
 
                         <div class="row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label class="control-label" for="bank_id"><?= lang("Bank Name"); ?></label>
-                                <?php 
-                            
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="control-label" for="bank_id"><?= lang("Bank Name"); ?></label>
+                                    <?php 
+                                
 
-                                $cu[0] = lang("select")." ".lang("Bank");
-                                       foreach ($bank_name as $key => $sname) {
-                                            $cu[$sname->bank_account_id] = $sname->bank_name .'( '.$sname->account_no .' )';
-                                       } 
-                                echo form_dropdown('bank_id', $cu, set_value('bank_id'), 'class="form-control select2" style="width:100%" id="bank_id"');  
-                                ?>
+                                    $cu[0] = lang("select")." ".lang("Bank");
+                                        foreach ($bank_name as $key => $sname) {
+                                                $cu[$sname->bank_account_id] = $sname->bank_name .'( '.$sname->account_no .' )';
+                                        } 
+                                    echo form_dropdown('bank_id', $cu, set_value('bank_id'), 'class="form-control select2" style="width:100%" id="bank_id"');  
+                                    ?>
+                                </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="start_date"><?= lang("start_date"); ?></label>
+                                        <?= form_input('start_date', $start_date, 'class="form-control datepicker" id="start_date"'); ?>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="end_date"><?= lang("end_date"); ?></label>
+                                        <?= form_input('end_date', $end_date, 'class="form-control datepicker" id="end_date"'); ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+
+                                    <button type="submit" class="btn btn-primary"><?= lang("submit"); ?></button>
+
+                                </div>
+
                             </div>
-                            </div>
 
-                            <div class="col-sm-12">
 
-                                <button type="submit" class="btn btn-primary"><?= lang("submit"); ?></button>
-
-                            </div>
-
-                        </div>
 
                         <?= form_close();?>
 
@@ -100,7 +114,7 @@
                                         
                                         ?>
                                             <tr>
-                                                <td><?=$val->create_date;?></td>
+                                                <td><?=$val->tran_date;?></td>
                                                 <td><?=$val->bank_name." (".$val->account_no.")";?></td>
                                                 <td>
                                                     <?php
@@ -183,7 +197,7 @@
     $("#fileData_filter ").css("display", "block");   
   });
   $("#excelWindow").click(function() {
-        var data = $("#bank_id").val() ;
+        var data = $("#bank_id").val() + '_' + $("#start_date").val() + '_' + $("#end_date").val();
         var url = '<?= site_url('reports/excel_bank_balance/'); ?>' + '/' + data;
         location.replace(url);
     });

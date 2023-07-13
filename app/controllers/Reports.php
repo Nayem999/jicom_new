@@ -3006,11 +3006,15 @@ class Reports extends MY_Controller
         // $this->load->model("site");
 
         $bank_id = $this->input->post('bank_id') ? $this->input->post('bank_id') : 0;
+        $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : null;
+        $end_date = $this->input->post('end_date') ? $this->input->post('end_date') : null;
         $this->data['bank_name'] = $this->site->get_bank_with_store();
-        $this->data['bank_data'] = $this->reports_model->getAllBankInfo($bank_id);
+        $this->data['bank_data'] = $this->reports_model->getAllBankInfo($bank_id,$start_date,$end_date);
         // $this->data['bank_data'] = $this->reports_model->getAllBankInfo($bank_id);
 
         $this->data['bank_id'] = $bank_id;
+        $this->data['start_date'] = $start_date;
+        $this->data['end_date'] = $end_date;
         $this->data['page_title'] = 'Bank Balance';
         /* $bc = array(
             array(
@@ -3028,13 +3032,28 @@ class Reports extends MY_Controller
     }
     public function excel_bank_balance($data)
     {
+        $data_arr = explode("_", $data);
 
-        $bank_data = $this->reports_model->getAllBankInfo($data);
+        $bank_id = $data_arr[0] ? $data_arr[0] : 0;
+        $start_date = $data_arr[1] ? $data_arr[1] : null;
+        $end_date = $data_arr[2] ? $data_arr[2] : null;
+
+        $bank_data = $this->reports_model->getAllBankInfo($bank_id,$start_date,$end_date);
 
         $fileName = "bank_balance_report" . date('Y-m-d_h_i_s') . ".xls";
 
         $fields = array('Report Name ', 'Bank Balance Report');
         $excelData = implode("\t", array_values($fields)) . "\n";
+
+        if ($bank_id) {
+            $bank_info = $this->site->whereRow("bank_account","bank_account_id",$bank_id);
+            $fields = array('Bank Name', $bank_info->bank_name);
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
+        if($start_date && $end_date){
+            $fields = array('Start Date', $start_date, 'End Date', $end_date);
+            $excelData .= implode("\t", array_values($fields)) . "\n";
+        }
 
         $fields = array('Date', 'Bank name', 'Dr.', 'Cr.', 'Balance');
         $excelData .= implode("\t", array_values($fields)) . "\n";
@@ -3042,7 +3061,7 @@ class Reports extends MY_Controller
         if (count($bank_data) > 0) {
             $total_balance = 0;
             foreach ($bank_data as $key => $val) {
-                $lineData = array(date("d-M-Y", strtotime($val->create_date)), $val->bank_name . " (" . $val->account_no . ")", ($val->payment_type == 1) ? $val->amount : 0, ($val->payment_type == 2) ? $val->amount : 0);
+                $lineData = array(date("d-M-Y", strtotime($val->tran_date)), $val->bank_name . " (" . $val->account_no . ")", ($val->payment_type == 1) ? $val->amount : 0, ($val->payment_type == 2) ? $val->amount : 0);
                 if ($val->payment_type == 1) {
                     $total_balance += $val->amount;
                 }
