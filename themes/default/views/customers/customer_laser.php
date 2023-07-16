@@ -144,7 +144,9 @@
                                             if (($value['type'] == 'collection')) {
                                                 if (array_key_exists($value['id'], $sales_collection_id)) {
                                                     echo '<td class="center"> INVOICE NO: ' . $sales_collection_id[$value['id']] . '</td>';
-                                                } else {
+                                                } else if($value['paid_type']=='Adjustment'){
+                                                    echo '<td class="center">'.$value['paid_type'].'</td>';
+                                                }else{
                                                     echo '<td class="center"> DC</td>';
                                                 }
                                             } else if($value['type'] == 'Sales Return' || $value['type'] == 'Sales Return Amount'){
