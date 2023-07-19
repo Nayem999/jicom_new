@@ -195,9 +195,9 @@
 
                                     <th class="col-xs-3"><?= lang('date'); ?></th>
 
-                                    <th class="col-xs-1">Ref.</th>
+                                    <th class="col-xs-1">Store</th>
 
-                                    <th class="col-xs-1">S. Name</th>
+                                    <th class="col-xs-1">Supplier</th>
 
                                     <th class="col-xs-1"><?= lang('total'); ?></th>
 

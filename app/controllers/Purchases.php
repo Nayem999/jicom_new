@@ -142,8 +142,8 @@ class Purchases extends MY_Controller
         
         $this->datatables->select($this->db->dbprefix('purchases') . ".id as id, " . 
                       
-            $this->db->dbprefix('purchases') . ".date as date , reference,  supplier_id," .  
-
+            $this->db->dbprefix('purchases') . ".date as date, supplier_id," .  
+            $this->db->dbprefix('stores') . ".name as sname, " .  
             $this->db->dbprefix('suppliers') . ".name as cname , total, paid , deu , note, attachment", FALSE);
         
         $this->datatables->join('suppliers', 'suppliers.id=purchases.supplier_id','left');
