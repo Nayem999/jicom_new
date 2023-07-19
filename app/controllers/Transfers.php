@@ -182,7 +182,7 @@ class Transfers extends MY_Controller
         if ($this->form_validation->run() == true &&  $mfTrId = $this->transfers_model->addtransfers($data, $products)) { 
             if($mfTrId){
                 // material ids
-                $materialIds = $_POST["packaging_material"];
+                /* $materialIds = $_POST["packaging_material"];
                 // material qty
                 $materialQts = $_POST["pk_quantity"];
 
@@ -223,7 +223,7 @@ class Transfers extends MY_Controller
                         }
 
                     }
-                }
+                } */
             }
 
 
