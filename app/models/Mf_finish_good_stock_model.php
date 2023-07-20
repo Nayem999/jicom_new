@@ -9,11 +9,14 @@ class Mf_finish_good_stock_model extends CI_Model
 
 	public function getFinishStockList($store_id = null){
 
-        $this->db->select('mf_finished_good_stock.id, mf_finished_good_stock.quantity as qty,mf_finished_good_stock.cost as cost, products.name as product_name, stores.name as store_name'); 
+        $this->db->select("mf_finished_good_stock.id, mf_finished_good_stock.quantity as qty,mf_finished_good_stock.cost as cost, products.name as product_name, stores.name as store_name, group_concat(tec_mf_material_packaging.name, '(', mf_product_packaging_stock.quantity ,') ')  as packaging_details "); 
         $this->db->from('mf_finished_good_stock');  
 		$this->db->join('products','mf_finished_good_stock.product_id=products.id');
 		$this->db->join('stores','stores.id=mf_finished_good_stock.store_id', 'left');
+		$this->db->join('mf_product_packaging_stock','mf_finished_good_stock.store_id=mf_product_packaging_stock.store_id and mf_product_packaging_stock.product_id=products.id', 'left');
+		$this->db->join('mf_material_packaging','mf_material_packaging.id=mf_product_packaging_stock.packaging_id', 'left');
 		$this->db->order_by('mf_finished_good_stock.id','desc');
+		$this->db->group_by('id');
   
         if($store_id){
             $this->db->where('mf_finished_good_stock.store_id', $store_id);
@@ -21,6 +24,7 @@ class Mf_finish_good_stock_model extends CI_Model
 
         $query = $this->db->get();
         return $query->result(); 
+
     }
 
 	public function getStockStoreById($id){

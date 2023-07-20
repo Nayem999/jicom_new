@@ -62,8 +62,8 @@
     }
 
     function checkDB(id,prod_id) {
-        var stock_qty=$("#stock_qty_" + id).val();
-        var current_qty=$("#id_"+prod_id+"_"+id).val();
+        var stock_qty=parseInt($("#stock_qty_" + id).val());
+        var current_qty=parseInt($("#id_"+prod_id+"_"+id).val());
         if(current_qty>stock_qty)
         {
             alert("Current Quantity Over Stock Quantity");

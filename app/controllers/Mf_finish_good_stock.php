@@ -90,10 +90,14 @@ class Mf_finish_good_stock extends MY_Controller
          $this->datatables->select($this->db->dbprefix('mf_finished_good_stock') . ".id as id, " .  
          $this->db->dbprefix('products'). ".name as product_name,".
          $this->db->dbprefix('stores'). ".name as store_name,".
-         $this->db->dbprefix('mf_finished_good_stock'). ".quantity,".
-         	$this->db->dbprefix('mf_finished_good_stock'). ".cost", FALSE); 
+         $this->db->dbprefix('mf_finished_good_stock'). ".quantity,GROUP_CONCAT(".
+         $this->db->dbprefix('mf_material_packaging'). ".name, '(', ".
+         $this->db->dbprefix('mf_product_packaging_stock'). ".quantity,') ') as packaging_details ,".
+        $this->db->dbprefix('mf_finished_good_stock'). ".cost", FALSE); 
         $this->datatables->from('mf_finished_good_stock');  
         $this->datatables->join('products','mf_finished_good_stock.product_id=products.id'); 
+        $this->datatables->join('mf_product_packaging_stock','mf_finished_good_stock.store_id=mf_product_packaging_stock.store_id and mf_product_packaging_stock.product_id=products.id', 'left');
+		$this->datatables->join('mf_material_packaging','mf_material_packaging.id=mf_product_packaging_stock.packaging_id', 'left');
         $this->datatables->join('stores','stores.id=mf_finished_good_stock.store_id', 'left');
 
         if($store_id):
@@ -113,6 +117,7 @@ class Mf_finish_good_stock extends MY_Controller
         endif;
 
         $this->datatables->unset_column('id');
+        $this->datatables->group_by('products.name,stores.name');
 
         echo $this->datatables->generate();
     }

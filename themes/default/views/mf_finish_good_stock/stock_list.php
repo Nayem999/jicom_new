@@ -28,6 +28,7 @@
                                         <th class="text-center"> Product Name</th>           
                                         <th class="text-center"> Store Name</th>           
                                         <th class="text-center"> Quantity</th>
+                                        <th class="text-center"> Packaging Stock</th>
                                         <th class="text-center"> Cost</th>
                                     </tr>
                                 </thead>
@@ -41,6 +42,7 @@
                                             <td><?=$result->product_name; ?></td>
                                             <td><?=$result->store_name; ?></td>
                                             <td><?=$result->qty; ?></td>
+                                            <td><?=$result->packaging_details; ?></td>
                                             <td><?=$result->cost; ?></td>
                                         </tr>
                                         <?php
@@ -102,7 +104,7 @@
 
             },
 
-            "aoColumns": [null, null,  null,null]
+            "aoColumns": [null, null,  null,null,null]
 
         });
     }

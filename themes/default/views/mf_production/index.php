@@ -57,7 +57,7 @@
 
         },
 
-        "aoColumns": [null, null, null, null,null,null, null, {
+        "aoColumns": [null, null, null, null,null,null, null, null, {
             "bSortable": false,
             "bSearchable": false
         }]
@@ -108,13 +108,14 @@
 
                             <thead>
                                 <tr class="active">
-                                    <th class="col-xs-2">Batch No</th>
+                                    <th class="col-xs-1">Batch No</th>
                                     <th class="col-xs-2">Store Name</th>
                                     <th class="col-xs-2">Recipe Name</th>
-                                    <th class="col-xs-3">Product</th>
-                                    <th class="col-xs-3">Output</th>
-                                    <th class="col-xs-3">Total Cost</th>
-                                    <th class="col-xs-2">Status</th>
+                                    <th class="col-xs-1">Product</th>
+                                    <th class="col-xs-1">Output</th>
+                                    <th class="col-xs-1">Total Cost</th>
+                                    <th class="col-xs-1">Packaging</th>
+                                    <th class="col-xs-1">Status</th>
                                     <th class="col-xs-2">Action</th>
                                 </tr>
                             </thead>

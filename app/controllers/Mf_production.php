@@ -46,13 +46,19 @@ class Mf_production extends MY_Controller
          	$this->db->dbprefix('mf_recipe_mst'). ".name,".
          	$this->db->dbprefix('products'). ".name as product_name,".
          	$this->db->dbprefix('mf_production_mst'). ".actual_output ,".
-         	$this->db->dbprefix('mf_production_mst'). ".total_cost ,".
+         	$this->db->dbprefix('mf_production_mst'). ".total_cost ,GROUP_CONCAT(".
+         	$this->db->dbprefix('mf_material_packaging'). ".name, '(', ".
+         	$this->db->dbprefix('mf_production_material_packaging'). ".quantity,')') as packaging_details ,".
          	$this->db->dbprefix('mf_production_mst').".status,", FALSE
         ); 
+        // CONCAT(tec_mf_material_packaging.name, ' (', tec_mf_production_material_packaging.quantity, ')') AS packaging_details,
+
         $this->datatables->from('mf_production_mst'); 
         $this->datatables->join('products','mf_production_mst.product_id=products.id'); 
         $this->datatables->join('mf_recipe_mst','mf_production_mst.recipe_id=mf_recipe_mst.id'); 
         $this->datatables->join('stores','mf_production_mst.store_id=stores.id'); 
+        $this->datatables->join('mf_production_material_packaging', 'mf_production_mst.id=mf_production_material_packaging.production_id and mf_production_material_packaging.active_status=1', 'left'); 
+        $this->datatables->join('mf_material_packaging', 'mf_material_packaging.id=mf_production_material_packaging.material_packaging_id', 'left'); 
         $this->datatables->where('mf_production_mst.active_status',1); 
 
         if($store_id){
@@ -73,7 +79,9 @@ class Mf_production extends MY_Controller
 
         $this->datatables->add_column("Actions", $action, "id, image, code, name");
         $this->datatables->unset_column('id');
+        $this->datatables->group_by('batch_no');
         echo $this->datatables->generate();
+        // echo $this->db->last_query();
 
     }
 
