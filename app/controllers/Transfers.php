@@ -117,7 +117,7 @@ class Transfers extends MY_Controller
 
             $from_store_info = $this->site->findeNameByID('stores', 'id',$this->session->userdata('from_warehouse'));       
             $to_store_info = $this->site->findeNameByID('stores', 'id',$this->input->post('towarehouse'));       
-            
+            $packing=array();
             for ($r = 0; $r < $i; $r++) {
                 
                 $item_id = $_POST['product_id'][$r];  
@@ -127,6 +127,8 @@ class Transfers extends MY_Controller
                 $item_qty = $_POST['quantity'][$r];                
                 $item_cost = $_POST['cost'][$r]; 
                 $display_item_cost = $_POST['display_cost'][$r]; 
+                $pak_dtls = $_POST['pak_qty'][$r]; 
+
                 
                 if ($item_id && $item_qty>0) { 
                     
@@ -147,8 +149,22 @@ class Transfers extends MY_Controller
                         );  
                         $total += ($item_cost * $item_qty);                    
                     }
-                }
-                
+                    if($pak_dtls!=null)
+                    {
+                        $pak_dtls= json_decode($pak_dtls,true);
+                        foreach($pak_dtls as $key=>$value)
+                        {
+                            if($value>0)
+                            {
+                                $packing[] = array(                              
+                                    'product_id' => $item_id,                    
+                                    'packaging_id' => $key,                                       
+                                    'quantity' => $value,                                                         
+                                );  
+                            }
+                        }                 
+                    }
+                }                
             }
                         
             
@@ -179,54 +195,7 @@ class Transfers extends MY_Controller
         }
         // print_r($data);die;
 
-        if ($this->form_validation->run() == true &&  $mfTrId = $this->transfers_model->addtransfers($data, $products)) { 
-            if($mfTrId){
-                // material ids
-                /* $materialIds = $_POST["packaging_material"];
-                // material qty
-                $materialQts = $_POST["pk_quantity"];
-
-                
-                if(is_array($materialIds) && count($materialIds) > 0){
-
-                    foreach ($materialIds as $key => $value) {
-                        
-                        $findPkMaterial = $this->db->select("*")->from("mf_material_packaging")->where('id',$value)->get()->row();
-
-                        if($findPkMaterial){
-                            $currentQty = $findPkMaterial->quantity;
-
-                            // print_r($materialQts[$key]);die;
-
-                            if($materialQts[$key] > 0){
-                                $newQty = $currentQty - $materialQts[$key];
-
-                                // decrease pk material qty
-                                $decreaseQty = $this->db->where('id',$value)->update('mf_material_packaging_store_qty',['quantity'=>$newQty]);
-                                $decreaseQtyFromPackaging = $this->db->where('id',$value)->update('mf_material_packaging',['quantity'=>$newQty]);
-
-
-                                $pkLogData = [];
-                                $pkLogData["material_id"] =$value;
-                                $pkLogData["to_sale"] = $materialQts[$key];
-                                $pkLogData["from_qty"] = $currentQty;
-                                $pkLogData["to_qty"] = $newQty;
-                                $pkLogData["balance"] = $newQty;
-                                $pkLogData["type"] = 3;
-                                $pkLogData["comment"] = "Finish goods transfer with packaging material";
-                                $pkLogData["date"] = date("Y-m-d");
-
-                                $this->db->insert("mf_packaging_material_log",$pkLogData);
-                                // insert data into material adjust log
-                            }
-                            
-                        }
-
-                    }
-                } */
-            }
-
-
+        if ($this->form_validation->run() == true &&  $mfTrId = $this->transfers_model->addtransfers($data, $products,$packing)) { 
             $this->session->set_userdata('remove_spo', 1);
             $this->session->set_flashdata('message', lang('transfer_added'));            
             redirect("transfers"); 
@@ -304,6 +273,7 @@ class Transfers extends MY_Controller
                 $item_qty = $_POST['quantity'][$r];                
                 $item_cost = $_POST['cost'][$r]; 
                 $display_item_cost = $_POST['display_cost'][$r]; 
+                $pak_dtls = $_POST['pak_qty'][$r]; 
                 
                 if ($item_id && $item_qty) { 
 
@@ -316,6 +286,22 @@ class Transfers extends MY_Controller
                         'subtotal' => ($item_cost * $item_qty),                    
                     );  
                     $total += ($item_cost * $item_qty);  
+
+                    if($pak_dtls!=null)
+                    {
+                        $pak_dtls= json_decode($pak_dtls,true);
+                        foreach($pak_dtls as $key=>$value)
+                        {
+                            if($value>0)
+                            {
+                                $packing[] = array(                              
+                                    'product_id' => $item_id,                    
+                                    'packaging_id' => $key,                                       
+                                    'quantity' => $value,                                                         
+                                );  
+                            }
+                        }                 
+                    }
                     
                 }
                 
@@ -338,7 +324,7 @@ class Transfers extends MY_Controller
             ); 
             
         }
-        if ($this->form_validation->run() == true && $this->transfers_model->UpdateTransfers($id,$data, $products, $fromwarehouse,$towarehouse)) { 
+        if ($this->form_validation->run() == true && $this->transfers_model->UpdateTransfers($id,$data, $products, $fromwarehouse,$towarehouse,$packing)) { 
 
 
             if($id){
@@ -413,13 +399,15 @@ class Transfers extends MY_Controller
         foreach ($inv_items as $item) {
 
             $row = $this->site->getProductByID($item->product_id); 
+            $pak_info = $this->transfers_model->getPakProductByID($id,$item->product_id); 
             $row->id = $item->product_id;
             $row->qty = $item->quantity;            
             $row->cost = $item->cost;
             $row->store_qty = $item->store_qty;
+            $row->pak_info = json_encode($pak_info);
             $row->display_cost = $item->display_cost;
             $ri = $this->Settings->item_addition ? $row->id : $c;
-        
+        // echo json_encode($pak_info);die();
             $pr[$ri] = array(
                 'id' => $ri,
                 'item_id' => $item->product_id,
@@ -691,5 +679,25 @@ class Transfers extends MY_Controller
         
         $this->load->view($this->theme . 'transfers/chalan', $this->data);
         
+    }
+
+
+    public function packaging_stock($prod_id){ 
+        $packaging_info = $this->transfers_model->packagingStock($prod_id);
+        $this->data['packaging_info'] = $packaging_info;
+        $this->data['prod_id'] = $prod_id;
+        $this->data['segment'] = $this->uri->segment(3);
+        $this->data['title'] = 'Products Packaging Stock'; 
+
+        $this->load->view($this->theme.'transfers/packaging', $this->data);   
+    }
+
+    public function packaging_stock_edit($trans_id,$prod_id,$store_id){ 
+        $packaging_info = $this->transfers_model->packagingStock_edit($trans_id,$prod_id,$store_id);     
+        $this->data['packaging_info'] = $packaging_info;
+        $this->data['prod_id'] = $prod_id;
+        $this->data['segment'] = $this->uri->segment(3);
+        $this->data['title'] = 'Products Packaging Stock'; 
+        $this->load->view($this->theme.'transfers/packagingedit', $this->data);  
     }
 }

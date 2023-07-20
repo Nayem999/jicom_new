@@ -72,11 +72,12 @@
                                             <tr class="active">
 
                                                 <th class="col-xs-3"><?= lang('product'); ?></th>
+                                                <th class="col-xs-1">Packaging</th>
                                                 <th class="col-xs-1"><?= lang('quantity'); ?></th>
                                                 <th class="col-xs-2"><?= lang('unit_cost'); ?></th>
                                                 <th class="col-xs-2">Sale Cost</th>
-                                                <th class="col-xs-2"><?= lang('subtotal'); ?></th>
-                                                <th style="width:25px;"><i class="fa fa-trash-o"></i></th>
+                                                <th class="col-xs-1"><?= lang('subtotal'); ?></th>
+                                                <th style="width:15px;"><i class="fa fa-trash-o"></i></th>
 
                                             </tr>
 
@@ -93,23 +94,15 @@
                                         </tbody>
 
                                         <tfoot>
-
                                             <tr class="active">
-
                                                 <th><?= lang('total'); ?></th>
-
+                                                <th class="col-xs-1"></th>
                                                 <th class="col-xs-2"><span id="prqty">0</span></th>
-
                                                 <th class="col-xs-1"></th>
-
                                                 <th class="col-xs-1"></th>
-
-                                                <th class="col-xs-2 text-right"><span id="gtotal">0.00</span></th>
-
+                                                <th class="col-xs-1 text-right"><span id="gtotal">0.00</span></th>
                                                 <th style="width:25px;"></th>
-
                                             </tr>
-
                                         </tfoot>
 
                                     </table>
@@ -188,7 +181,7 @@
 
                         </div>
 
-                        <div id="addMore">
+                        <!-- <div id="addMore">
                             <div class="input-group mb-3" style="display:flex;margin-bottom: 5vh; gap: 1rem;">
                                 <?php
                                         $pk[''] = lang("select") . " " . lang("Packaging ");
@@ -201,7 +194,7 @@
                                 <a href='javascript:void(0)' data-target="#myModal"><i onclick="onClickAdd()" class="fa fa-2x fa-plus-circle"></i></a> 
                                 <a href='javascript:void(0)'  class="removeItem"><i class="fa fa-2x fa-minus-circle"  ></i></a>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="form-group">
 
@@ -256,6 +249,13 @@
          $('#supplierInfo').load(url);         
         });
     }); */
+
+
+    function fn_packing(id){ 
+        var site_url = "<?php echo site_url('transfers/packaging_stock'); ?>/"+id; //append id at end
+        //alert(site_url);
+        $("#paySalary").load(site_url);
+    }
 
 </script>
 
@@ -427,6 +427,8 @@
                 var newTr = $('<tr id="' + row_no + '" class="' + item_id + '" data-item-id="' + item_id + '"></tr>');
                 tr_html = '<td style="min-width:100px;"><input name="product_id[]" type="hidden" class="rid" value="' + product_id + '"><span class="sname" id="name_' + row_no + '">' + item_name + ' (' + item_code + ') Qty ' + store_qty + '</span>';
                 // tr_html += '<input name="getsequence[]" type="hidden" class="rid" value="' + sqtrans + '" id="getsequence-' + row_no + '"></td>';
+                tr_html += '<td class="text-center"><a href="javascript:;" onClick="fn_packing('+ item_id+');" class=""><i class="fa fa-barcode tip pointer spodel" ><input name="pak_qty[]" value="" type="hidden" id="pak_qty_' + item_id + '" > <i></a></td>';
+
                 tr_html += '<td style="padding:2px;"><input class="form-control input-sm kb-pad text-center rquantity" name="quantity[]" type="text" value="' + item_qty + '" data-id="' + row_no + '" data-item="' + item_id + '" id="quantity_' + row_no + '" onClick="this.select();"></td>';
                 tr_html += '<td style="padding:2px; min-width:80px;"><input class="form-control input-sm kb-pad text-center rcost" name="display_cost[]" type="text" value="' + display_item_cost + '" data-id="' + row_no + '" data-item="' + item_id + '" id="display_cost_' + row_no + '" onClick="this.select();" readonly></td>';
                 tr_html += '<td style="padding:2px; min-width:80px;"><input class="form-control input-sm kb-pad text-center rcost" name="cost[]" type="text" value="' + item_cost + '" data-id="' + row_no + '" data-item="' + item_id + '" id="cost_' + row_no + '" onClick="this.select();" ></td>';
