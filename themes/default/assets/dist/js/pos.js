@@ -929,6 +929,7 @@ $(document).ready(function(){
     });
 
     $('#payModal').on('change', '#paid_by', function () {
+        $("#amount").prop("disabled", false);
         var p_val = $(this).val();
         $('#paid_by_val').val(p_val);
         var gtotal = formatDecimal(total - order_discount + order_tax);
@@ -985,7 +986,20 @@ $(document).ready(function(){
             setTimeout(function(){ $('#cheque_no').focus(); }, 10);
             if (p_val == 'TT'){$('.ccheque').slideUp('fast'); $('.tcheque').slideDown();}
             if (p_val == 'Cheque'){$('.tcheque').slideUp('fast'); $('.ccheque').slideDown();}
-        } else {
+        } else if(p_val =='Credit'){
+            $("#amount").val(null).prop("disabled", true);
+            $("#amount_val").val(null)
+            $('.pcheque').hide();
+            $('.pcc').hide();
+            $('.pcash').hide();
+
+            $('#total_paying').text(formatMoney(0));
+            $('#balance').text(formatMoney(0));
+            $('#balance_val').val(formatDecimal(0));
+            total_paid = 0;
+            grand_total = 0;
+
+        }else{
             $('.pcheque').hide();
             $('.pcc').hide();
             $('.pcash').hide();
