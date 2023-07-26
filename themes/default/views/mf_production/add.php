@@ -76,7 +76,7 @@
                                     <input type="hidden" name="target_qty" class="target_qty">
 
                                     <?= form_dropdown('uom_name', $ur, set_value('uom_name'), 'class="form-control uom_name" required="required"  style="width:30%;display:inline;" disabled'); ?>
-                                    <input type="hidden" name="product_id" id="product_id">
+                                    <!-- <input type="hidden" name="product_id" id="product_id"> -->
                                     <input type="hidden" name="uom_id" id="uom_id">
                                 </div>
                             </div>
@@ -109,8 +109,8 @@
                         <div class="row">
 
                             <div class="col-md-5"> </div>
-                            <div class="col-md-3">Actual Output </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2">Actual Output </div>
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <?= form_input('actual_output', set_value('actual_output'), 'class="form-control tip" id="actual_output" required="required" '); ?>
                                 </div>
@@ -126,8 +126,8 @@
                         <div class="row">
 
                             <div class="col-md-5"> </div>
-                            <div class="col-md-3">Wasted </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2">Wasted </div>
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <?= form_input('wasted', set_value('wasted'), 'class="form-control tip" id="wasted" readonly'); ?>
                                 </div>
@@ -144,8 +144,8 @@
                         <div class="row">
 
                             <div class="col-md-5"> </div>
-                            <div class="col-md-3">Notes </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">Notes </div>
+                            <div class="col-md-5">
                                 <div class="form-group">
                                     <?= form_input('notes', set_value('notes'), 'class="form-control tip" id="notes"'); ?>
                                 </div>
@@ -155,15 +155,20 @@
 
                         <div class="row">
                             <div class="col-md-5"> </div>
-                            <div class="col-md-3">Packaging</div>
-                            <div class="col-md-4" id="addMore">
+                            <div class="col-md-2">Product & Packaging</div>
+                            <div class="col-md-5" id="addMore">
                                 <div class="input-group mb-3" style="display:flex;margin-bottom: 5vh; gap: 1rem;">
                                     <?php
                                     $pk[''] = lang("select") . " " . lang("Packaging");
                                     foreach ($packaging_items as $k => $v) {
                                         $pk[$v->id] = $v->name . " (" . $v->quantity . ' ' .$v->unit. ") ";
                                     }
+                                    $prod[''] = lang("select") . " " . lang("Product");
+                                    foreach ($all_product as $k => $v) {
+                                        $prod[$v->id] = $v->name;
+                                    }
                                     ?>
+                                    <?= form_dropdown('product[]', $prod, '', 'class="form-control" id="product" style="width:100%;" required="required"'); ?>
                                     <?= form_dropdown('packaging_material[]', $pk, '', 'class="form-control" id="packagingMaterial" style="width:100%;" required="required"'); ?>
                                     <input type="text" class="form-control" name="pk_quantity[]" id="basic-url" aria-describedby="basic-addon3" placeholder="Enter Quantity" required>
                                     <a href='javascript:void(0)' data-target="#myModal"><i onclick="onClickAdd()" class="fa fa-2x fa-plus-circle"></i></a>
@@ -219,7 +224,7 @@
                         if (sl == 1) {
                             $(".uom_name").val(data[i].uom_id);
                             $("#uom_id").val(data[i].uom_id);
-                            $("#product_id").val(data[i].product_id);
+                            // $("#product_id").val(data[i].product_id);
                         }
                     }
                     $("#recipe_html").html(html);

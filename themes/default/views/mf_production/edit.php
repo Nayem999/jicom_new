@@ -36,7 +36,7 @@
                                         $ur[$all_uom_arr->id] = $all_uom_arr->name;
                                     }
                                     ?><br>
-                                    <?= form_input('target_qty', set_value('target_qty', $production_mst->target_qty), 'class="form-control tip" id="target_qty" required="required" style="width:60%;display:inline;" onkeyup="fn_cal()"'); ?>
+                                    <?= form_input('target_qty', set_value('target_qty', $production_mst->target_qty), 'class="form-control tip" id="target_qty" required="required" readonly style="width:60%;display:inline;" onkeyup="fn_cal()"'); ?>
                                     <?= form_dropdown('uom_name', $ur, set_value('uom_name', $production_mst->uom_id), 'class="form-control uom_name" required="required"  style="width:30%;display:inline;" disabled'); ?>
                                 </div>
                             </div>
@@ -138,19 +138,24 @@
 
                         <div class="row">
                             <div class="col-md-5"> </div>
-                            <div class="col-md-3">Packaging</div>
+                            <div class="col-md-3">Product & Packaging</div>
                             <div class="col-md-4" id="addMore">
                                 <?php
                                 $pk[''] = lang("select") . " " . lang("Packaging");
                                 foreach ($packaging_items as $k => $v) {
                                     $pk[$v->id] = $v->name;
                                 }
+                                $prod[''] = lang("select") . " " . lang("Product");
+                                    foreach ($all_product as $k => $v) {
+                                        $prod[$v->id] = $v->name;
+                                    }
                                 $i=1;
                                 foreach ($packaging_dtls as $k => $v) {
                                 ?>
 
                                     <div class="input-group mb-3" style="display:flex;margin-bottom: 5vh; gap: 1rem;">
 
+                                        <?= form_dropdown('product[]',$prod, set_value('product[]',$v->product_id), 'class="form-control" id="packagingMaterial" style="width:100%;" '); ?>
                                         <?= form_dropdown('packaging_material[]',$pk, set_value('packaging_material[]',$v->material_packaging_id), 'class="form-control" id="packagingMaterial" style="width:100%;" '); ?>
                                         <input type="text" class="form-control" name="pk_quantity[]" id="pk_quantity" placeholder="Enter Quantity" value="<?=$v->quantity;?>" >
                                         <a href='javascript:void(0)' data-target="#myModal"><i onclick="onClickAdd()" class="fa fa-2x fa-plus-circle"></i></a>

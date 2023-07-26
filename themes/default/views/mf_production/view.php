@@ -59,16 +59,16 @@
                           <td class="col-xs-4"><?= $production_mst->recipe_name; ?></td>
                         </tr>
                         <tr>
-                          <td class="col-xs-2"><strong>Product</strong></td>
-                          <td class="col-xs-4"><?= $production_mst->products_name; ?></td>
-                          <td class="col-xs-2"><strong><?= lang('date'); ?></strong></td>
-                          <td class="col-xs-4"><?= $this->tec->hrld($production_mst->date); ?></td>
-                        </tr>
-                        <tr>
                           <td class="col-xs-2"><strong>Target Quantity</strong></td>
                           <td class="col-xs-4"><?= $production_mst->target_qty.' '.$production_mst->uom_name; ?></td>
                           <td class="col-xs-2"><strong>Actual Output</strong></td>
                           <td class="col-xs-4"><?= $production_mst->actual_output; ?></td>
+                        </tr>
+                        <tr>
+                          <!-- <td class="col-xs-2"><strong>Product</strong></td>
+                          <td class="col-xs-4"><?= $production_mst->products_name; ?></td> -->
+                          <td class="col-xs-2"><strong><?= lang('date'); ?></strong></td>
+                          <td class="col-xs-4"><?= $this->tec->hrld($production_mst->date); ?></td>
                         </tr>
         
                       </tbody>
@@ -94,12 +94,12 @@
                             foreach ($production_dtls as $key => $val) {
                               ?>
                               <tr>
-                              <td><?=$sl;?></td> 
-                              <td><?=$val->name?></td> 
-                              <td><?=$val->brand_name?></td> 
-                              <td><?=$val->stock_qty.' '.$val->unit_name?></td> 
-                              <td><?=$val->quantity?></td> 
-                              <td><?=$val->cost?></td> 
+                              <td class=" text-center"><?=$sl;?></td> 
+                              <td class=" text-center"><?=$val->name?></td> 
+                              <td class=" text-center"><?=$val->brand_name?></td> 
+                              <td class=" text-center"><?=$val->stock_qty.' '.$val->unit_name?></td> 
+                              <td class=" text-center"><?=$val->quantity?></td> 
+                              <td class=" text-center"><?=$val->cost?></td> 
                               </tr>
                               <?php
                               $sl++;
@@ -109,7 +109,7 @@
                             ?>
                             <tr>
                               <td class="text-right" colspan="5">Grand Total</td>
-                              <td class="" ><?= number_format($tc, 2)?></td>
+                              <td class=" text-center" ><?= number_format($tc, 2)?></td>
                             </tr>
 
                             <?php
@@ -126,6 +126,7 @@
                         <thead>
                           <tr class="active">
                             <th class="col-xs-1">SL</th>
+                            <th class="col-xs-3">Product Name</th>
                             <th class="col-xs-3">Packaging Name</th>
                             <th class="col-xs-1">Quantity</th>
                           </tr>
@@ -137,6 +138,7 @@
                           ?>
                           <tr>
                             <td class="col-xs-1 text-center"><?=$i++;?></td>
+                            <td class="col-xs-3 text-center" ><?= $val->product_name; ?></td>
                             <td class="col-xs-3 text-center" ><?= $val->name; ?></td>
                             <td class="col-xs-1 text-center"><?= $val->quantity; ?></td>
                           </tr>
