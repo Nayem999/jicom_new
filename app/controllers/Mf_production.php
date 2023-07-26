@@ -340,18 +340,7 @@ class Mf_production extends MY_Controller
 
     public function approve($id){
         $info = $this->mf_production_model->getProductionByID($id);
-        $dataAppr = array( 'status' => $this->input->post('status') );  
-        $data=array(
-            'production_id' =>  $id, 
-            'store_id' =>  $info->store_id, 
-            'product_id' =>  $info->product_id, 
-            'quantity' =>  $info->actual_output, 
-            'status' => $this->input->post('status'),  
-            'type' =>  1,  
-            'created_by' => $this->session->userdata('user_id'),               
-            'created_at' =>  date('Y-m-d H:i:s'), 
-        );
- 
+        $dataAppr = array( 'status' => $this->input->post('status') );   
         if($info->status==$this->input->post('status'))
         {
             $this->session->set_flashdata('error', lang('Status can not same'));
@@ -359,7 +348,7 @@ class Mf_production extends MY_Controller
         }
         else
         {
-            $this->mf_production_model->updateStatusApprove($id,$dataAppr,$data,$info,$this->input->post('status'));	
+            $this->mf_production_model->updateStatusApprove($id,$dataAppr,$info,$this->input->post('status'));	
             $this->session->set_flashdata('message', lang('Updated successfully'));        
             $this->index(); 
         }

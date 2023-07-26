@@ -147,7 +147,7 @@ class Transfers extends MY_Controller
                             'display_cost' => $display_item_cost,                   
                             'subtotal' => ($item_cost * $item_qty),                    
                         );  
-                        $total += ($item_cost * $item_qty);                    
+                        $total += $item_qty;                    
                     }
                     if($pak_dtls!=null)
                     {
@@ -611,17 +611,18 @@ class Transfers extends MY_Controller
                 'purchase_type' => 2,
                 'transfer_id' => $id,
                 'created_by' => $this->session->userdata('user_id'),  
-                'store_id' => $transfer_mst->to_warehouse_id ,   
-    
+                'store_id' => $transfer_mst->to_warehouse_id ,      
+                'trans_from_store' => $transfer_mst->from_warehouse_id ,      
             );  
             $dataAppr = array( 'status' => $this->input->post('status') );  
     
-            $customer_details = $this->site->whereRow('customers','id',$transfer_mst->customer_id);
+            // $customer_details = $this->site->whereRow('customers','id',$transfer_mst->customer_id);
+            $stores_details = $this->site->whereRow('stores','id',$transfer_mst->to_warehouse_id);
     
             $sales_data = array(
                 'date' => date('Y-m-d H:i:s'),
-                'customer_id' => $transfer_mst->customer_id,
-                'customer_name' => $customer_details->name,
+                'customer_id' => $transfer_mst->customer_id,  
+                'customer_name' => $stores_details->name,              
                 'total' => $this->tec->formatDecimal($sales_total),
                 'grand_total' => $sales_total,
                 'total_items' => $i,
@@ -636,7 +637,9 @@ class Transfers extends MY_Controller
                 'status' => 'due',
                 'sale_type'=> 2,
                 'transfer_id' => $id,
+                'trans_to_store' => $transfer_mst->to_warehouse_id,
             );
+            
             
             if($this->transfers_model->updateStatusApprove($id,$dataAppr,$data,$products,$sales_data,$sales_products))
             {

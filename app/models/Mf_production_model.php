@@ -78,6 +78,13 @@ class Mf_production_model extends CI_Model
             foreach ($items as $item) {
                 $item['production_id'] = $production_id;
                 $this->db->insert('mf_production_dtls', $item);
+                $item_qty=$item["quantity"];
+                $material_stock_id=$item["material_stock_id"];
+
+                $material_store_qty=$this->db->get_where('mf_material_store_qty', array('mf_material_store_qty.id'=>$material_stock_id))->row();
+                $TotalQty = $material_store_qty->quantity-$item_qty;
+                $this->db->update('mf_material_store_qty',array('quantity' => $TotalQty), array('id' => $material_stock_id));
+
             }
             foreach ($packing as $item) {
 
@@ -199,10 +206,9 @@ class Mf_production_model extends CI_Model
     }
 
     public function updateProduction($id, $data = NULL, $items = array(), $packing = array()) {
-
+        ########## Previous Data Rolback Start  ############
         $old_mst_data=$this->getProductionByID($id);
-        $store_id=$old_mst_data->store_id;
-        
+        $store_id=$old_mst_data->store_id;     
 
         $old_data_adjust=$this->getProductionPackagingDtlsByID($id);
         if(is_array($old_data_adjust) && count($old_data_adjust) > 0){
@@ -251,11 +257,32 @@ class Mf_production_model extends CI_Model
             }
         }
 
+        $old_dtls_data=$this->getProductionDtlsByID($id);
+        if(is_array($old_dtls_data) && count($old_dtls_data) > 0)
+        {
+            foreach($old_dtls_data as $key=>$val){
+                $item_qty=$val->quantity;
+                $material_stock_id=$val->material_stock_id;
+                $material_store_qty=$this->db->get_where('mf_material_store_qty', array('mf_material_store_qty.id'=>$material_stock_id))->row();
+                $TotalQty = $material_store_qty->quantity+$val->quantity;    
+                $this->db->update('mf_material_store_qty', array('quantity' => $TotalQty), array('id' => $val->material_stock_id));
+            }
+
+        }
+        ########## Previous Data Rolback End  ############
+
         if ($this->db->update('mf_production_mst', $data, array('id' => $id)) && $this->db->update('mf_production_dtls', array('active_status'=>0), array('production_id' => $id)) && $this->db->update('mf_production_prod_n_pkg', array('active_status'=>0), array('production_id' => $id))) {
 
             foreach ($items as $item) {
                 $item['production_id'] = $id;
                 $this->db->insert('mf_production_dtls', $item);
+
+                $item_qty=$item["quantity"];
+                $material_stock_id=$item["material_stock_id"];
+                $material_store_qty=$this->db->get_where('mf_material_store_qty', array('mf_material_store_qty.id'=>$material_stock_id))->row();
+                $TotalQty = $material_store_qty->quantity-$item_qty;
+                $this->db->update('mf_material_store_qty',array('quantity' => $TotalQty), array('id' => $material_stock_id));
+
             }
             foreach ($packing as $item) {
                 $item['production_id'] = $id;
@@ -371,6 +398,19 @@ class Mf_production_model extends CI_Model
             }
         }
 
+        $old_dtls_data=$this->getProductionDtlsByID($id);
+        if(is_array($old_dtls_data) && count($old_dtls_data) > 0)
+        {
+            foreach($old_dtls_data as $key=>$val){
+                $item_qty=$val->quantity;
+                $material_stock_id=$val->material_stock_id;
+                $material_store_qty=$this->db->get_where('mf_material_store_qty', array('mf_material_store_qty.id'=>$material_stock_id))->row();
+                $TotalQty = $material_store_qty->quantity+$val->quantity;    
+                $this->db->update('mf_material_store_qty', array('quantity' => $TotalQty), array('id' => $val->material_stock_id));
+            }
+
+        }
+
         if ($this->db->update('mf_production_mst', $data, array('id' => $id)) && $this->db->update('mf_production_dtls', $data2, array('production_id' => $id)) && $this->db->update('mf_production_prod_n_pkg', $data2, array('production_id' => $id))) {
             return true;
         }
@@ -378,68 +418,72 @@ class Mf_production_model extends CI_Model
 
     }
 
-    public function updateStatusApprove($id,$dataAppr,$data,$info,$status) {
+    public function updateStatusApprove($id,$dataAppr,$info,$status) {
 
-        $q = $this->db->get_where('mf_finished_good_stock', array('mf_finished_good_stock.product_id' => $info->product_id,'mf_finished_good_stock.store_id' => $info->store_id), 1);
-
-        if( $q->num_rows() > 0 ) {
+        $prodct_dtls = $this->getProductionPackagingDtlsByID($id);
+        $store_id=$info->store_id;
+        $new_price = $info->total_cost/$info->actual_output;
+        $data=array();
+        foreach($prodct_dtls as $key=>$val){
+            $product_id=$val->product_id;
+            $product_qty=$val->quantity;
+            $q = $this->db->get_where('mf_finished_good_stock', array('mf_finished_good_stock.product_id' => $product_id,'mf_finished_good_stock.store_id' => $store_id), 1);
             $finished_good_stock = $q->row();
-            if($status=='Approved')
-            {
-                $oldTPrice = $finished_good_stock->cost*$finished_good_stock->quantity;
-                $newTPrice = $info->total_cost;
-                $TotalPrice = $oldTPrice+$newTPrice;
-                $TotalQty = $finished_good_stock->quantity+$info->actual_output;
-                $coust_amount = $TotalPrice/$TotalQty;
-
-                $this->db->update('mf_finished_good_stock',array('quantity' => $TotalQty,'cost' => $coust_amount), array('product_id' => $info->product_id));
-            }
-            else
-            {
-                $new_qty= $finished_good_stock->quantity-$info->actual_output;
-                $oldTPrice = $finished_good_stock->cost*$finished_good_stock->quantity;
-                $newTPrice = $info->total_cost;
-                $TotalPrice = $oldTPrice-$newTPrice;
-                $TotalQty = $finished_good_stock->quantity-$info->actual_output;
-                $coust_amount = $TotalPrice/$TotalQty;
-
-                $this->db->update('mf_finished_good_stock', array('quantity' => $new_qty,'cost' => $coust_amount), array('product_id' => $info->product_id));
-            }
-        }
-        else
-        {
-            $coust_amount = $info->total_cost/$info->actual_output;
-            $finished_good_data=array(
-                'store_id' => $info->store_id,
-                'product_id' => $info->product_id,
-                'quantity' => $info->actual_output,
-                'cost' => $coust_amount
-            );
-            $this->db->insert('mf_finished_good_stock',$finished_good_data );
-        }
-
-        $q = $this->db->get_where('mf_production_dtls', array('mf_production_dtls.production_id'=>$id, 'mf_production_dtls.active_status'=>1));
-
-        if( $q->num_rows() > 0 ) {
-            $finished_good_stock_arr = $q->result();
-            foreach($finished_good_stock_arr as $key=>$val)
-            {
-                $material_store_qty=$this->db->get_where('mf_material_store_qty', array('mf_material_store_qty.id'=>$val->material_stock_id))->row();
+    
+            if( $q->num_rows() > 0 ) {
+                
                 if($status=='Approved')
-                {
-                    $TotalQty = $material_store_qty->quantity-$val->quantity;
-                    $this->db->update('mf_material_store_qty',array('quantity' => $TotalQty), array('id' => $val->material_stock_id));
+                {               
+    
+                    $oldTPrice = $finished_good_stock->cost*$finished_good_stock->quantity;
+                    $newTPrice = $new_price;
+                    $TotalPrice = $oldTPrice+$newTPrice;
+                    $TotalQty = $finished_good_stock->quantity + $product_qty;
+                    $coust_amount = $TotalPrice/$TotalQty;
+    
+                    $this->db->update('mf_finished_good_stock',array('quantity' => $TotalQty,'cost' => $coust_amount), array('product_id' => $product_id));
                 }
                 else
                 {
-                    $TotalQty = $material_store_qty->quantity+$val->quantity;    
-                    $this->db->update('mf_material_store_qty', array('quantity' => $TotalQty), array('id' => $val->material_stock_id));
+                
+                    $oldTPrice = $finished_good_stock->cost*$finished_good_stock->quantity;
+                    $newTPrice = $new_price;
+                    $TotalPrice = $oldTPrice-$newTPrice;
+                    $TotalQty = $finished_good_stock->quantity-$product_qty;                    
+                    if($TotalQty>0){$coust_amount = $TotalPrice/$TotalQty;}else{$coust_amount = 0;}
+    
+                    $this->db->update('mf_finished_good_stock', array('quantity' => $TotalQty,'cost' => $coust_amount), array('product_id' => $product_id));
                 }
             }
-            
+            else
+            {
+                $coust_amount = $info->total_cost/$info->actual_output;
+                $finished_good_data=array(
+                    'store_id' => $info->store_id,
+                    'product_id' => $product_id,
+                    'quantity' => $product_qty,
+                    'cost' => $coust_amount
+                );
+                $this->db->insert('mf_finished_good_stock',$finished_good_data );
+            }
+
+
+            $data[]=array(
+                'production_id' =>  $id, 
+                'store_id' =>  $info->store_id, 
+                'product_id' =>  $product_id, 
+                'quantity' =>  $product_qty, 
+                'status' => $status,  
+                'type' =>  1,  
+                'created_by' => $this->session->userdata('user_id'),               
+                'created_at' =>  date('Y-m-d H:i:s'), 
+            );
         }
 
-        if($this->db->update('mf_production_mst', $dataAppr, array('id' => $id)) && $this->db->insert('mf_finished_good_stock_log', $data)) {
+        if($this->db->update('mf_production_mst', $dataAppr, array('id' => $id))) {
+            foreach($data as $value) {
+                $this->db->insert('mf_finished_good_stock_log', $value);
+            }
             return true;
         }
         return false;	
