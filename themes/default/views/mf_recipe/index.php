@@ -42,7 +42,7 @@
 
             },
 
-            "aoColumns": [null, null, null, null, {
+            "aoColumns": [null, null, null, null, null, {
                 "bSortable": false,
                 "bSearchable": false
             }]
@@ -114,7 +114,8 @@
                                 <tr class="active">
                                     <th class="col-xs-2">Recipe Code</th>
                                     <th class="col-xs-2">Recipe Name</th>
-                                    <th class="col-xs-3">Product</th>
+                                    <th class="col-xs-2">Target Quantity</th>
+                                    <th class="col-xs-2">Unit of Measurement</th>
                                     <th class="col-xs-3">Description</th>
                                     <th class="col-xs-1">Action</th>
                                 </tr>

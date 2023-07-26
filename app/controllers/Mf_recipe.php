@@ -41,10 +41,11 @@ class Mf_recipe extends MY_Controller
          $this->datatables->select($this->db->dbprefix('mf_recipe_mst') . ".id as id, " .  
          	$this->db->dbprefix('mf_recipe_mst'). ".code,".
          	$this->db->dbprefix('mf_recipe_mst'). ".name,".
-         	$this->db->dbprefix('products'). ".name as product_name,".
+         	$this->db->dbprefix('mf_recipe_mst'). ".target_qty,".
+         	$this->db->dbprefix('mf_unit'). ".name as unit_name,".
          	$this->db->dbprefix('mf_recipe_mst').".description,", FALSE); 
         $this->datatables->from('mf_recipe_mst'); 
-        $this->datatables->join('products','mf_recipe_mst.product_id=products.id'); 
+        $this->datatables->join('mf_unit','mf_recipe_mst.uom_id=mf_unit.id'); 
         $this->datatables->where('mf_recipe_mst.active_status',1); 
 
         $action="<div class='text-center'><div class='btn-group'>";
@@ -73,7 +74,7 @@ class Mf_recipe extends MY_Controller
         $max_id = $this->mf_recipe_model->get_max_id();
          
         $this->form_validation->set_rules('recipe_name', lang('recipe_name'), 'required');
-        $this->form_validation->set_rules('product_id', lang('product'), 'required');
+        // $this->form_validation->set_rules('product_id', lang('product'), 'required');
         $this->form_validation->set_rules('uom_id', lang('uom'), 'required');
         
         if ($this->form_validation->run() == true) {
@@ -110,14 +111,14 @@ class Mf_recipe extends MY_Controller
             if($max_id>8){ $code_name = $max_id+1; }else{ $code_name = '0'.$max_id+1; }
             $data = array(                
                 'code' => $code_name,                                             
-                'name' => $this->input->post('recipe_name'),
-                'product_id' => $this->input->post('product_id'),          
+                'name' => $this->input->post('recipe_name'),         
                 'uom_id' => $this->input->post('uom_id'),          
                 'description' => $this->input->post('description'),    
                 'target_qty'=> $this->input->post('target_qty')?$this->input->post('target_qty'):1,     
                 'created_by' => $this->session->userdata('user_id'),               
                 'created_at' =>  date('Y-m-d H:i:s'),               
             );
+            // 'product_id' => $this->input->post('product_id'), 
 
         } 
         // print_r($data);die;
@@ -132,7 +133,7 @@ class Mf_recipe extends MY_Controller
             $this->load->model('mf_unit_model');
 
             if($max_id>8){ $this->data['code_name'] = $max_id+1; }else{ $this->data['code_name'] = '0'.$max_id+1; }
-            $this->data['all_product']  = $this->products_model->getAllProducts();
+            // $this->data['all_product']  = $this->products_model->getAllProducts();
             $this->data['all_uom']  = $this->mf_unit_model->getAllUnit();
 
             $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
@@ -153,7 +154,7 @@ class Mf_recipe extends MY_Controller
         }
 
         $this->form_validation->set_rules('recipe_name', lang('recipe_name'), 'required');
-        $this->form_validation->set_rules('product_id', lang('product'), 'required');
+        // $this->form_validation->set_rules('product_id', lang('product'), 'required');
         $this->form_validation->set_rules('uom_id', lang('uom'), 'required');
 
         if ($this->form_validation->run() == true) {
@@ -189,13 +190,13 @@ class Mf_recipe extends MY_Controller
 
             $data = array(                                                          
                 'name' => $this->input->post('recipe_name'),
-                'product_id' => $this->input->post('product_id'),          
                 'uom_id' => $this->input->post('uom_id'), 
                 'target_qty'=> $this->input->post('target_qty')?$this->input->post('target_qty'):1,         
                 'description' => $this->input->post('description'),          
                 'updated_by' => $this->session->userdata('user_id'),               
                 'updated_at' =>  date('Y-m-d H:i:s'),               
             );
+            // 'product_id' => $this->input->post('product_id'), 
         }
 
         if ($this->form_validation->run() == true && $this->mf_recipe_model->updateRecipe($id, $data, $products)) {
@@ -209,7 +210,7 @@ class Mf_recipe extends MY_Controller
 
             $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
 
-            $this->data['all_product']  = $this->products_model->getAllProducts();
+            // $this->data['all_product']  = $this->products_model->getAllProducts();
 
             $this->data['all_uom']  = $this->mf_unit_model->getAllUnit();
             

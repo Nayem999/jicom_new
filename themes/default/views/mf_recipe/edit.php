@@ -18,7 +18,7 @@
                                     <?= form_input('recipe_name', set_value('recipe_name', $recipe_mst->recipe_name), 'class="form-control tip" id="recipe_name" required="required" '); ?>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <!-- <div class="col-md-6">
                                 <div class="form-group">
                                     <?= lang('For Product', 'For Product'); ?>
                                     <?php
@@ -29,7 +29,7 @@
                                     ?>
                                     <?= form_dropdown('product_id', $pr, set_value('product_id', $recipe_mst->product_id), 'class="form-control select2 tip" required="required" id="product_id" style="width:100%;"'); ?>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="col-md-2">
                                 <div class="form-group">

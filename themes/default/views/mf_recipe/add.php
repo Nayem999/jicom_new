@@ -36,7 +36,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <!-- <div class="col-md-4">
                                 <div class="form-group">
                                     <?= lang('For Product', 'For Product'); ?>
                                     <?php
@@ -47,7 +47,7 @@
                                     ?>
                                     <?= form_dropdown('product_id', $pr, set_value('product_id'), 'class="form-control select2 tip" required="required" id="product_id" style="width:100%;"'); ?>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="col-md-2">
                                 <div class="form-group">
@@ -69,7 +69,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-8">
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <?= lang('description', 'description'); ?>
                                     <?= form_input('description', set_value('description'), 'class="form-control tip" id="description"'); ?>

@@ -90,8 +90,9 @@ class Mf_recipe_model extends CI_Model
 
     public function getRecipeByID($id) {
 
-        $this->db->select('mf_recipe_mst.id, mf_recipe_mst.code as code, mf_recipe_mst.name as recipe_name, mf_recipe_mst.description , mf_recipe_mst.created_at as created_at, mf_unit.name as uom_name, products.name as products_name, products.id as product_id, mf_recipe_mst.uom_id ');
-        $this->db->join('products','mf_recipe_mst.product_id=products.id');
+        $this->db->select('mf_recipe_mst.id, mf_recipe_mst.code as code, mf_recipe_mst.name as recipe_name, mf_recipe_mst.description , mf_recipe_mst.created_at as created_at, mf_unit.name as uom_name, mf_recipe_mst.target_qty, mf_recipe_mst.uom_id ');
+        // products.name as product_name,products.id as product_id,
+        // $this->db->join('products','mf_recipe_mst.product_id=products.id');
         $this->db->join('mf_unit','mf_recipe_mst.uom_id=mf_unit.id','left');
         $q = $this->db->get_where('mf_recipe_mst', array('mf_recipe_mst.id' => $id,'mf_recipe_mst.active_status'=>1), 1);
 

@@ -62,8 +62,8 @@
                           <td class="col-xs-4"><?= $recipe_mst->code; ?></td>
                         </tr>
                         <tr>
-                          <td class="col-xs-2"><strong>Product</strong></td>
-                          <td class="col-xs-4"><?= $recipe_mst->products_name; ?></td>
+                          <td class="col-xs-2"><strong>Target Quantity</strong></td>
+                          <td class="col-xs-4"><?= $recipe_mst->target_qty; ?></td>
                           <td class="col-xs-2"><strong>UOM</strong></td>
                           <td class="col-xs-4"><?= $recipe_mst->uom_name; ?></td>
                         </tr>
