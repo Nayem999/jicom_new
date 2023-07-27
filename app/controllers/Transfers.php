@@ -574,6 +574,11 @@ class Transfers extends MY_Controller
             $transfer_dtls = $this->transfers_model->getAllTransfersItems($id); 
             $total=$sales_total=$i=0;
             foreach($transfer_dtls as $key=>$val){
+                if($val->quantity > $val->store_qty)
+                {
+                    $this->session->set_flashdata('error', lang("It's Product Quantity Over Stock Quantity"));
+                    redirect('transfers');
+                }
                 $products[] = array(                        
                     'product_id' => $val->product_id,                
                     'cost' => $val->cost,                
@@ -598,6 +603,15 @@ class Transfers extends MY_Controller
                 $sales_total += $val->cost * $val->quantity;
                 $i++;
             }
+            $store_id=$transfer_mst->from_warehouse_id;
+            $package_dtls = $this->transfers_model->getTransferPackagingDtlsWithStock($id,$store_id);
+            foreach ($package_dtls as $key => $val) {
+                if($val->quantity > $val->stock_qty)
+                {
+                    $this->session->set_flashdata('error', lang("It's Packaging Quantity Over Stock Quantity"));
+                    redirect('transfers');
+                }
+            } 
             // print_r($sales_products);die;
     
             $data = array(

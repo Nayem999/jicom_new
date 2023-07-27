@@ -124,19 +124,6 @@ class Transfers_model extends CI_Model
             foreach ($packing as $packing_item) {
                 $packing_item['transfers_id'] = $transfers_id;
                 $this->db->insert('tec_mf_transfers_packaging', $packing_item);
-
-
-                $packingIds=$packing_item['packaging_id'];
-                $product_id=$packing_item['product_id'];
-                $packingIds=$packing_item['packaging_id'];
-                $packingQts=$packing_item['quantity'];
-
-                $product_packaging_stock = $this->db->select("*")->from("mf_product_packaging_stock")->where('packaging_id',$packingIds)->where('product_id',$product_id)->where('store_id',$store_id)->get()->row();
-                if($product_packaging_stock)
-                {
-                    $product_packaging_new_stock = $product_packaging_stock->quantity - $packingQts;
-                    $this->db->where('id',$product_packaging_stock->id)->update('mf_product_packaging_stock',['quantity'=>$product_packaging_new_stock]);
-                }
             }
             $this->session->unset_userdata('from_warehouse');
             return $transfers_id;
@@ -165,24 +152,12 @@ class Transfers_model extends CI_Model
                 // $this->storeProQtyDelete($product['product_id'], $product['quantity'], $fromwarehouse);
                 // $this->storeProQtyUpdate($product['product_id'], $product['quantity'], $towarehouse);
             }
-            $this->DeletePrvTransferPackaging($id);
+            $this->db->where('transfers_id',$id)->update('mf_transfers_packaging',['active_status'=>0]);
             $store_id=$fromwarehouse;
 
             foreach ($packing as $packing_item) {
                 $packing_item['transfers_id'] = $id;
                 $this->db->insert('tec_mf_transfers_packaging', $packing_item);
-
-                $packingIds=$packing_item['packaging_id'];
-                $product_id=$packing_item['product_id'];
-                $packingIds=$packing_item['packaging_id'];
-                $packingQts=$packing_item['quantity'];
-
-                $product_packaging_stock = $this->db->select("*")->from("mf_product_packaging_stock")->where('packaging_id',$packingIds)->where('product_id',$product_id)->where('store_id',$store_id)->get()->row();
-                if($product_packaging_stock)
-                {
-                    $product_packaging_new_stock = $product_packaging_stock->quantity - $packingQts;
-                    $this->db->where('id',$product_packaging_stock->id)->update('mf_product_packaging_stock',['quantity'=>$product_packaging_new_stock]);
-                }
             }
             return TRUE;
         }
@@ -191,21 +166,19 @@ class Transfers_model extends CI_Model
 
     public function  Delete($id)
     {
-        if($this->db->delete('transfers', array('id' => $id)) && $this->db->delete('transfers_items', array('transfers_id' => $id)))
+        if($this->db->delete('transfers', array('id' => $id)) && $this->db->delete('transfers_items', array('transfers_id' => $id)) && $this->db->where('transfers_id',$id)->update('mf_transfers_packaging',['active_status'=>0]))
         {
-            $this->DeletePrvTransferPackaging($id);
             return TRUE;
         }
         return FALSE;
     }
 
-    public function DeletePrvTransferPackaging($id)
+    public function AddPackagingStock($id)
     {
         $transfers_dtls = $this->db->select("from_warehouse_id")->from("transfers")->where('id',$id)->get()->row();
         $store_id=$transfers_dtls->from_warehouse_id;
         $prv_data_adjust=$this->getTransferPackagingDtlsByID($id);
         if(is_array($prv_data_adjust) && count($prv_data_adjust) > 0){
-            $this->db->where('transfers_id',$id)->update('mf_transfers_packaging',['active_status'=>0]);
             foreach ($prv_data_adjust as $key=>$value){
                 $packingIds=$value->packaging_id;
                 $product_id=$value->product_id;
@@ -217,6 +190,27 @@ class Transfers_model extends CI_Model
                     $product_packaging_new_stock = $product_packaging_stock->quantity + $packingQts;
                     $this->db->where('id',$product_packaging_stock->id)->update('mf_product_packaging_stock',['quantity'=>$product_packaging_new_stock]);
                 }
+            }            
+        }
+    }
+
+    public function DeletePackagingStock($id)
+    {
+        $transfers_dtls = $this->db->select("from_warehouse_id")->from("transfers")->where('id',$id)->get()->row();
+        $store_id=$transfers_dtls->from_warehouse_id;
+        $prv_data_adjust=$this->getTransferPackagingDtlsByID($id);
+        if(is_array($prv_data_adjust) && count($prv_data_adjust) > 0){
+            foreach ($prv_data_adjust as $key=>$value){
+                $packingIds=$value->packaging_id;
+                $product_id=$value->product_id;
+                $packingQts=$value->quantity;
+
+                $product_packaging_stock = $this->db->select("*")->from("mf_product_packaging_stock")->where('packaging_id',$packingIds)->where('product_id',$product_id)->where('store_id',$store_id)->get()->row();
+                if($product_packaging_stock)
+                {
+                    $product_packaging_new_stock = $product_packaging_stock->quantity - $packingQts;
+                    $this->db->where('id',$product_packaging_stock->id)->update('mf_product_packaging_stock',['quantity'=>$product_packaging_new_stock]);
+                } 
             }            
         }
     }
@@ -235,6 +229,20 @@ class Transfers_model extends CI_Model
         }
         return FALSE;
 
+    }
+
+    public function getTransferPackagingDtlsWithStock($id,$store_id) {
+        $this->db->select('mf_transfers_packaging.* , mf_product_packaging_stock.quantity as stock_qty');   
+        $this->db->join('mf_product_packaging_stock',"mf_product_packaging_stock.packaging_id=mf_transfers_packaging.packaging_id and mf_product_packaging_stock.product_id=mf_transfers_packaging.product_id and mf_product_packaging_stock.store_id=$store_id");
+        $q = $this->db->get_where('mf_transfers_packaging', array('mf_transfers_packaging.transfers_id' => $id,'mf_transfers_packaging.active_status'=>1));
+        // echo 
+        $data=array();
+        if( $q->num_rows() > 0 ) {
+            foreach (($q->result()) as $row){  
+                $data[] = $row;  
+            }
+        }
+        return $data;
     }
 
     public function getSroteByID($id)
@@ -450,6 +458,8 @@ class Transfers_model extends CI_Model
                 }
     
             }
+
+            $this->DeletePackagingStock($id);
             return true;
         }
         
