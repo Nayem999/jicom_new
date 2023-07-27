@@ -63,6 +63,27 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <?= lang('Extra Packaging Name', 'Extra Packaging Name'); ?>
+                                    <?php
+                                    $pk[''] = lang("select") . " " . lang("Packaging");
+                                    foreach ($packaging_items as $k => $v) {
+                                        $pk[$v->id] = $v->name . " (" . $v->quantity . ' ' . $v->unit . ") ";
+                                    }
+                                    ?>
+                                    <?= form_dropdown('extra_packaging_id', $pk, set_value('extra_packaging_id',$transfer->extra_packaging_id), 'class="form-control" style="width:100%;" id="extra_packaging_id"'); ?>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <?= lang('Extra Packaging Quantity', 'Extra Packaging Quantity'); ?>
+                                    <input type="text" class="form-control" id="extra_packaging_qty" name="extra_packaging_qty" aria-describedby="basic-addon3" placeholder="Enter Quantity" value="<?=$transfer->extra_packaging_qty?>">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <?= lang("note", 'note'); ?>
                             <?= form_textarea('note', $transfer->note, 'class="form-control redactor" id="note"'); ?>
@@ -118,8 +139,8 @@
 <!-- <script src="<?= $assets ?>dist/js/pages/tranfer.js" type="text/javascript"></script> -->
 <script>
     function fn_packing(prod_id) {
-        var trans_id =<?php echo $transfer->id; ?>;
-        var store_id =<?php echo $transfer->from_warehouse_id; ?>;
+        var trans_id = <?php echo $transfer->id; ?>;
+        var store_id = <?php echo $transfer->from_warehouse_id; ?>;
         var site_url = "<?php echo site_url('transfers/packaging_stock_edit'); ?>/" + trans_id + "/" + prod_id + "/" + store_id; //append id at end
         //alert(site_url);
         $("#paySalary").load(site_url);

@@ -190,6 +190,8 @@ class Transfers extends MY_Controller
                 'created_by' => $this->session->userdata('user_id'), 
                 'customer_id' => $this->input->post('customer_id'),  
                 'supplier_id' => $this->input->post('supplier_id'),  
+                'extra_packaging_id' => $this->input->post('extra_packaging_id'),  
+                'extra_packaging_qty' => $this->input->post('extra_packaging_qty'),  
             ); 
                                  
         }
@@ -203,7 +205,7 @@ class Transfers extends MY_Controller
         }
             
             $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
-            
+
             $this->data['suppliers'] = $this->site->getAllSuppliers();
             $this->data['warehouses'] = $this->site->getAllStores();             
             $this->data['customers'] = $this->site->whereRows('customers','store_id',$this->session->userdata('from_warehouse'));             
@@ -321,6 +323,8 @@ class Transfers extends MY_Controller
                 'note' => $this->input->post('note', TRUE),               
                 'total' => $total,
                 'reference' =>  $this->input->post('reference'),
+                'extra_packaging_id' => $this->input->post('extra_packaging_id'),  
+                'extra_packaging_qty' => $this->input->post('extra_packaging_qty'),  
             ); 
             
         }
@@ -570,6 +574,18 @@ class Transfers extends MY_Controller
         }
         else
         {
+            $store_id=$transfer_mst->from_warehouse_id;
+            $extra_packaging_qty=$transfer_mst->extra_packaging_qty;
+            if($transfer_mst->extra_packaging_id>0)
+            {
+                $pk_stock = $this->db->get_where('mf_material_packaging_store_qty', array('store_id' => $store_id,'material_id'=>$transfer_mst->extra_packaging_id))->row();        
+                if($extra_packaging_qty > $pk_stock->quantity)
+                {
+                    $this->session->set_flashdata('error', lang("It's Packaging Quantity Over Stock Quantity"));
+                    redirect('transfers');
+                }
+
+            }
 
             $transfer_dtls = $this->transfers_model->getAllTransfersItems($id); 
             $total=$sales_total=$i=0;
@@ -603,7 +619,7 @@ class Transfers extends MY_Controller
                 $sales_total += $val->cost * $val->quantity;
                 $i++;
             }
-            $store_id=$transfer_mst->from_warehouse_id;
+          
             $package_dtls = $this->transfers_model->getTransferPackagingDtlsWithStock($id,$store_id);
             foreach ($package_dtls as $key => $val) {
                 if($val->quantity > $val->stock_qty)
@@ -655,7 +671,7 @@ class Transfers extends MY_Controller
             );
             
             
-            if($this->transfers_model->updateStatusApprove($id,$dataAppr,$data,$products,$sales_data,$sales_products))
+            if($this->transfers_model->updateStatusApprove($id,$dataAppr,$data,$products,$sales_data,$sales_products,$transfer_mst))
             {
                 $this->session->set_flashdata('message', lang('Updated successfully'));        
                 $this->index();

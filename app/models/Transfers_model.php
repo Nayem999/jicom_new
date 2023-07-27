@@ -375,9 +375,27 @@ class Transfers_model extends CI_Model
         return FALSE;
     }
 
-    public function updateStatusApprove($id,$dataAppr,$data,$products,$sales_data,$sales_products) {
+    public function updateStatusApprove($id,$dataAppr,$data,$products,$sales_data,$sales_products,$transfer_mst) {
 
         if($this->db->update('transfers', $dataAppr, array('id' => $id)) ) {
+
+            if($transfer_mst->extra_packaging_id>0)
+            {
+                $materialIds = $transfer_mst->extra_packaging_id;
+                $materialQts = $transfer_mst->extra_packaging_qty;
+                $store_id = $transfer_mst->from_warehouse_id;
+                $findPkMaterial = $this->db->select("*")->from("mf_material_packaging")->where('id',$materialIds)->get()->row();
+                $findPkMaterial_by_store = $this->db->select("*")->from("mf_material_packaging_store_qty")->where('material_id',$materialIds)->where('store_id',$store_id)->get()->row();
+                $currentQty = $findPkMaterial->quantity;
+                $currentQty_by_store = $findPkMaterial_by_store->quantity;
+                $newQty = $currentQty - $materialQts;
+                $newQty_by_store = $currentQty_by_store - $materialQts;
+                $this->db->where('material_id',$materialIds)->where('store_id',$store_id)->update('mf_material_packaging_store_qty',['quantity'=>$newQty_by_store]);
+                $this->db->where('id',$materialIds)->update('mf_material_packaging',['quantity'=>$newQty]);
+                            
+            }
+
+
 
             if($this->db->insert('purchases', $data))
             {
