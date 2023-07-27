@@ -159,9 +159,23 @@
                                         if (($value['type'] == 'collection') || ($value['type'] == 'Advance Collection') || ($value['type'] == 'Advance Payment') || $value['type'] == 'Sales Return' || $value['type'] == 'Sales Return Amount') {
                                             if (($value['type'] == 'collection')) {
                                                 $url = base_url('collection/view');
-                                                echo "<td class=\"center\">
-                                            <a onclick=\"window.open('" . $url . '/' . $value['id'] . "', 'pos_popup', 'scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#'>" . $value['type'].'/'.$value['paid_type'] . '</a>
-                                            </td>';
+                                                if(array_key_exists($value['id'], $sales_collection_id))
+                                                {
+                                                    echo "<td class=\"center\">
+                                                    <a onclick=\"window.open('" . $url . '/' . $value['id'] . "', 'pos_popup', 'scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#'>Sales " . $value['type'].'/'.$value['paid_type'] . '</a>
+                                                    </td>';
+                                                }
+                                                else if($value['paid_type']=='Adjustment')
+                                                {
+                                                    echo "<td class=\"center\">
+                                                    <a onclick=\"window.open('" . $url . '/' . $value['id'] . "', 'pos_popup', 'scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#'>" . $value['type'].'/'.$value['paid_type'] . '</a>
+                                                    </td>';
+                                                }
+                                                else{
+                                                    echo "<td class=\"center\">
+                                                <a onclick=\"window.open('" . $url . '/' . $value['id'] . "', 'pos_popup', 'scrollbars=yes,status=no,resizable=yes,screenx=0,screeny=0'); return false;\" href='#'>Due " . $value['type'].'/'.$value['paid_type'] . '</a>
+                                                </td>';
+                                                }
                                             } else if (($value['type'] == 'Sales Return') || ($value['type'] == 'Sales Return Amount')) {
                                                 $url = base_url('salereturn/view');
                                                 echo "<td class=\"center\">

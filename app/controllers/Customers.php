@@ -288,6 +288,14 @@ class Customers extends MY_Controller
         $excelData .= implode("\t", array_values($fields)) . "\n"; 
         
         if(count($results) > 0){ 
+			$sales_collection_id = array();
+			foreach ($results as $key => $value) {
+				if (($value['type'] == 'sale')) {
+					if (isset($value['collection_id'])) {
+						$sales_collection_id[$value['collection_id']] = $value['id'];
+					}
+				}
+			}
             foreach($results as $key => $value){ 
 				if(($value['type'] == 'Opening balance') && (1>$value['total'])){ 
 					// echo '<td class="center">4*'.$emptyvalue.'</td>' ;
@@ -313,6 +321,17 @@ class Customers extends MY_Controller
 				if($value['type'] =='collection')
 				{
 					$lineData = array($i++,$this->tec->hrld($value['datetime']), $value['type'].'/'.$value['paid_type'] , $dr_val, $cr_val, $gtotal); 
+					if(array_key_exists($value['id'], $sales_collection_id))
+					{
+						$lineData = array($i++,$this->tec->hrld($value['datetime']), 'Sales '.$value['type'].'/'.$value['paid_type'] , $dr_val, $cr_val, $gtotal); 
+					}
+					else if($value['paid_type']=='Adjustment')
+					{
+						$lineData = array($i++,$this->tec->hrld($value['datetime']), 'Sales '.$value['type'].'/'.$value['paid_type'] , $dr_val, $cr_val, $gtotal); 
+					}
+					else{
+						$lineData = array($i++,$this->tec->hrld($value['datetime']), 'Due '.$value['type'].'/'.$value['paid_type'] , $dr_val, $cr_val, $gtotal); 	
+					}
 				}
 				else
 				{
