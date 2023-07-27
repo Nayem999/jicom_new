@@ -426,7 +426,7 @@ class Mf_production_model extends CI_Model
         $data=array();
         foreach($prodct_dtls as $key=>$val){
             $product_id=$val->product_id;
-            $product_qty=$val->quantity;
+            $product_qty=$val->prod_quantity;
             $q = $this->db->get_where('mf_finished_good_stock', array('mf_finished_good_stock.product_id' => $product_id,'mf_finished_good_stock.store_id' => $store_id), 1);
             $finished_good_stock = $q->row();
     

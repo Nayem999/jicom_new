@@ -142,9 +142,13 @@
                             <div class="col-md-4" id="addMore">
                                 <?php
                                 $pk[''] = lang("select") . " " . lang("Packaging");
+                                $pk_cp = array();
                                 foreach ($packaging_items as $k => $v) {
                                     $pk[$v->id] = $v->name;
+                                    $pk_cp[$v->id] = $v->capacity;
                                 }
+                                $pk_cp_arr = json_encode($pk_cp);
+
                                 $prod[''] = lang("select") . " " . lang("Product");
                                     foreach ($all_product as $k => $v) {
                                         $prod[$v->id] = $v->name;
@@ -155,9 +159,10 @@
 
                                     <div class="input-group mb-3" style="display:flex;margin-bottom: 5vh; gap: 1rem;">
 
-                                        <?= form_dropdown('product[]',$prod, set_value('product[]',$v->product_id), 'class="form-control" id="packagingMaterial" style="width:100%;" '); ?>
-                                        <?= form_dropdown('packaging_material[]',$pk, set_value('packaging_material[]',$v->material_packaging_id), 'class="form-control" id="packagingMaterial" style="width:100%;" '); ?>
-                                        <input type="text" class="form-control" name="pk_quantity[]" id="pk_quantity" placeholder="Enter Quantity" value="<?=$v->quantity;?>" >
+                                        <?= form_dropdown('product[]',$prod, set_value('product[]',$v->product_id), 'class="form-control" style="width:100%;" '); ?>
+                                        <input type="text" class="form-control prod_qty" name="prod_quantity[]" aria-describedby="basic-addon3" placeholder="Enter Quantity" required value="<?=$v->prod_quantity;?>">
+                                        <?= form_dropdown('packaging_material[]',$pk, set_value('packaging_material[]',$v->material_packaging_id), 'class="form-control pk_id" style="width:100%;" '); ?>
+                                        <input type="text" class="form-control pk_qty" name="pk_quantity[]" placeholder="Enter Quantity" value="<?=$v->quantity;?>" >
                                         <a href='javascript:void(0)' data-target="#myModal"><i onclick="onClickAdd()" class="fa fa-2x fa-plus-circle"></i></a>
                                         <a href='javascript:void(0)' class="removeItem"><i class="fa fa-2x fa-minus-circle"></i></a>
                                     </div>
@@ -223,6 +228,38 @@
             $(this).addClass("current_item_" + i);
         });
 
+        
+
+        $(".prod_qty").each(function(i, obj) {
+            var attributeValue = `prod_qty_${i}`;
+            $(this).attr("id", attributeValue);
+        });
+        $(".pk_qty").each(function(i, obj) {
+            var attributeValue = `pk_qty_${i}`;
+            $(this).attr("id", attributeValue);
+        });
+        $(".pk_id").each(function(i, obj) {
+            var attributeValue = `fn_pk_cng(${i})`;
+            $(this).attr("onchange", attributeValue);
+            var attributeValue = `pk_id_${i}`;
+            $(this).attr("id", attributeValue);
+        });
+
+    }
+
+    const pk_cp_arr = JSON.parse('<?= $pk_cp_arr ?>');
+    function fn_pk_cng(row_id) {
+        var prod_qty = parseInt($("#prod_qty_" + row_id).val());
+        var pk_id = $("#pk_id_" + row_id).val();
+        if(pk_id>0 && prod_qty>0)
+        {
+            var capacity_val = pk_cp_arr[pk_id];
+            if(capacity_val>0)
+            {
+                var pk_value = Math.ceil(prod_qty/capacity_val);
+                $("#pk_qty_" + row_id).val(pk_value);
+            }
+        }  
     }
 
     checkItems();

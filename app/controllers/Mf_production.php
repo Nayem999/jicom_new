@@ -44,7 +44,7 @@ class Mf_production extends MY_Controller
          	$this->db->dbprefix('stores'). ".name  as store_name,".
          	$this->db->dbprefix('mf_recipe_mst'). ".name, GROUP_CONCAT(".
          	$this->db->dbprefix('products'). ".name , '(', ".
-             $this->db->dbprefix('mf_production_prod_n_pkg'). ".quantity,')') as product_name ,".
+             $this->db->dbprefix('mf_production_prod_n_pkg'). ".prod_quantity,')') as product_name ,".
 
          	$this->db->dbprefix('mf_production_mst'). ".actual_output ,".
          	$this->db->dbprefix('mf_production_mst'). ".total_cost ,GROUP_CONCAT(".
@@ -133,6 +133,7 @@ class Mf_production extends MY_Controller
                 $prod_n_package[] = array(                              
                     'product_id' => $_POST['product'][$r],                    
                     'material_packaging_id' => $_POST['packaging_material'][$r],                    
+                    'prod_quantity' => $_POST['prod_quantity'][$r],                                                         
                     'quantity' => $_POST['pk_quantity'][$r],                                                         
                 );         
             }        
@@ -237,7 +238,8 @@ class Mf_production extends MY_Controller
             for ($r = 0; $r < $i; $r++) {     
                 $prod_n_package[] = array(                              
                     'product_id' => $_POST['product'][$r],                    
-                    'material_packaging_id' => $_POST['packaging_material'][$r],                    
+                    'material_packaging_id' => $_POST['packaging_material'][$r],   
+                    'prod_quantity' => $_POST['prod_quantity'][$r],                   
                     'quantity' => $_POST['pk_quantity'][$r],                                                         
                 );         
             }    

@@ -127,6 +127,7 @@
                           <tr class="active">
                             <th class="col-xs-1">SL</th>
                             <th class="col-xs-3">Product Name</th>
+                            <th class="col-xs-2">Product Quantity</th>
                             <th class="col-xs-3">Packaging Name</th>
                             <th class="col-xs-1">Quantity</th>
                           </tr>
@@ -139,6 +140,7 @@
                           <tr>
                             <td class="col-xs-1 text-center"><?=$i++;?></td>
                             <td class="col-xs-3 text-center" ><?= $val->product_name; ?></td>
+                            <td class="col-xs-2 text-center"><?= $val->prod_quantity; ?></td>
                             <td class="col-xs-3 text-center" ><?= $val->name; ?></td>
                             <td class="col-xs-1 text-center"><?= $val->quantity; ?></td>
                           </tr>
