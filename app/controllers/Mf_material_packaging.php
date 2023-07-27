@@ -42,7 +42,7 @@ class Mf_material_packaging extends MY_Controller
     	$this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
     	$this->data['page_title'] = lang('material_packaging_list');
     	$bc = array(array('link' => '#', 'page' => lang('material_packaging_list')));
-    	$meta = array('page_title' => lang('material_packaging_list'), 'bc' => $bc);
+    	$meta = array('page_title' => 'Material Packaging List', 'bc' => $bc);
     	$this->page_construct('mf_material_packaging/index', $this->data, $meta);
     }
 
@@ -54,6 +54,7 @@ class Mf_material_packaging extends MY_Controller
 
     	$this->datatables->select($this->db->dbprefix('mf_material_packaging') . ".id as sid,".
     		$this->db->dbprefix('mf_material_packaging') . ".name, ".    		
+    		$this->db->dbprefix('mf_material_packaging') . ".capacity, ".    		
     		$this->db->dbprefix('mf_unit') . ".name as unit_name, ".    		
     		$this->db->dbprefix('mf_material_packaging') . ".descriptions,", FALSE);  
 		$this->datatables->join('mf_unit','mf_unit.id=mf_material_packaging.uom_id');             
@@ -84,12 +85,14 @@ class Mf_material_packaging extends MY_Controller
 		$this->form_validation->set_rules('name', $this->lang->line("name"), 'required');
 		// $this->form_validation->set_rules('category_id', $this->lang->line("category"), 'required');
 		$this->form_validation->set_rules('uom_id', $this->lang->line("Unit"), 'required');
+		$this->form_validation->set_rules('capacity', "Capacity", 'required');
 
 		if ($this->form_validation->run() == true) { 
 			$data = array(
 				'name' => $this->input->post('name'),
 				// 'category_id' => $this->input->post('category_id'),
 				'uom_id' => $this->input->post('uom_id'),
+				'capacity' => $this->input->post('capacity'),
 				'descriptions' => $this->input->post('descriptions')
 			);
 		}
@@ -115,7 +118,7 @@ class Mf_material_packaging extends MY_Controller
 			$this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
     		$this->data['page_title'] = lang('add_material');
     		$bc = array(array('link' => site_url('mf_material'), 'page' => lang('materials')), array('link' => '#', 'page' => lang('add_material')));
-    		$meta = array('page_title' => lang('add_material'), 'bc' => $bc);
+    		$meta = array('page_title' => 'Add Material Packaging', 'bc' => $bc);
 			// $this->data['categories'] = $this->site->getAllMfCategories(); 
     		$this->page_construct('mf_material_packaging/add', $this->data, $meta);
 
@@ -134,10 +137,12 @@ class Mf_material_packaging extends MY_Controller
 
 		$this->form_validation->set_rules('name', $this->lang->line("name"), 'required');
 		$this->form_validation->set_rules('uom_id', $this->lang->line("Unit"), 'required');
+		$this->form_validation->set_rules('capacity', "Capacity", 'required');
 
 		if ($this->form_validation->run() == true) {			
 			$data = array('name' => $this->input->post('name'),
 				'uom_id' => $this->input->post('uom_id'),
+				'capacity' => $this->input->post('capacity'),
 				'descriptions' => $this->input->post('descriptions')
 			);
 		}
@@ -153,7 +158,7 @@ class Mf_material_packaging extends MY_Controller
 			$this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
     		$this->data['page_title'] = lang('edit_material_packaging');
     		$bc = array(array('link' => site_url('mf_material_packaging'), 'page' => lang('raw_material_packaging')), array('link' => '#', 'page' => lang('edit_material_packaging')));
-    		$meta = array('page_title' => lang('edit_material_packaging'), 'bc' => $bc);
+    		$meta = array('page_title' => 'Edit Material Packaging', 'bc' => $bc);
     		$this->page_construct('mf_material_packaging/edit', $this->data, $meta);
 
 		}

@@ -11,9 +11,14 @@
           <div class="col-md-6">
 
             <div class="form-group">
-              <label class="control-label" for="code"><?= $this->lang->line("name"); ?></label>
+              <label class="control-label" for="code"><?= $this->lang->line("name"); ?> <span class="text-danger">*</span></label>
               <?= form_input('name', set_value('name', $material->name), 'class="form-control input-sm" required id="name"'); ?>
             </div>
+
+            <div class="form-group">
+							<label class="control-label" for="capacity">Capacity <span class="text-danger">*</span></label>
+							<?= form_input('capacity', set_value('capacity', $material->capacity), 'class="form-control input-sm required" id="capacity"');?>
+						</div>
 
 						<div class="form-group">
 							<label class="control-label" for="uom_id"><?= lang('UOM','UOM'); ?> <span class="text-danger">*</span></label>	                        

@@ -12,7 +12,7 @@
                 });
                 $.ajax({'dataType': 'json', 'type': 'POST', 'url': sSource, 'data': aoData, 'success': fnCallback});
             },
-            "aoColumns": [null, null, null, {"bSortable":false, "bSearchable": false}]
+            "aoColumns": [null, null, null, null, {"bSortable":false, "bSearchable": false}]
         });
     });
 </script>
@@ -33,6 +33,7 @@
                         <thead>
                         <tr>
                             <th><?php echo $this->lang->line("name"); ?></th>
+                            <th>Capacity</th>
                             <th>Unit</th>
                             <th><?php echo $this->lang->line("descriptions"); ?></th>
                             <th class="noprint" style="width:65px;"><?php echo $this->lang->line("actions"); ?></th>

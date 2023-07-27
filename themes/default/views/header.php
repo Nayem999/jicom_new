@@ -583,14 +583,14 @@
           if ($this->site->permission('mf_material_packaging')) {
           ?>
             <li class="treeview mm_mf_material_packaging"> <a href="#"> <i class="fa fa-barcode"></i> <span>
-                  <?= lang('raw_material_packaging'); ?>
+              Raw Material Packaging
                 </span> <i class="fa fa-angle-left pull-right"></i> </a>
               <ul class="treeview-menu">
                 <?php if ($this->site->route_permission('mf_material_packaging_view')) {?>
-                  <li id="mf_material_packaging_index"><a href="<?= site_url('mf_material_packaging'); ?>"><i class="fa fa-circle-o"></i><?= lang('list_material_packaging'); ?></a></li>
+                  <li id="mf_material_packaging_index"><a href="<?= site_url('mf_material_packaging'); ?>"><i class="fa fa-circle-o"></i>List Material Packaging</a></li></a></li>
                 <?php } ?> 
                 <?php if ($this->site->route_permission('mf_material_packaging_add')) {?>
-                  <li id="mf_material_packaging_add"><a href="<?= site_url('mf_material_packaging/add'); ?>"><i class="fa fa-circle-o"></i> <?= lang('add_material_packaging'); ?> </a></li>
+                  <li id="mf_material_packaging_add"><a href="<?= site_url('mf_material_packaging/add'); ?>"><i class="fa fa-circle-o"></i>Add Material Packaging</a></li>
                 <?php } ?>              
               </ul>
             </li>

@@ -15,6 +15,11 @@
 						</div>
 
 						<div class="form-group">
+							<label class="control-label" for="capacity">Capacity <span class="text-danger">*</span></label>
+							<?= form_input('capacity', set_value('capacity'), 'class="form-control input-sm required" id="capacity"');?>
+						</div>
+
+						<div class="form-group">
 							<label class="control-label" for="uom_id"><?= lang('Unit','Unit'); ?> <span class="text-danger">*</span></label>
 	                        <?php
 								// $uom_arr=array(''=>"Select UOM",1=>"PCS",2=>"KG",3=>"GM",4=>"LR",5=>"ML");
