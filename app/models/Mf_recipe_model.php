@@ -42,9 +42,10 @@ class Mf_recipe_model extends CI_Model
 
     public function get_raw_material_info($term, $limit = 10) {
 
-        $this->db->select(" mf_material.id as material_id, mf_material.name as name, mf_material_store_qty.id as material_stock_id, mf_brands.name as brand_name, mf_unit.name as unit_name");
+        $this->db->select(" mf_material.id as material_id, mf_material.name as name, mf_material_store_qty.id as material_stock_id, mf_brands.name as brand_name, mf_unit.name as unit_name, stores.name as stores_name");
         $this->db->from('mf_material');
         $this->db->join('mf_material_store_qty','mf_material_store_qty.material_id=mf_material.id');
+        $this->db->join('stores','mf_material_store_qty.store_id =stores.id');
         $this->db->join('mf_brands','mf_material_store_qty.brand_id=mf_brands.id','left');
         $this->db->join('mf_unit','mf_material.uom_id=mf_unit.id','left');
 

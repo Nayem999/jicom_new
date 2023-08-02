@@ -306,7 +306,7 @@ class Mf_recipe extends MY_Controller
                 $pr[] = array(
                     'id' => str_replace(".", "", microtime(true)),
                     'item_id' => $row->material_stock_id,
-                    'label' => $row->name . " (" . $row->brand_name . ")",
+                    'label' => $row->name . " (Brand: " . $row->brand_name . ", Store: ". $row->stores_name .")",
                     'row' => $row
                 );
                 
