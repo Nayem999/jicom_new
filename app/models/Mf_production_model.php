@@ -260,6 +260,22 @@ class Mf_production_model extends CI_Model
         return FALSE;
 
     }
+    public function getProductionPackagingDtlsByIDStock($id,$store_id) {
+
+        $this->db->select('mf_production_prod_n_pkg.* ,mf_material_packaging_store_qty.quantity as stock_qty');
+        $this->db->join("mf_material_packaging_store_qty","mf_production_prod_n_pkg.material_packaging_id = mf_material_packaging_store_qty.material_id and mf_material_packaging_store_qty.store_id=$store_id",'left');
+        $q = $this->db->get_where('mf_production_prod_n_pkg', array('mf_production_prod_n_pkg.production_id' => $id,'mf_production_prod_n_pkg.active_status'=>1));
+        // echo 
+        if( $q->num_rows() > 0 ) {
+            foreach (($q->result()) as $row){  
+                $data[] = $row;  
+            }
+            return $data;
+        }
+
+        return FALSE;
+
+    }
 
     public function updateProduction($id, $data = NULL, $items = array(), $packing = array()) {
         ########## Previous Data Rolback Start  ############

@@ -268,17 +268,24 @@ class Transfers_model extends CI_Model
         return $results;
     }
 
-    public function getAllTransfersItems($transfers_id)
+    public function getAllTransfersItems($transfers_id,$store_id=0)
     {
 
         $this->db->select('transfers_items.*, products.code as product_code, products.name as product_name,  mf_finished_good_stock.quantity as store_qty')
 
             ->join('products', 'products.id=transfers_items.product_id', 'left')
             ->join('transfers', 'transfers.id=transfers_items.transfers_id', 'left')
-            ->join('stores', 'transfers.from_warehouse_id =stores.id', 'left')
-            ->join('mf_finished_good_stock', 'mf_finished_good_stock.store_id=stores.id and products.id=mf_finished_good_stock.product_id', 'left')
+            ->join('stores', 'transfers.from_warehouse_id =stores.id', 'left');
+            if($store_id)
+            {
+                $this->db->join("mf_finished_good_stock", "mf_finished_good_stock.store_id=stores.id and products.id=mf_finished_good_stock.product_id and mf_finished_good_stock.store_id=$store_id", 'left');
+            }
+            else
+            {
+                $this->db->join('mf_finished_good_stock', 'mf_finished_good_stock.store_id=stores.id and products.id=mf_finished_good_stock.product_id', 'left');
+            }
 
-            ->group_by('transfers_items.id')
+            $this->db->group_by('transfers_items.id')
 
             ->order_by('id', 'asc');
 

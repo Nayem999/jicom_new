@@ -350,6 +350,17 @@ class Mf_production extends MY_Controller
         }
         else
         {
+            if($this->input->post('status')=='Approved'){
+                $store_id=$info->store_id;
+                $package_dtls = $this->mf_production_model->getProductionPackagingDtlsByIDStock($id,$store_id);
+                foreach ($package_dtls as $key => $val) {
+                    if($val->quantity > $val->stock_qty)
+                    {
+                        $this->session->set_flashdata('error', lang("It's Packaging Quantity Over Stock Quantity"));
+                        redirect('mf_production');
+                    }
+                } 
+            }
             $this->mf_production_model->updateStatusApprove($id,$dataAppr,$info,$this->input->post('status'));	
             $this->session->set_flashdata('message', lang('Updated successfully'));        
             $this->index(); 

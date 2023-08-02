@@ -628,6 +628,15 @@ class Transfers extends MY_Controller
                     redirect('transfers');
                 }
             } 
+
+            $product_dtls = $this->transfers_model->getAllTransfersItems($id,$store_id);
+            foreach ($product_dtls as $key => $val) {
+                if($val->quantity > $val->store_qty)
+                {
+                    $this->session->set_flashdata('error', lang("It's Product Quantity Over Stock Quantity"));
+                    redirect('transfers');
+                }
+            } 
             // print_r($sales_products);die;
     
             $data = array(
