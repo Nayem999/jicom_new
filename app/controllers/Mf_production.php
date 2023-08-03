@@ -352,7 +352,7 @@ class Mf_production extends MY_Controller
         {
             if($this->input->post('status')=='Approved'){
                 $store_id=$info->store_id;
-                $package_dtls = $this->mf_production_model->getProductionPackagingDtlsByIDStock($id,$store_id);
+                $package_dtls = $this->mf_production_model->getPackagingDtlsByIDStock($id,$store_id);
                 foreach ($package_dtls as $key => $val) {
                     if($val->quantity > $val->stock_qty)
                     {
@@ -366,7 +366,7 @@ class Mf_production extends MY_Controller
                 $store_id=$info->store_id;
                 $package_dtls = $this->mf_production_model->getProductionPackagingDtlsByIDStock($id,$store_id);
                 foreach ($package_dtls as $key => $val) {
-                    if($val->quantity < $val->stock_qty)
+                    if($val->quantity > $val->stock_qty)
                     {
                         $this->session->set_flashdata('error', lang("It's Stock Quantity Over Packaging Quantity"));
                         redirect('mf_production');
