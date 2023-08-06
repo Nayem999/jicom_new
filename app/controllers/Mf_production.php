@@ -174,7 +174,7 @@ class Mf_production extends MY_Controller
             $this->data['all_product']  = $this->products_model->getAllProducts();
             $this->data['all_uom']  = $this->mf_unit_model->getAllUnit();
             $this->data['batch_no']  = $batch_no;
-            $this->data["packaging_items"] = $this->db->select('mf_material_packaging.*,mf_unit.name as unit')->from("mf_material_packaging")->join("mf_unit","mf_unit.id=mf_material_packaging.uom_id",'left')->get()->result();
+            $this->data["packaging_items"] = $this->site->getPackagingMaterialByStock();  
 
             $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
             $this->data['page_title'] = lang('add_production');
@@ -271,8 +271,7 @@ class Mf_production extends MY_Controller
             $this->data['production_mst'] = $this->mf_production_model->getProductionByID($id);
             $this->data['production_dtls'] = $this->mf_production_model->getProductionDtlsByID($id);
             $this->data["packaging_dtls"] = $this->mf_production_model->getProductionPackagingDtlsByID($id);
-
-            $this->data["packaging_items"] = $this->db->select('mf_material_packaging.*,mf_unit.name as unit')->from("mf_material_packaging")->join("mf_unit","mf_unit.id=mf_material_packaging.uom_id",'left')->get()->result();
+            $this->data["packaging_items"] = $this->site->getPackagingMaterialByStock();  
 
             $this->data['page_title'] = lang('edit_production');
             $bc = array(array('link' => site_url('unit'), 'page' => lang('unit')), array('link' => '#', 'page' => lang('edit_uom')));

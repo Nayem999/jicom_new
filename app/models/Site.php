@@ -561,5 +561,17 @@ class Site extends CI_Model
 
         return $this->db->get()->result();
     }
+
+    public function getPackagingMaterialByStock()
+    {
+        $data=$this->db->select('mf_material_packaging.id, mf_material_packaging.name, mf_unit.name as unit, mf_material_packaging_store_qty.quantity, stores.name as stores_name')
+        ->from("mf_material_packaging")
+        ->join("mf_unit","mf_unit.id=mf_material_packaging.uom_id",'left')
+        ->join("mf_material_packaging_store_qty","mf_material_packaging_store_qty.material_id=mf_material_packaging.id",'left')
+        ->join('stores','mf_material_packaging_store_qty.store_id =stores.id','left')
+        ->join('mf_brands','mf_material_packaging_store_qty.brand_id=mf_brands.id','left')
+        ->get()->result();
+        return $data; 
+    }
       
 }

@@ -106,20 +106,20 @@ class Mf_production_model extends CI_Model
             $materialIds = $item->material_packaging_id;
             $materialQts = $item->quantity;
     
-            $findPkMaterial = $this->db->select("*")->from("mf_material_packaging")->where('id',$materialIds)->get()->row();
+            // $findPkMaterial = $this->db->select("*")->from("mf_material_packaging")->where('id',$materialIds)->get()->row();
             $findPkMaterial_by_store = $this->db->select("*")->from("mf_material_packaging_store_qty")->where('material_id',$materialIds)->where('store_id',$store_id)->get()->row();
     
-            if($findPkMaterial){
-                $currentQty = $findPkMaterial->quantity;
+            if($findPkMaterial_by_store){
+                // $currentQty = $findPkMaterial->quantity;
                 $currentQty_by_store = $findPkMaterial_by_store->quantity;
     
                 if($materialQts > 0){
-                    $newQty = $currentQty - $materialQts;
+                    // $newQty = $currentQty - $materialQts;
                     $newQty_by_store = $currentQty_by_store - $materialQts;
     
                     // decrease pk material qty
                     $decreaseQty_by_store = $this->db->where('material_id',$materialIds)->where('store_id',$store_id)->update('mf_material_packaging_store_qty',['quantity'=>$newQty_by_store]);
-                    $decreaseQtyFromPackaging = $this->db->where('id',$materialIds)->update('mf_material_packaging',['quantity'=>$newQty]);
+                    // $decreaseQtyFromPackaging = $this->db->where('id',$materialIds)->update('mf_material_packaging',['quantity'=>$newQty]);
                     
                     // increase pk material qty
                     $product_packaging_stock = $this->db->select("*")->from("mf_product_packaging_stock")->where('packaging_id',$materialIds)->where('product_id',$product_id)->where('store_id',$store_id)->get()->row();
@@ -139,9 +139,9 @@ class Mf_production_model extends CI_Model
                     $pkLogData = [];
                     $pkLogData["material_id"] =$materialIds;
                     $pkLogData["to_sale"] = $materialQts;
-                    $pkLogData["from_qty"] = $currentQty;
-                    $pkLogData["to_qty"] = $newQty;
-                    $pkLogData["balance"] = $newQty;
+                    $pkLogData["from_qty"] = $currentQty_by_store;
+                    $pkLogData["to_qty"] = $newQty_by_store;
+                    $pkLogData["balance"] = $newQty_by_store;
                     $pkLogData["type"] = 3;
                     $pkLogData["comment"] = "Production with packaging material";
                     $pkLogData["date"] = date("Y-m-d");
@@ -164,20 +164,20 @@ class Mf_production_model extends CI_Model
             $product_id= $val->product_id;
             $materialIds = $val->material_packaging_id ;
             $materialQts = $val->quantity;
-            $findPkMaterial = $this->db->select("*")->from("mf_material_packaging")->where('id',$materialIds)->get()->row();
+            // $findPkMaterial = $this->db->select("*")->from("mf_material_packaging")->where('id',$materialIds)->get()->row();
             $findPkMaterial_by_store = $this->db->select("*")->from("mf_material_packaging_store_qty")->where('material_id',$materialIds)->where('store_id',$store_id)->get()->row();
 
-            if($findPkMaterial){
-                $currentQty = $findPkMaterial->quantity;
+            if($findPkMaterial_by_store){
+                // $currentQty = $findPkMaterial->quantity;
                 $currentQty_by_store = $findPkMaterial_by_store->quantity;
 
                 if($materialQts > 0){
-                    $newQty = $currentQty + $materialQts;
+                    // $newQty = $currentQty + $materialQts;
                     $newQty_by_store = $currentQty_by_store + $materialQts;
 
                     // increase pk material qty
                     $decreaseQty_by_store = $this->db->where('material_id',$materialIds)->where('store_id',$store_id)->update('mf_material_packaging_store_qty',['quantity'=>$newQty_by_store]);
-                    $decreaseQtyFromPackaging = $this->db->where('id',$materialIds)->update('mf_material_packaging',['quantity'=>$newQty]);
+                    // $decreaseQtyFromPackaging = $this->db->where('id',$materialIds)->update('mf_material_packaging',['quantity'=>$newQty]);
                     
                     // decrease pk material qty
                     $product_packaging_stock = $this->db->select("*")->from("mf_product_packaging_stock")->where('packaging_id',$materialIds)->where('product_id',$product_id)->where('store_id',$store_id)->get()->row();
@@ -189,9 +189,9 @@ class Mf_production_model extends CI_Model
                     $pkLogData = [];
                     $pkLogData["material_id"] =$materialIds;
                     $pkLogData["to_sale"] = $materialQts;
-                    $pkLogData["from_qty"] = $currentQty;
-                    $pkLogData["to_qty"] = $newQty;
-                    $pkLogData["balance"] = $newQty;
+                    $pkLogData["from_qty"] = $currentQty_by_store;
+                    $pkLogData["to_qty"] = $newQty_by_store;
+                    $pkLogData["balance"] = $newQty_by_store;
                     $pkLogData["type"] = 5;
                     $pkLogData["comment"] = "Production with packaging material";
                     $pkLogData["date"] = date("Y-m-d");

@@ -210,7 +210,8 @@ class Transfers extends MY_Controller
             $this->data['warehouses'] = $this->site->getAllStores();             
             $this->data['customers'] = $this->site->whereRows('customers','store_id',$this->session->userdata('from_warehouse'));             
             $this->data['page_title'] = lang('Add Transfers');
-            $this->data["packaging_items"] = $this->db->select('mf_material_packaging.*,mf_unit.name as unit')->from("mf_material_packaging")->join("mf_unit","mf_unit.id=mf_material_packaging.uom_id",'left')->get()->result();
+            // $this->data["packaging_items"] = $this->db->select('mf_material_packaging.*,mf_unit.name as unit')->from("mf_material_packaging")->join("mf_unit","mf_unit.id=mf_material_packaging.uom_id",'left')->get()->result();
+            $this->data["packaging_items"] = $this->site->getPackagingMaterialByStock();  
             
             $bc = array(
                 array(
@@ -425,7 +426,7 @@ class Transfers extends MY_Controller
         $this->data['items'] = json_encode($pr);
         $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));            
         $this->data['page_title'] = lang('edit_purchase');
-        $this->data["packaging_items"] = $this->db->select('mf_material_packaging.*,mf_unit.name as unit')->from("mf_material_packaging")->join("mf_unit","mf_unit.id=mf_material_packaging.uom_id",'left')->get()->result();
+        $this->data["packaging_items"] = $this->site->getPackagingMaterialByStock();  
         
         $bc = array(
             array(
