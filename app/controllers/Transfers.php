@@ -191,7 +191,7 @@ class Transfers extends MY_Controller
                 'customer_id' => $this->input->post('customer_id'),  
                 'supplier_id' => $this->input->post('supplier_id'),  
                 'extra_packaging_id' => $this->input->post('extra_packaging_id'),  
-                'extra_packaging_qty' => $this->input->post('extra_packaging_qty'),  
+                'extra_packaging_qty' => ($this->input->post('extra_packaging_qty')>0) ? $this->input->post('extra_packaging_qty'):0,  
             ); 
                                  
         }
@@ -324,7 +324,7 @@ class Transfers extends MY_Controller
                 'total' => $total,
                 'reference' =>  $this->input->post('reference'),
                 'extra_packaging_id' => $this->input->post('extra_packaging_id'),  
-                'extra_packaging_qty' => $this->input->post('extra_packaging_qty'),  
+                'extra_packaging_qty' => ($this->input->post('extra_packaging_qty')>0) ? $this->input->post('extra_packaging_qty'):0,  
             ); 
             
         }

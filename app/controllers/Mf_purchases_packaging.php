@@ -145,6 +145,7 @@ class Mf_purchases_packaging extends MY_Controller
         $this->form_validation->set_rules('date', lang('date'), 'required');
         $this->form_validation->set_rules('mf_supplier_id', lang('supplier'), 'required');
         $this->form_validation->set_rules('store_id', lang('Store'), 'required');
+        $material = $this->site->wheres_rows('mf_material_packaging',array('id'=>6));
 
         if ($this->form_validation->run() == true) {
             
@@ -306,10 +307,8 @@ class Mf_purchases_packaging extends MY_Controller
                 if ($item_id && $item_qty) {
                     
                     /* if (!$this->site->getProductByID($item_id)) {
-                        
                         $this->session->set_flashdata('error', $this->lang->line("product_not_found") . " ( " . $item_id . " ).");
                         redirect('mf_purchases_packaging/edit/' . $id);
-                        
                     }
                      */
                     $products[] = array( 
@@ -479,11 +478,18 @@ class Mf_purchases_packaging extends MY_Controller
         if ($this->input->get('id')) {            
             $id = $this->input->get('id');            
         }        
-        
-        if ($this->mf_purchases_packaging_model->deletePurchase($id)) {            
-            $this->session->set_flashdata('message', lang("purchase_deleted"));            
-            redirect('mf_purchases_packaging');            
+        if($this->mf_purchases_packaging_model->delete_stock_ck($id))
+        {
+            if ($this->mf_purchases_packaging_model->deletePurchase($id)) {            
+                $this->session->set_flashdata('message', lang("purchase_deleted"));            
+                redirect('mf_purchases_packaging');            
+            }
         }
+        else{
+            $this->session->set_flashdata('error', lang('Stock quantity over delete quantity'));
+            redirect('mf_purchases_packaging');      
+        }
+        
         
     }
     

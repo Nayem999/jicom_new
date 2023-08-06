@@ -178,7 +178,7 @@ class Mf_purchases_packaging_model extends CI_Model
     public function getProductStoreQtyByPidAndStoreId($store_id,$material_id,$brand_id){ 
 
         $this->db->where("material_id = ".$material_id." AND store_id = ".$store_id." AND brand_id = ".$brand_id);
-
+		
         $q= $this->db->get('mf_material_packaging_store_qty');
 
         if ($q->num_rows() > 0) {
@@ -247,7 +247,7 @@ class Mf_purchases_packaging_model extends CI_Model
 					// material quentity incriment in material table 
 
                     $material = $this->site->wheres_rows('mf_material_packaging',array('id'=>$item['material_id']));
-					$old_quantity = $material[0]->quantity;	
+					$old_quantity = number_format($material[0]->quantity);	
 
 					if($old_quantity>0){
 						$old_cost = $material[0]->cost;	
@@ -395,30 +395,35 @@ class Mf_purchases_packaging_model extends CI_Model
     public function deletePurchase($id) {
 
         $oitems = $this->getAllPurchaseItems($id);
-
         foreach ($oitems as $oitem) {
-
         	$store_id = $oitem->store_id ;
-
         	$this->storeProQtyDelete($oitem->material_id,$oitem->quantity,$store_id,$oitem->brand_id,$oitem->cost);
-
             $product = $this->site->getPackagingMaterialByID($oitem->material_id);
-
             $this->db->update('mf_material_packaging', array('quantity' => ($product->quantity-$oitem->quantity)), array('id' => $product->id));
-
         }
 
         if ($this->db->delete('mf_purchases_packaging', array('id' => $id)) && $this->db->delete('mf_purchase_packaging_material', array('purchase_id' => $id))) {
-
-			$this->db->delete("mf_packaging_material_log",["id"=>$id]);
-
+			// $this->db->delete("mf_packaging_material_log",["id"=>$id]);
             return true;
-
         }
-
         return FALSE;
-
     }
+
+	public function delete_stock_ck($id){
+		$this->db->select("mf_purchase_packaging_material.quantity, mf_material_packaging_store_qty.quantity as stock_qty")
+		->join("mf_material_packaging_store_qty","mf_purchase_packaging_material.material_id=mf_material_packaging_store_qty.material_id and mf_purchase_packaging_material.brand_id=mf_material_packaging_store_qty.brand_id and mf_purchase_packaging_material.store_id=mf_material_packaging_store_qty.store_id and mf_purchase_packaging_material.purchase_id=$id")
+		->from("mf_purchase_packaging_material");
+		$data= $this->db->get()->result();
+		foreach ($data as $key => $value) {
+			if($value->quantity > $value->stock_qty)
+			{
+				return false;
+			}
+		}
+		return true;
+
+
+	}
 
 
 
@@ -866,14 +871,32 @@ public function deletePaymentForPurchase($id) {
     }
 
     function storeProQtyDelete($item_id,$item_quantity,$store_id,$brand_id,$item_cost){
+		$incstoreqty = $this->getProductStoreQtyByPidAndStoreId($store_id,$item_id,$brand_id);
+		if($incstoreqty){
+			$stock_total_cost  =  $incstoreqty->quantity * $incstoreqty->cost ;
+			$stock_old_product_cost  =  $stock_total_cost - $item_cost ;
+			$stock_old_product_quantity =  $incstoreqty->quantity - $item_quantity ;
 
-        $q = $this->db->get_where('mf_purchase_material', array('material_id' => $item_id , 'store_id' => $store_id, 'brand_id' => $brand_id ), 1);
+			if($stock_old_product_cost>0 && $stock_old_product_quantity>0)
+			{
+				$stock_old_cost = $stock_old_product_cost / $stock_old_product_quantity ;	
+			}
+			else
+			{
+				$stock_old_cost=0;
+			}
+
+			$incdata = array(
+				'quantity' => $stock_old_product_quantity,
+				'cost' => $stock_old_cost,
+			);
+			$updateQtyByID = $this->upadteProductQtyById($incstoreqty->id, $incdata);
+			return true;
+		}
+
+		return false;
+        /* $q = $this->db->get_where('mf_purchase_material', array('material_id' => $item_id , 'store_id' => $store_id, 'brand_id' => $brand_id ), 1);
         $value =  $q->row();
-        /* $quantityOld = $value->quantity ;
-        $dbQty  = $quantityOld - $item_quantity ;
-        $data  = array('quantity' => $dbQty ); */
-
-
 		$stock_total_cost  =  $value->quantity * $value->cost ;
 		$stock_old_product_cost  =  $stock_total_cost - $item_cost ;
 		$stock_old_product_quantity =  $value->quantity - $item_quantity ;
@@ -895,7 +918,7 @@ public function deletePaymentForPurchase($id) {
         if($this->db->update('mf_purchase_material', $data, array('material_id' => $item_id,'store_id' => $store_id ))) {
             return true;
         }
-        return false; 
+        return false;  */
 
  	}
 
@@ -928,7 +951,6 @@ public function deletePaymentForPurchase($id) {
 			   			
     	}
  	}
-
 	
 	
 }

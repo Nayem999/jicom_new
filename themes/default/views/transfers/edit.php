@@ -68,7 +68,7 @@
                                 <div class="form-group">
                                     <?= lang('Extra Packaging Name', 'Extra Packaging Name'); ?>
                                     <?php
-                                    $pk[''] = lang("select") . " " . lang("Packaging");
+                                    $pk[0] = lang("select") . " " . lang("Packaging");
                                     foreach ($packaging_items as $k => $v) {
                                         $pk[$v->id] = $v->name . " (" . $v->quantity . ' ' . $v->unit . ") ";
                                     }
