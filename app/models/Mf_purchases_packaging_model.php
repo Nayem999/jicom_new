@@ -246,7 +246,7 @@ class Mf_purchases_packaging_model extends CI_Model
 
 					// material quentity incriment in material table 
 
-                    $material = $this->site->wheres_rows('mf_material_packaging',array('id'=>$item['material_id']));
+                    /* $material = $this->site->wheres_rows('mf_material_packaging',array('id'=>$item['material_id']));
 					$old_quantity = number_format($material[0]->quantity);	
 
 					if($old_quantity>0){
@@ -259,7 +259,7 @@ class Mf_purchases_packaging_model extends CI_Model
 						$this->db->update('mf_material_packaging', array('cost' => $coust_amount, 'quantity' => ($material[0]->quantity+$item['quantity'])), array('id' => $material->id));				 
 					}else{
 						$this->db->update('mf_material_packaging', array('cost' => $new_cost, 'quantity' => ($item['quantity'])), array('id' => $material[0]->id));
-					}						
+					}*/					
 					
 
                 }
@@ -294,7 +294,7 @@ class Mf_purchases_packaging_model extends CI_Model
 
         foreach ($oitems as $oitem) {
 
-            $product = $this->site->getPackagingMaterialByID($oitem->material_id); 
+            /* $product = $this->site->getPackagingMaterialByID($oitem->material_id); 
 			
 			if($product->quantity > 0){	
 
@@ -310,15 +310,11 @@ class Mf_purchases_packaging_model extends CI_Model
 				{
 					$old_cost = $old_product_cost / $old_product_quantity ;	
 				}
-
-				/* if($old_product_quantity <= 0){ $old_cost = $product->cost; }
-
-				if($old_cost <= 0){ $old_cost = $oitem->cost; } */
 			}else{
 				$old_cost = $product->cost;
 			}	
 			
-            $updateMaterialPackaging = $this->db->update('mf_material_packaging', array('cost' => $old_cost ,'quantity' => ($product->quantity-$oitem->quantity)), array('id' => $product->id));
+            $updateMaterialPackaging = $this->db->update('mf_material_packaging', array('cost' => $old_cost ,'quantity' => ($product->quantity-$oitem->quantity)), array('id' => $product->id)); */
 
 
 			$incstoreqty = $this->getProductStoreQtyByPidAndStoreId($store_id,$oitem->material_id,$oitem->brand_id);
@@ -362,7 +358,7 @@ class Mf_purchases_packaging_model extends CI_Model
 
                 if($this->db->insert('mf_purchase_packaging_material', $item)) {
 
-                    $product = $this->site->getPackagingMaterialByID($item['material_id']);
+                    /* $product = $this->site->getPackagingMaterialByID($item['material_id']);
                     $old_cost = $product->cost;					
 					$old_quantity = $product->quantity;	
 					$new_cost = $item['cost'];
@@ -378,7 +374,7 @@ class Mf_purchases_packaging_model extends CI_Model
 						$coust_amount = $new_cost;
 					}
 					
-                    $this->db->update('mf_material_packaging', array('cost' => $coust_amount, 'quantity' => ($product->quantity+$item['quantity'])), array('id' => $product->id));
+                    $this->db->update('mf_material_packaging', array('cost' => $coust_amount, 'quantity' => ($product->quantity+$item['quantity'])), array('id' => $product->id)); */
 					
                 }
 

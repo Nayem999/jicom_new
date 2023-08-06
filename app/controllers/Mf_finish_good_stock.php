@@ -145,6 +145,11 @@ class Mf_finish_good_stock extends MY_Controller
         else if($adjust_type==2 && $adjust_qty>0)
         {
             $new_store_qty=$finish_good_store_info->quantity - $adjust_qty;
+            if($adjust_qty > $finish_good_store_info->quantity)
+            {
+                $this->session->set_flashdata('error', lang('Adjust not successfully. Stock Quantity Over Adjust Quantity'));
+                $this->stock_adjust(); 
+            }
         }
 
         if($new_store_qty>=0 &&  $adjust_qty>0){

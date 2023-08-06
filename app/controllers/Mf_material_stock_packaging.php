@@ -231,6 +231,12 @@ class Mf_material_stock_packaging extends MY_Controller
             $new_store_qty= $matarial_store_info->quantity - $adjust_qty;
             $new_qty= $matarial_info->quantity - $adjust_qty;
 
+            if($adjust_qty > $matarial_store_info->quantity)
+            {
+                $this->session->set_flashdata('error', lang('Adjust not successfully. Stock Quantity Over Adjust Quantity'));
+                redirect(); 
+            }
+
             if ($numRowData == 1){
                 $resultData = $lastInsertedPackagingMaterial->row();
                 $adjustLog["material_id"] = $material_id;
