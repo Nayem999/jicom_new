@@ -179,10 +179,6 @@ class Settings extends MY_Controller {
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
 		}
-         /* if((!$this->Admin) && (!$this->Manager)){
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect("welcome");
-        } */
 
         $this->form_validation->set_rules('purchase_code', lang("purchase_code") , 'required');
         $this->form_validation->set_rules('envato_username', lang("envato_username") , 'required');
@@ -231,11 +227,6 @@ class Settings extends MY_Controller {
         if (DEMO) {
             $this->session->set_flashdata('error', lang('disabled_in_demo'));
             redirect(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : 'welcome');
-        }
-
-         if((!$this->Admin) && (!$this->Manager)){
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect("welcome");
         }
 
         $this->load->helper('update');
@@ -399,11 +390,6 @@ class Settings extends MY_Controller {
             redirect(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : 'welcome');
         }
 
-        if((!$this->Admin) && (!$this->Manager)){
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect("welcome");
-        }
-
         $file = file_get_contents('./files/backups/' . $dbfile . '.txt');
         $this->db->conn_id->multi_query($file);
         $this->db->conn_id->close();
@@ -415,12 +401,6 @@ class Settings extends MY_Controller {
             $this->session->set_flashdata('error', lang('disabled_in_demo'));
             redirect(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : 'welcome');
         }
-
-        if((!$this->Admin) && (!$this->Manager)){
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect("welcome");
-        }
-
         $this->load->library('zip');
         $this->zip->read_file('./files/backups/' . $dbfile . '.txt'); 
         $name = $this->Settings->site_name.'db_backup_' . date('Y_m_d_H_i_s') . '.zip';
@@ -445,11 +425,6 @@ class Settings extends MY_Controller {
             redirect(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : 'welcome');
         }
 
-        if((!$this->Admin) && (!$this->Manager)){
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect("welcome");
-        }
-
         $file = './files/backups/' . $zipfile . '.zip';
         $this->tec->unzip($file, './');
         $this->session->set_flashdata('success', lang('files_restored'));
@@ -463,11 +438,6 @@ class Settings extends MY_Controller {
             redirect(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : 'welcome');
         }
 
-         if((!$this->Admin) && (!$this->Manager)){
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect("welcome");
-        }
-
         unlink('./files/backups/' . $dbfile . '.txt');
         unlink('./files/backups/' . $dbfile . '.sql');
         $this->session->set_flashdata('messgae', lang('db_deleted'));
@@ -478,11 +448,6 @@ class Settings extends MY_Controller {
         if (DEMO) {
             $this->session->set_flashdata('error', lang('disabled_in_demo'));
             redirect(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : 'welcome');
-        }
-
-         if((!$this->Admin) && (!$this->Manager)){
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect("welcome");
         }
 
         unlink('./files/backups/' . $zipfile . '.zip');

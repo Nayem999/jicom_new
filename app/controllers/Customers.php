@@ -147,15 +147,7 @@ class Customers extends MY_Controller
 		if(!$this->site->route_permission('customers_edit')) {
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
-		}
-
-        /* if((!$this->Admin) && (!$this->Manager)){
-
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-
-            redirect('pos');
-
-        }     */     
+		}    
 
 		if($this->input->get('id')) { $id = $this->input->get('id', TRUE); }
 
@@ -222,11 +214,6 @@ class Customers extends MY_Controller
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
 		}
-		/* if (!$this->Admin)
-		{
-			$this->session->set_flashdata('error', lang("access_denied"));
-			redirect('pos');
-		} */
 
 		if ( $this->customers_model->deleteCustomer($id) )
 		{

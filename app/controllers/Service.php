@@ -490,18 +490,6 @@ function get_service() {
 
 		if($this->input->get('id')){ $id = $this->input->get('id'); }
 
-
-
-		if (!$this->Admin) {
-
-			$this->session->set_flashdata('error', lang("access_denied"));
-
-			redirect('service');
-
-		}
-
-
-
 		if ( $this->service_model->deleteInvoice($id) ) {
 
 			$this->session->set_flashdata('message', lang("invoice_deleted"));

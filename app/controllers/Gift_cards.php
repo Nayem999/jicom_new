@@ -97,10 +97,7 @@ class Gift_cards extends MY_Controller
 
     function edit($id = NULL)
     {
-        if (!$this->Admin) {
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-            redirect('pos');
-        }
+   
         $this->form_validation->set_rules('card_no', lang("card_no"), 'trim|required');
         $gift_card = $this->gift_cards_model->getGiftCardByID($id);
         if ($this->input->post('card_no') != $gift_card->card_no) {
@@ -167,10 +164,7 @@ class Gift_cards extends MY_Controller
             $this->session->set_flashdata('error', lang('disabled_in_demo'));
             redirect(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : 'welcome');
         }
-        if (!$this->Admin) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        }
+        
         if ($this->input->get('id')) {
             $id = $this->input->get('id');
         }

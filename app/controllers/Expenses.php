@@ -127,25 +127,10 @@ class Expenses extends MY_Controller
 
     function expense_note($id = NULL)
     {
-
-        if (!$this->Admin) {
-
-            if ($expense->created_by != $this->session->userdata('user_id')) {
-
-                $this->session->set_flashdata('error', lang('access_denied'));
-
-                redirect(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : 'pos');
-            }
-        }
-
         $expense = $this->purchases_model->getExpenseByID($id);
-
         $this->data['user'] = $this->site->getUser($expense->created_by);
-
         $this->data['expense'] = $expense;
-
         $this->data['page_title'] = $this->lang->line("expense_note");
-
         $this->load->view($this->theme . 'expenses/expense_note', $this->data);
     }
 
@@ -520,10 +505,7 @@ class Expenses extends MY_Controller
             $this->session->set_flashdata('error', lang('access_denied'));
             redirect();
         }
-        /* if (!$this->Admin) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        }  */
+   
         if ($this->input->get('id')) {
             $id = $this->input->get('id');
         }
@@ -588,10 +570,7 @@ class Expenses extends MY_Controller
             $this->session->set_flashdata('error', lang('disabled_in_demo'));
             redirect(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : 'welcome');
         }
-        if (!$this->Admin) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        }
+       
         if ($this->input->get('id')) {
             $id = $this->input->get('id');
         }
@@ -613,10 +592,7 @@ class Expenses extends MY_Controller
             $this->session->set_flashdata('error', lang('access_denied'));
             redirect();
         }
-        /* if(!$this->Admin){            
-            $this->session->set_flashdata('error', lang('access_denied'));            
-            redirect('pos');            
-        }  */
+       
         if ($this->input->get('id')) {
             $id = $this->input->get('id');
         }

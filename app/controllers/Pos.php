@@ -1045,11 +1045,7 @@ class Pos extends MY_Controller {
 
 	function today_sale()
 	{
-		if (!$this->Admin) {
-			$this->session->set_flashdata('error', lang('access_denied'));
-			redirect($_SERVER["HTTP_REFERER"]);
-		}
-
+	
 		$this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
 		$this->data['ccsales'] = $this->pos_model->getTodayCCSales();
 		$this->data['cashsales'] = $this->pos_model->getTodayCashSales();

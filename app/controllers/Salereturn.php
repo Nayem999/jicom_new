@@ -328,10 +328,6 @@ class Salereturn extends MY_Controller
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
 		}
-		/* if (!$this->Admin) {
-			$this->session->set_flashdata('error', lang("access_denied"));
-			redirect('salereturn');
-		} */
 
 		$salesreturn =  $this->site->findeNameByID('salesreturn','sreturn_id',$id);
 

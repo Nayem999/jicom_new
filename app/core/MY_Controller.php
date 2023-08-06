@@ -19,13 +19,13 @@ class MY_Controller extends CI_Controller {
         $this->data['categories'] = $this->site->getAllCategories();
         $this->data['mf_categories'] = $this->site->getAllMfCategories();
 
-        $this->Admin = $this->tec->in_group('admin') ? TRUE : NULL;
+        $this->Admin = $this->tec->in_group('ADMIN') ? TRUE : NULL;
         $this->data['Admin'] = $this->Admin;
         $this->Manager = $this->tec->in_group('manager') ? TRUE : NULL;
         $this->data['Manager'] = $this->Manager;
         $this->data['employees'] = $this->site->getAllEmployees();
         $this->data['stores'] = $this->site->getAllStores();
-        
+
         $this->permissionData = $this->site->permission_data();
         $this->data['permissionData'] = $this->permissionData;
         $this->permissionRouteData = $this->site->permission_route_data();

@@ -79,13 +79,7 @@ class Products extends MY_Controller
         }
 
         $this->datatables->join('categories', 'categories.id=products.category_id');
-
-        // if(!$this->Admin) {
-        //     $this->datatables->join('product_store_qty',  'product_store_qty.product_id=products.id' );
-        // }
-
         $this->datatables->from('products');
-
         $this->datatables->group_by('products.id');
 
         $action="<div class='text-center'><div class='btn-group'>";
@@ -1055,13 +1049,6 @@ class Products extends MY_Controller
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
 		}
-
-        /* if (!$this->Admin) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        } */
-
-
 
         if ($this->products_model->deleteProduct($id)) {
 

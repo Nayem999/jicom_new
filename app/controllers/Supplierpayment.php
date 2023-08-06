@@ -266,10 +266,7 @@ class Supplierpayment extends MY_Controller
 
     //}
     public function todayPurchaseslist(){
-        if (!$this->Admin) {            
-            $this->session->set_flashdata('error', lang('access_denied'));            
-            redirect('pos');            
-        }
+
         $this->load->library('datatables');
         
         $this->datatables->select($this->db->dbprefix('today_purchase_payment') . ".today_payment_id as id, " . 
@@ -284,12 +281,7 @@ class Supplierpayment extends MY_Controller
         $this->datatables->unset_column('id');        
         echo $this->datatables->generate();             
     }
-    public function todayPurchases() {
-
-       if (!$this->Admin) {            
-            $this->session->set_flashdata('error', lang('access_denied'));            
-            redirect('pos');            
-        }        
+    public function todayPurchases() {       
        $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));        
        $this->data['page_title'] = 'Collection';        
         $bc = array(

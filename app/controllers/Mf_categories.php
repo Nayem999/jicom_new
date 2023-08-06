@@ -271,10 +271,7 @@ class Mf_categories extends MY_Controller
     }
 
     function import() {
-        if (!$this->Admin) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        }
+       
         $this->load->helper('security');
         $this->form_validation->set_rules('userfile', lang("upload_file"), 'xss_clean');
 

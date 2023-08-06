@@ -206,10 +206,7 @@ class Employee extends MY_Controller
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
 		}
-        /* if ((!$this->Admin) && (!$this->Manager)) {
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-            redirect('pos');
-        } */
+
 		$this->form_validation->set_rules('name', $this->lang->line("name"), 'required');		
 		$this->form_validation->set_rules('father_name', 'Father\'s Name', 'required');		
 		$this->form_validation->set_rules('mather_name', 'Mather\'s Name', 'required');
@@ -262,11 +259,7 @@ class Employee extends MY_Controller
 	}
 
     function payLisy($id){		
-	    $this->load->helper('security');	
-	    if((!$this->Admin) && (!$this->Manager)){
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-            redirect('pos');
-        	}	
+	    $this->load->helper('security');		
 		$this->data['list'] = $this->employee_model->getPaysalary($id);		
 		$this->data['emplyee'] = $this->employee_model->getEmplyeeByID($id);
 		//$this->page_construct('employee/paylisy', $this->data);
@@ -275,10 +268,7 @@ class Employee extends MY_Controller
 	}
 	
     function paySalary($id){	
-	    if((!$this->Admin) && (!$this->Manager)){
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-            redirect('pos');
-        }		
+		
 		if($id == NULL){			
 			 redirect('pos');
 		}		
@@ -368,11 +358,7 @@ class Employee extends MY_Controller
 		$this->load->view($this->theme . 'employee/paysalary',$this->data);	
 	}
 	
-	function paySalaryEtdit($id){		
-	    if((!$this->Admin) && (!$this->Manager)){
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-            redirect('pos');
-        }		
+	function paySalaryEtdit($id){				
 		if($id == NULL){			
 			redirect('pos');
 		}	
@@ -458,11 +444,6 @@ class Employee extends MY_Controller
 			redirect();
 		}
 
-		/* if((!$this->Admin) && (!$this->Manager)){
-			$this->session->set_flashdata('error', lang("access_denied"));
-			redirect('pos');
-		} */
-
 		if ( $this->employee_model->deleteEmployee($id) ) {
 
 			$this->session->set_flashdata('message', 'Employee deleted ');
@@ -478,10 +459,7 @@ class Employee extends MY_Controller
 			$this->session->set_flashdata('error', $this->lang->line("disabled_in_demo"));
 			redirect('pos');
 		}
-		if((!$this->Admin) && (!$this->Manager)){
-			$this->session->set_flashdata('error', lang("access_denied"));
-			redirect('pos');
-		}
+
 		$paysalary = $this->site->whereRow('paysalary', 'pay_id', $id); 
 		if ( $this->employee_model->paySalarydelete($id)) {	
 			$pending = $this->site->whereRow('bank_pending_salary', 'paysalary_id', $id); 	

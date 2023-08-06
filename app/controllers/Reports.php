@@ -1706,13 +1706,6 @@ class Reports extends MY_Controller
     function sold_purchase()
     {
 
-        if ((!$this->Admin) && (!$this->Manager)) {
-
-            $this->session->set_flashdata('error', lang("access_denied"));
-
-            redirect($_SERVER["HTTP_REFERER"]);
-        }
-
         if (!$this->Admin) {
             $store_id = $this->session->userdata('store_id');
         } else {
@@ -1733,13 +1726,7 @@ class Reports extends MY_Controller
 
     function excel_sold_purchase($data = '')
     {
-
         $data=explode("__",$data);
-        if ((!$this->Admin) && (!$this->Manager)) {
-            $this->session->set_flashdata('error', lang("access_denied"));
-            redirect($_SERVER["HTTP_REFERER"]);
-        }
-
         if (!$this->Admin) {
             $warehouse = $this->session->userdata('store_id');
         } else {
@@ -2204,10 +2191,7 @@ class Reports extends MY_Controller
 
     public function todayhighlight()
     {
-        if ((!$this->Admin) && (!$this->Manager)) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        }
+
         // $this->data['stores'] = $this->site->getAllStores();
         if (!$this->Admin) {
             $store_id = $this->session->userdata('store_id');
@@ -2338,11 +2322,6 @@ class Reports extends MY_Controller
     public function pettycashview()
     {
 
-        if (!$this->Admin) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        }
-
         $start_date = $this->input->get('start_date') ? $this->input->get('start_date') . " 00:00:00" : NULL;
         $end_date = $this->input->get('end_date') ? $this->input->get('end_date') . " 23:59:59" : NULL;
 
@@ -2369,10 +2348,7 @@ class Reports extends MY_Controller
 
     public function pettycashlist()
     {
-        if (!$this->Admin) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        }
+
         $this->data['page_title'] = 'Petty Cash';
         $bc = array(
             array(
@@ -2417,10 +2393,6 @@ class Reports extends MY_Controller
     public function netprofit()
     {
         $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
-        if ((!$this->Admin) && (!$this->Manager)) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        }
         $this->data['warehouses'] = $this->site->getAllStores();
         $store_id = $this->input->post('warehouse') ? $this->input->post('warehouse') : NULL;
         $stdate = $endate = '';
@@ -2475,10 +2447,7 @@ class Reports extends MY_Controller
 
     public function product_stock()
     {
-        if (!$this->Admin) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        }
+
         $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
 
         $this->data['products'] = $this->reports_model->getAllProducts();
@@ -2500,10 +2469,6 @@ class Reports extends MY_Controller
 
     public function store_product_stock()
     {
-        if ((!$this->Admin) && (!$this->Manager)) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        }
         if (!$this->Admin) {
             $store_id = $this->session->userdata('store_id');
         } else {
@@ -2613,10 +2578,6 @@ class Reports extends MY_Controller
 
     public function receivablelist()
     {
-        if ((!$this->Admin) && (!$this->Manager)) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        }
 
         $cID = $sID = NULL;
         if ($this->input->post('customer')) {
@@ -2686,11 +2647,6 @@ class Reports extends MY_Controller
 
     public function payablelist()
     {
-        if ((!$this->Admin) && (!$this->Manager)) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        }
-
         if ($this->input->post('customer'))
             $cID = $this->input->post('customer');
         else

@@ -155,10 +155,7 @@ class Brands extends MY_Controller
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
 		}
-        /* if (!$this->Admin) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        } */
+
         if ($this->input->get('id')) {
             $id = $this->input->get('id');
         } 
@@ -260,10 +257,7 @@ class Brands extends MY_Controller
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
 		}
-        /* if (!$this->Admin) {
-            $this->session->set_flashdata('error', lang('access_denied'));
-            redirect('pos');
-        } */
+
         if ($this->input->get('id')) {
             $id = $this->input->get('id');
         }

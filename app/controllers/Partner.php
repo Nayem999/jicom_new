@@ -156,14 +156,6 @@ class Partner extends MY_Controller
 
 	function edit($id = NULL){		
 
-        if (!$this->Admin) {
-
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-
-            redirect('pos');
-
-        }
-
 		$this->form_validation->set_rules('name', $this->lang->line("name"), 'required'); 
 		
 		$this->form_validation->set_rules('email', $this->lang->line("email_address"), 'required|valid_email');
@@ -236,14 +228,6 @@ class Partner extends MY_Controller
 		
 	    $this->load->helper('security');
 	
-	    if (!$this->Admin) {
-
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-
-            redirect('pos');
-
-        }
-	
 			$this->data['list'] = $this->partner_model->getLiftprofit($id);			
 			
 			$this->data['emplyee'] = $this->partner_model->getPartnerByID($id); 
@@ -253,15 +237,7 @@ class Partner extends MY_Controller
 	}
 	
     function liftProfit($id){
-	
-	    if (!$this->Admin) {
-
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-
-            redirect('pos');
-
-        }
-		
+			
 		if($id == NULL){
 			
 			 redirect('pos');
@@ -343,13 +319,7 @@ class Partner extends MY_Controller
 	}
 	
 	function payProfitEtdit($id){
-	    if (!$this->Admin) {
-
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-
-            redirect('pos');
-
-        }
+	   
 		
 		if($id == NULL){
 			
@@ -411,14 +381,6 @@ class Partner extends MY_Controller
 
 		if($this->input->get('id')) { $id = $this->input->get('id', TRUE); }
 
-		if (!$this->Admin)
-
-		{
-
-			$this->session->set_flashdata('error', lang("access_denied"));
-
-			redirect('pos');
-		} 
 		if ( $this->partner_model->deletePartner($id) ) {
 
 			$this->session->set_flashdata('message', 'Partner deleted ');
@@ -434,16 +396,6 @@ class Partner extends MY_Controller
 		if(DEMO) {
 
 			$this->session->set_flashdata('error', $this->lang->line("disabled_in_demo"));
-
-			redirect('pos');
-
-		} 
-
-		if (!$this->Admin)
-
-		{
-
-			$this->session->set_flashdata('error', lang("access_denied"));
 
 			redirect('pos');
 

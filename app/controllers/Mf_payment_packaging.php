@@ -328,10 +328,7 @@ class Mf_payment_packaging extends MY_Controller
     }
 
     public function todayPurchaseslist(){
-        if (!$this->Admin) {            
-            $this->session->set_flashdata('error', lang('access_denied'));            
-            redirect('pos');            
-        }
+        
         $this->load->library('datatables');
         
         $this->datatables->select($this->db->dbprefix('today_purchase_payment') . ".today_payment_id as id, " . 

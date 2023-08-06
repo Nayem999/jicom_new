@@ -328,14 +328,6 @@ class Sales extends MY_Controller {
         }
 		if($this->input->get('id')){ $id = $this->input->get('id'); }
 
-		if (!$this->Admin) {
-
-			$this->session->set_flashdata('error', lang("access_denied"));
-
-			redirect('sales');
-
-		}
-
 		if ( $this->sales_model->deleteInvoice($id) ) {
 
 			$this->session->set_flashdata('message', lang("invoice_deleted"));
@@ -349,14 +341,6 @@ class Sales extends MY_Controller {
 	function delete_holded($id = NULL){
 
 		if($this->input->get('id')){ $id = $this->input->get('id'); }
-
-		if (!$this->Admin) {
-
-			$this->session->set_flashdata('error', lang("access_denied"));
-
-			redirect('sales/opened');
-
-		}
 
 		if ( $this->sales_model->deleteOpenedSale($id) ) {
 
@@ -542,14 +526,6 @@ class Sales extends MY_Controller {
     }
 
     function edit_payment($id = NULL, $sid = NULL){
-
-    	if (!$this->Admin) {
-
-			$this->session->set_flashdata('error', lang("access_denied"));
-
-			redirect($_SERVER["HTTP_REFERER"]);
-
-		}
 
         $this->load->helper('security');
 

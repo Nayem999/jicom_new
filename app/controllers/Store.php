@@ -75,10 +75,7 @@ class Store extends MY_Controller
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
 		}
-		 /* if (!$this->Admin) {
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-            redirect('pos');
-        } */
+
 		$this->form_validation->set_rules('name', $this->lang->line("name"), 'required');
 		/* $this->form_validation->set_rules('email', $this->lang->line("email_address"), 'required|valid_email|trim|is_unique[stores.email]');
 		$this->form_validation->set_rules('phone', $this->lang->line("phone"), 'required');
@@ -198,10 +195,7 @@ class Store extends MY_Controller
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
 		}
-		/* if (!$this->Admin) {
-			$this->session->set_flashdata('error', lang("access_denied"));
-			redirect('pos');
-		} */
+
 		if ( $this->store_model->deleteStore($id) ) {
 
 			$this->session->set_flashdata('message', lang("customer_deleted"));

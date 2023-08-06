@@ -326,12 +326,8 @@ class Mf_payment extends MY_Controller
     }
 
     public function todayPurchaseslist(){
-        if (!$this->Admin) {            
-            $this->session->set_flashdata('error', lang('access_denied'));            
-            redirect('pos');            
-        }
-        $this->load->library('datatables');
         
+        $this->load->library('datatables');        
         $this->datatables->select($this->db->dbprefix('today_purchase_payment') . ".today_payment_id as id, " . 
           $this->db->dbprefix('suppliers') . ".name as name, " .
          $this->db->dbprefix('today_purchase_payment') . ".payment_date as payment_date ,  " . $this->db->dbprefix('today_purchase_payment') . ".payment_amount, " . $this->db->dbprefix('today_purchase_payment') . ".payment_note", FALSE);        
@@ -345,12 +341,7 @@ class Mf_payment extends MY_Controller
         echo $this->datatables->generate();             
     }
 
-    public function todayPurchases() {
-
-       if (!$this->Admin) {            
-            $this->session->set_flashdata('error', lang('access_denied'));            
-            redirect('pos');            
-        }        
+    public function todayPurchases() {      
        $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));        
        $this->data['page_title'] = 'Collection';        
         $bc = array(

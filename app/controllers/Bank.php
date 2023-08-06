@@ -211,18 +211,8 @@ class Bank extends MY_Controller
 			redirect();
 		}
 
-        /* if ((!$this->Admin) && (!$this->Manager)) {
-
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-
-            redirect('pos');
-
-        } */
-
-		$this->form_validation->set_rules('bank_name','Bank Name', 'required');
-		
-		$this->form_validation->set_rules('account_no', 'Account No', 'required'); 
-		
+		$this->form_validation->set_rules('bank_name','Bank Name', 'required');		
+		$this->form_validation->set_rules('account_no', 'Account No', 'required'); 		
 		$this->form_validation->set_rules('account_name', 'Account Name', 'required');
 
 		if ($this->Admin){
@@ -314,13 +304,6 @@ class Bank extends MY_Controller
 			$this->session->set_flashdata('error', lang('access_denied'));
 			redirect();
 		}
-		/* if (!$this->Admin)
-		{
-			$this->session->set_flashdata('error', lang("access_denied"));
-			redirect('pos');
-		} */
-
-
 
 		if ( $this->bank_model->deleteBank($id) )
 		{
@@ -470,19 +453,8 @@ class Bank extends MY_Controller
 
 		$getData = $this->db->get()->result();
 
-
-		
-
-
-	  $this->load->helper('security');
-	
-	    if ((!$this->Admin) && (!$this->Manager)) {
-
-            $this->session->set_flashdata('error', $this->lang->line('access_denied'));
-
-            redirect('pos');
-        }
-		
+	    $this->load->helper('security');
+			
 		$this->data['list'] = $getData;//$this->bank_model->getTranjiction($id,'20');
 	
 		$this->data['bank_info'] = $this->bank_model->getBankByID($id);
@@ -961,10 +933,6 @@ class Bank extends MY_Controller
          $this->datatables->join('loaner', 'loaner.id=bank_pending_loan.loner_id','left'); 
 
          $this->datatables->from('bank_pending_loan'); 
-
-         // if(!$this->Admin){
-         // 	$this->datatables->where('bank_account.store_id',$this->session->userdata('store_id'));
-         // }
          //$this->datatables->where('bank_pending.type', 'Approved');
          $this->datatables->group_by('bank_pending_loan.id');
 		
