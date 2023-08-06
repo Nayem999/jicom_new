@@ -564,7 +564,7 @@ class Site extends CI_Model
 
     public function getPackagingMaterialByStock()
     {
-        $data=$this->db->select('mf_material_packaging.id, mf_material_packaging.name, mf_unit.name as unit, mf_material_packaging_store_qty.quantity, stores.name as stores_name')
+        $data=$this->db->select('mf_material_packaging.id, mf_material_packaging.name, mf_material_packaging.capacity, mf_unit.name as unit, mf_material_packaging_store_qty.quantity, stores.name as stores_name')
         ->from("mf_material_packaging")
         ->join("mf_unit","mf_unit.id=mf_material_packaging.uom_id",'left')
         ->join("mf_material_packaging_store_qty","mf_material_packaging_store_qty.material_id=mf_material_packaging.id",'left')
