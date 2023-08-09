@@ -5,19 +5,19 @@ class Mf_transfers extends MY_Controller
 {
     
     function __construct() {
-        
         parent::__construct();
         
         if (!$this->loggedIn) {            
             redirect('login');            
         }
-
+        
         if(!$this->site->permission('mf_transfers'))
         {
-          $this->session->set_flashdata('error', lang('access_denied'));
-          redirect();
+            $this->session->set_flashdata('error', lang('access_denied'));
+            redirect();
         }
         
+        // print_r($this->site->getAllFactoryStores());die;
         $this->load->library('form_validation');
         
         $this->load->model('purchases_model');
@@ -56,12 +56,7 @@ class Mf_transfers extends MY_Controller
         $this->db->group_by('mf_material_adjust.created_at');
         $this->db->order_by("mf_material_adjust.id",'desc');
 
-        $this->data['transfer_list'] = $this->db->get()->result();
-
-        // echo "<pre>";
-        // print_r($this->data['transfer_list']);
-        // die;
-        
+        $this->data['transfer_list'] = $this->db->get()->result();        
         $this->page_construct('mf_transfers/index', $this->data, $meta); 
         
     }     
@@ -127,8 +122,6 @@ class Mf_transfers extends MY_Controller
         $this->form_validation->set_rules('date', lang('date'), 'required');
         if ($this->form_validation->run() == true) {
             
-          
-
             $total = 0;            
             // $i = isset($_POST['product_id']) ? sizeof($_POST['product_id']) : 0;     
 
@@ -152,21 +145,21 @@ class Mf_transfers extends MY_Controller
                     $this->db->trans_start();
 
                     $allMaterialsArr = $_POST["product_id"];
+                    $allBrandArr = $_POST["brand_id"];
                     $allQtyArr = $_POST["quantity"];
                     $toFactory = $_POST["towarehouse"];
                     $displayCostArr = $_POST["display_cost"];
                     $from_warehouseID =  $this->session->userdata('from_warehouse');
-
                     $from_warehouseInfo =  $this->site->findeNameByID('stores', 'id', $from_warehouseID);
-
                     $supplierId = $_POST["supplier_id"];
-
                     $customerId = $_POST["customer_id"];
-
                     $grandTotal = number_format((float) $_POST["gtotal"], 2, '.', '');
 
                     $mf_tr_data = [
                         "note"=>$_POST["note"],
+                        "from_store"=>$from_warehouseID,
+                        "to_store"=>$toFactory,
+                        "reference"=>$this->input->post('reference'),
                         "created_at"=>date("Y-m-d H:i:s")
                     ];
                     
@@ -174,57 +167,12 @@ class Mf_transfers extends MY_Controller
                         $mfTrId = $this->db->insert_id();
                     }
 
-                  /*   if($mfTrId){
-                        // material ids
-                        $materialIds = $_POST["packaging_material"];
-                        // material qty
-                        $materialQts = $_POST["pk_quantity"];
-                        if(is_array($materialIds) && count($materialIds) > 0){
-                            
-                            foreach ($materialIds as $key => $value) {
-                                
-                                $findPkMaterial = $this->db->select("*")->from("mf_material_packaging_store_qty")->where('id',$value)->get()->row();
-
-                                if($findPkMaterial){
-                                    $currentQty = $findPkMaterial->quantity;
-
-                                    if($materialQts[$key] > 0){
-                                        $newQty = $currentQty - $materialQts[$key];
-    
-                                        // decrease pk material qty
-                                        $decreaseQty = $this->db->where('id',$value)->update('mf_material_packaging_store_qty',['quantity'=>$newQty]);
-
-                                        // insert data into material adjust log
-                                        $adjustDetails = [
-                                            "material_id"=>$value,
-                                            "material_stock_id"=>$value,
-                                            "adjust_type"=>2,
-                                            "adjust_qty"=>$materialQts[$key],
-                                            "from_qty"=>$currentQty,
-                                            "new_qty"=>$newQty,
-                                            "adjust_reason"=>"Raw material transfer",
-                                            "created_by"=>$this->session->userdata('user_id'),
-                                            "from_factory"=>$from_warehouseID,
-                                            "to_factory"=>$toFactory,
-                                            "transfers_id"=>$mfTrId,
-                                        ];
-
-                                        $insertIntoMaterialAdjust = $this->db->insert("mf_material_packaging_adjust",$adjustDetails);
-                                    }
-                                    
-                                }
-
-                            }
-                            
-                        }
-                    } */
-
                     // insert into mf_purchases ****its a purchase for new factory 
                     // mf_transfer
                     $purchaseData = [               
                         'date' => $_POST['date']?$_POST['date']:date("Y-m-d H:i:s"),                                             
                         "supplier_id"=>$supplierId,        
-                        'transport_cost' => $_POST["transport_cost"]?$_POST["transport_cost"]:0,
+                        'transport_cost' => 0,
                         'total' => $grandTotal,                                                             
                         'deu' => $grandTotal,
                         'created_by' => $this->session->userdata('user_id'),               
@@ -237,15 +185,14 @@ class Mf_transfers extends MY_Controller
                         $mfPurchaseId = $this->db->insert_id();
                     }
                     $materialArrCount = count($allMaterialsArr);
-                   
-
+                
                     //get customer details
-                    $getCustomerDetails = $this->db->select('*')->from("customers")->where('id',$customerId)->get()->row();
+                    // $getCustomerDetails = $this->db->select('*')->from("customers")->where('id',$customerId)->get()->row();
 
                     $sales_data = array(
                         'date' => date('Y-m-d H:i:s'),
-                        'customer_id' => $customerId,
-                        'customer_name' => $getCustomerDetails->name,
+                        'customer_id' => $to_store_info->id,
+                        'customer_name' => $to_store_info->name,
                         'total' => $grandTotal,
                         'grand_total' => $grandTotal,
                         'total_items' => $materialArrCount,
@@ -274,8 +221,9 @@ class Mf_transfers extends MY_Controller
                             
                             $i++;
                             $currentMaterialId = $allMaterialsArr[$key];
+                            $currentMaterialBrandId = $allBrandArr[$key];
 
-                            $findMaterialOnQty = $this->db->select("*")->from("mf_material_store_qty")->where(["material_id"=>$currentMaterialId, 'store_id'=> $from_warehouseInfo->id])->get()->row();
+                            $findMaterialOnQty = $this->db->select("*")->from("mf_material_store_qty")->where(["material_id"=>$currentMaterialId, 'store_id'=> $from_warehouseInfo->id,"brand_id"=>$currentMaterialBrandId])->get()->row();
 
                             // decrease from stock
                             if($findMaterialOnQty){
@@ -285,10 +233,9 @@ class Mf_transfers extends MY_Controller
                             }else{
                                 $this->session->set_flashdata('message', lang('Please purchase first to transfer item.'));
                                 redirect("mf_transfers/add"); 
-                                // $this->add();
                             }
                             // find if new factory stock is there
-                            $findStock = $this->db->select("*")->from("mf_material_store_qty")->where(["material_id"=>$currentMaterialId, 'store_id'=> $toFactory])->get()->row();
+                            $findStock = $this->db->select("*")->from("mf_material_store_qty")->where(["material_id"=>$currentMaterialId, 'store_id'=> $toFactory,"brand_id"=>$findMaterialOnQty->brand_id])->get()->row();
 
                             if($findStock){
                                 // update stock for new factory
@@ -590,35 +537,41 @@ class Mf_transfers extends MY_Controller
         $from_warehouseID =  $this->session->userdata('from_warehouse');
 
         $from_warehouseInfo =  $this->site->findeNameByID('stores', 'id', $from_warehouseID);
-        $this->db->select("mf_material.id,mf_material_store_qty.store_id,  mf_material_store_qty.quantity as store_qty, mf_material_store_qty.cost  as cost,  mf_material.name");
+        $this->db->select("mf_material.id,mf_material_store_qty.store_id,  mf_material_store_qty.quantity as store_qty, mf_material_store_qty.cost  as cost,  mf_material.name, mf_material_store_qty.brand_id, mf_brands.name as brand_name, stores.name as store_name");
         $this->db->from("mf_material_store_qty");
         $this->db->join('mf_material','mf_material.id=mf_material_store_qty.material_id');
         $this->db->group_by("mf_material_store_qty.material_id");
         $this->db->like('mf_material.name', $term);
-        $this->db->or_like('mf_material.descriptions', $term);
+        $this->db->join('mf_brands','mf_material_store_qty.brand_id=mf_brands.id','left');
+        $this->db->join('stores','mf_material_store_qty.store_id=stores.id');
         $this->db->where("mf_material_store_qty.store_id", $from_warehouseInfo->id);
+
+
+        /* $this->db->select('mf_material_store_qty.id, mf_material.name as material_name, mf_brands.name as brand_name, stores.name as store_name, mf_material_store_qty.quantity, mf_material_store_qty.cost, mf_unit.name as unit_name'); 
+        $this->db->from('mf_material_store_qty');  
+		$this->db->join('mf_material','mf_material_store_qty.material_id=mf_material.id');
+		
+        // $this->db->join('mf_material_adjust','mf_material_store_qty.material_id=mf_material_adjust.material_id','left');
+
+		$this->db->join('stores','mf_material_store_qty.store_id=stores.id');
+		$this->db->join('mf_unit','mf_material.uom_id=mf_unit.id','left');
+		$this->db->join('mf_brands','mf_material_store_qty.brand_id=mf_brands.id','left'); */
+        
+        // $this->db->or_like('mf_material.descriptions', $term);
+
+       /*  $this->db->select(" mf_material.id as material_id, mf_material.name as name, mf_material_store_qty.id as material_stock_id, mf_brands.name as brand_name, mf_unit.name as unit_name, stores.name as stores_name");
+        $this->db->from('mf_material');
+        $this->db->join('mf_material_store_qty','mf_material_store_qty.material_id=mf_material.id');
+        $this->db->join('stores','mf_material_store_qty.store_id =stores.id');
+        $this->db->join('mf_brands','mf_material_store_qty.brand_id=mf_brands.id','left');
+        $this->db->join('mf_unit','mf_material.uom_id=mf_unit.id','left'); */
+
+
         $rows = $this->db->get()->result();
 
         if ($rows) {
             
             foreach ($rows as $row) {
-                /* $rowSequence = $this->transfers_model->getSequenceByPrpID($row->id);
-                    if( $rowSequence !=FALSE){
-                     $sequence = '';
-                     foreach ($rowSequence as $key => $value) {
-                       
-                         $sequence .= $value->sequence.','; 
-                    }
-
-                    $sequence = rtrim($sequence,",");
-                    $row->SeqAll = $sequence ;
-
-                    $row->SeqCount = sizeof($rowSequence) ;
-
-                }else{
-                     $row->SeqAll = '' ;
-                     $row->SeqCount = 0 ;
-                } */
                 $row->SeqAll = '' ;
                 $row->SeqCount = 0 ;
                 $row->qty = 1;
@@ -627,7 +580,8 @@ class Mf_transfers extends MY_Controller
                 $pr[] = array(
                     'id' => str_replace(".", "", microtime(true)),
                     'item_id' => $row->id,
-                    'label' => $row->name . " Qty ( ".$row->store_qty." ) ",
+                    'brand_name' => $row->brand_name,
+                    'label' => $row->name . " (Brand: ".$row->brand_name." Qty: ".$row->store_qty." Store: ".$row->store_name.") ",
                     'row' => $row
                 );
                 
