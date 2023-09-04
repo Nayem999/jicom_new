@@ -26,11 +26,9 @@
                         </div>
                         <?= form_close(); ?>
                     </div>
-                    <div class="table-responsive" >
-                        <div style='text-align:center'><b>Date: <?=date('d-M-Y',strtotime($start_date)).' to '.date('d-M-Y',strtotime($end_date));?></b></div>
-                        
-                    </div>
+
                     <div class="table-responsive" id="print_content">
+                        <div style='text-align:center'><b>Date: <?=date('d-M-Y',strtotime($start_date)).' to '.date('d-M-Y',strtotime($end_date));?></b></div>
                         <div class="col-xs-12">
                             <?php
                             $salesItemQnty = $productArr = $storeArr = $cash_sale = $credit_sale = $cash_collection = $bank_collection = $chkArr = $chkArr2 = $chkArr3 = $chkArr4 = $chkArr5 = array();

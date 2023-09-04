@@ -539,7 +539,7 @@ if ($modal) {
 
                 <table class="table table-bordered " width="240px">
                     <tbody>
-                        <tr>
+                        <!-- <tr>
                             <td class="col-xs-3"><b>Net Outstanding</b></td>
                             <td class="text-right col-xs-3"><b>Amount</b></td>
                         </tr>
@@ -547,14 +547,14 @@ if ($modal) {
                             <td class="col-xs-3">Sales</td>
                             <td class="text-right col-xs-3"><?=$life_sales_customer;?></td>
                         </tr>
-                        <!--<tr>-->
-                        <!--    <td class="col-xs-3">Sales Return</td>-->
-                        <!--    <td class="text-right col-xs-3"><?=$total_sales_return;?></td>-->
-                        <!--</tr>-->
+                        <tr>
+                           <td class="col-xs-3">Sales Return</td>
+                           <td class="text-right col-xs-3"><?=$total_sales_return;?></td>
+                        </tr>
                         <tr>
                             <td class="col-xs-3">Collected</td>
                             <td class="text-right col-xs-3"><?=$life_payment_customer;?></td>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <td class=" col-xs-3">Current Due</td>
                             <td class="text-right col-xs-3"><?=$life_sales_customer-$life_payment_customer - $total_sales_return;?></td>

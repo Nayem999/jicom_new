@@ -159,7 +159,7 @@ class Expenses extends MY_Controller
         if ($this->form_validation->run() == true && $exp_amount > 0 && $exp_cat > 0) {
 
             $payment_type = $this->input->post('type');
-            if ($this->Admin) {
+            if ($this->input->post('date')) {
                 $date = trim($this->input->post('date'));
             } else {
                 $date = date('Y-m-d H:i:s');
