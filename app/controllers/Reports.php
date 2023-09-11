@@ -847,7 +847,6 @@ class Reports extends MY_Controller
         echo $excelData;
     }
 
-
     function credit_collection_rpt()
     {
         $start_date = $this->input->post('start_date') ? $this->input->post('start_date') : date('Y-m-d');
@@ -855,8 +854,7 @@ class Reports extends MY_Controller
         $store_id = $this->input->post('store_id') ? $this->input->post('store_id') : 0;
 
         $this->data['creditCollection'] = $this->reports_model->creditCollectionReport($start_date, $end_date, $store_id);
-        $this->data['cashCollection'] = $this->reports_model->cashCollectionReport($start_date, $end_date, $store_id);
-        $this->data['expensesCollection'] = $this->reports_model->expensesCollectionReport($start_date, $end_date, $store_id);
+        $this->data['getSummaryRpt'] = $this->reports_model->getSummaryRpt($start_date, $end_date, $store_id);
 
         $this->data['start_date'] = $start_date;
         $this->data['end_date'] = $end_date;
@@ -878,8 +876,20 @@ class Reports extends MY_Controller
         $store_id = $data_arr[2] ? $data_arr[2] : 0;
 
         $creditCollection = $this->reports_model->creditCollectionReport($start_date, $end_date, $store_id);
-        $cashCollection = $this->reports_model->cashCollectionReport($start_date, $end_date, $store_id);
-        $expensesCollection = $this->reports_model->expensesCollectionReport($start_date, $end_date, $store_id);
+        $getSummaryRpt = $this->reports_model->getSummaryRpt($start_date, $end_date, $store_id);
+
+        $cash_amount = $tt_amount = $cash_credit_amount = $tt_credit_amount = $expense_amount = 0;
+        if(isset($getSummaryRpt['cashPos']->cash_amount)){ $cash_amount = $getSummaryRpt['cashPos']->cash_amount; }
+        if(isset($getSummaryRpt['ttPos']->cash_amount)){ $tt_amount = $getSummaryRpt['ttPos']->cash_amount; }
+        if(isset($getSummaryRpt['cashCredit']->payment_amount)){ $cash_credit_amount = $getSummaryRpt['cashCredit']->payment_amount; }
+        if(isset($getSummaryRpt['ttCredit']->payment_amount)){ $tt_credit_amount = $getSummaryRpt['ttCredit']->payment_amount; }
+        if(isset($getSummaryRpt['expenseAmt']->expense_amount)){ $expense_amount = $getSummaryRpt['expenseAmt']->expense_amount; }
+        $cash_sale=$cash_amount+$tt_amount;
+        $cr_col=$cash_credit_amount+$tt_credit_amount;
+        $sub_total=$cash_amount+$tt_amount+$cash_credit_amount+$tt_credit_amount;
+        $total_tt=$tt_amount+$tt_credit_amount;
+        $cash_bill=$cash_amount+$cash_credit_amount; 
+        $grand_total=$cash_bill-$expense_amount; 
 
 
         $fileName = "credit_collection_report_" . date('Y-m-d_h_i_s') . ".xls";
@@ -897,7 +907,7 @@ class Reports extends MY_Controller
         $excelData .= implode("\t", array_values($fields)) . "\n";
 
         $i = 1;
-        $total_cash = $total_bank = $total_bank_tt = $cash_amount = $expense_amount = 0;
+        $total_cash = $total_bank = $total_bank_tt = 0;
         if (count($creditCollection) > 0) {
 
             foreach ($creditCollection as $key => $row) {
@@ -918,41 +928,28 @@ class Reports extends MY_Controller
             $lineData = array('', '', '', 'Grand Total', $total_cash, $total_bank, '');
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
-
-            $cash_amount = $expense_amount = $cah_bill = 0;
-            if (isset($cashCollection->cash_amount)) {
-                $cash_amount = $cashCollection->cash_amount;
-            }
-            $sub_total = $total_cash + $total_bank + $cash_amount;
-            if (isset($expensesCollection->expense_amount)) {
-                $expense_amount = $expensesCollection->expense_amount;
-            }
-            $cah_bill = $sub_total - $total_bank_tt;
-            $gand_total = $cah_bill - $expense_amount;
-
-
             $lineData = array('', '');
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
-            $lineData = array('', 'Cash Sale', $cash_amount);
+            $lineData = array('', 'Cash Sale', $cash_sale);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
-            $lineData = array('', '(+) CR Col', $total_cash + $total_bank);
+            $lineData = array('', '(+) CR Col', $cr_col);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
             $lineData = array('', 'Sub Total', $sub_total);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
-            $lineData = array('', '(-) TT', $total_bank_tt);
+            $lineData = array('', '(-) TT', $total_tt);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
-            $lineData = array('', 'CASH BILL', $cah_bill);
+            $lineData = array('', 'CASH BILL', $cash_bill);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
             $lineData = array('', 'EXPENSES', $expense_amount);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
-            $lineData = array('', 'GRAND TOTAL', $gand_total);
+            $lineData = array('', 'GRAND TOTAL', $grand_total);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
         } else {
             $excelData .= 'No records found...' . "\n";
@@ -1147,6 +1144,7 @@ class Reports extends MY_Controller
         $meta = array('page_title' => lang('Hand Cash'), 'bc' => $bc);
         $this->page_construct('reports/hand_cash', $this->data, $meta);
     }
+
     public function get_hand_cash()
     {
         $this->load->library('datatables');
@@ -1162,12 +1160,12 @@ class Reports extends MY_Controller
         $this->datatables->unset_column('id');
         echo $this->datatables->generate();
     }
+
     public function hand_cash_delete($id)
     {
         $this->site->deleteQuery('handcash', array('id' => $id));
         redirect('reports/hand_cash');
     }
-
 
     function monthly_sales($year = NULL)
     {
@@ -1203,8 +1201,9 @@ class Reports extends MY_Controller
         $this->data['sale'] = $this->reports_model->saleReport($start_date, $end_date);
         $this->data['saleItem'] = $this->reports_model->saleItemReport($start_date, $end_date);
         $this->data['saleCollection'] = $this->reports_model->saleCollectionReport($start_date, $end_date);
-        $this->data['cashCollection'] = $this->reports_model->cashCollectionReport($start_date, $end_date);
-        $this->data['expensesCollection'] = $this->reports_model->expensesCollectionReport($start_date, $end_date);
+        // $this->data['cashCollection'] = $this->reports_model->cashCollectionReport($start_date, $end_date);
+        // $this->data['expensesCollection'] = $this->reports_model->expensesCollectionReport($start_date, $end_date);
+        $this->data['getSummaryRpt'] = $this->reports_model->getSummaryRpt($start_date, $end_date);
 
         $this->data['start_date'] = $start_date;
         $this->data['end_date'] = $end_date;
@@ -1294,8 +1293,23 @@ class Reports extends MY_Controller
         $sale = $this->reports_model->saleReport($start_date, $end_date);
         $saleItem = $this->reports_model->saleItemReport($start_date, $end_date);
         $saleCollection = $this->reports_model->saleCollectionReport($start_date, $end_date);
-        $cashCollection = $this->reports_model->cashCollectionReport($start_date, $end_date);
-        $expensesCollection = $this->reports_model->expensesCollectionReport($start_date, $end_date);
+        // $cashCollection = $this->reports_model->cashCollectionReport($start_date, $end_date);
+        // $expensesCollection = $this->reports_model->expensesCollectionReport($start_date, $end_date);
+
+        $getSummaryRpt = $this->reports_model->getSummaryRpt($start_date, $end_date);
+
+        $cash_amount = $tt_amount = $cash_credit_amount = $tt_credit_amount = $expense_amount = 0;
+        if(isset($getSummaryRpt['cashPos']->cash_amount)){ $cash_amount = $getSummaryRpt['cashPos']->cash_amount; }
+        if(isset($getSummaryRpt['ttPos']->cash_amount)){ $tt_amount = $getSummaryRpt['ttPos']->cash_amount; }
+        if(isset($getSummaryRpt['cashCredit']->payment_amount)){ $cash_credit_amount = $getSummaryRpt['cashCredit']->payment_amount; }
+        if(isset($getSummaryRpt['ttCredit']->payment_amount)){ $tt_credit_amount = $getSummaryRpt['ttCredit']->payment_amount; }
+        if(isset($getSummaryRpt['expenseAmt']->expense_amount)){ $expense_amount = $getSummaryRpt['expenseAmt']->expense_amount; }
+        $cash_sale=$cash_amount+$tt_amount;
+        $cr_col=$cash_credit_amount+$tt_credit_amount;
+        $sub_total=$cash_amount+$tt_amount+$cash_credit_amount+$tt_credit_amount;
+        $total_tt=$tt_amount+$tt_credit_amount;
+        $cash_bill=$cash_amount+$cash_credit_amount; 
+        $grand_total=$cash_bill-$expense_amount; 
 
 
         $salesItemQnty = $productArr = $storeArr = $cash_sale = $credit_sale = $cash_collection = $bank_collection = $chkArr = $chkArr2 = $chkArr3 = $chkArr4 = $chkArr5 = $total_item_qty = array();
@@ -1481,7 +1495,7 @@ class Reports extends MY_Controller
             $lineData = array('', 'Total', $total_collection);
             $excelData .= implode("\t", array_values($lineData)) . "\n\n";
 
-            $cash_amount = $expense_amount = $cah_bill = 0;
+           /*  $cash_amount = $expense_amount = $cah_bill = 0;
             if (isset($cashCollection->cash_amount)) {
                 $cash_amount = $cashCollection->cash_amount;
             }
@@ -1490,28 +1504,28 @@ class Reports extends MY_Controller
                 $expense_amount = $expensesCollection->expense_amount;
             }
             $cash_banlance = $sub_total - $cheque_collection;
-            $gand_total = $cash_banlance - $expense_amount;
-
-            $lineData = array('', 'Cash Sale', $cash_amount);
+            $gand_total = $cash_banlance - $expense_amount; */
+            $lineData = array('', 'Cash Sale', $cash_sale);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
-            $lineData = array('', '(+) CR Col', $cr_collection);
+            $lineData = array('', '(+) CR Col', $cr_col);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
             $lineData = array('', 'Sub Total', $sub_total);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
-            $lineData = array('', '(-) Cheq/DD', $cheque_collection);
+            $lineData = array('', '(-) Cheq/DD', $total_tt);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
-            $lineData = array('', 'Today Cash Balance', $cash_banlance);
+            $lineData = array('', 'Today Cash Balance', $cash_bill);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
             $lineData = array('', 'EXPENSES', $expense_amount);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
 
-            $lineData = array('', 'GRAND TOTAL', $gand_total);
+            $lineData = array('', 'GRAND TOTAL', $grand_total);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
+
         } else {
             $excelData .= 'No records found...' . "\n";
         }
@@ -3059,7 +3073,6 @@ class Reports extends MY_Controller
         $meta = array('page_title' => lang('Aging Report'), 'bc' => $bc);
         $this->page_construct('reports/aging_rpt', $this->data, $meta);
     }
-
     function excel_aging_rpt($data = null)
     {
 

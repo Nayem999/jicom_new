@@ -49,6 +49,7 @@ if (isset($_POST['start_date'])) {
                         <?= form_close(); ?>
                     </div>
                     <div class="table-responsive" id="print_content">
+                    <div style='text-align:center'><b>Date: <?=date('d-M-Y',strtotime($start_date)).' to '.date('d-M-Y',strtotime($end_date));?></b></div>
                         <div class="col-xs-12">
                             <?php
                             $salesItemQnty = array();
@@ -183,7 +184,7 @@ if (isset($_POST['start_date'])) {
 
         $(".dataTables_paginate ").css("display", "none");
         $("#fileData_filter ").css("display", "none");
-        var content = "<html> <br><img width='800px' src='<?= base_url('themes/default/assets/images/chalan.png'); ?>'><br><p style='text-align:center'>Daily Sales | <?php echo $this->Settings->site_name; ?> </p><style> table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 2px;} tr:nth-child(even) {background-color: #dddddd;} </style>";
+        var content = "<html> <br><img width='800px' src='<?= base_url('themes/default/assets/images/chalan.png'); ?>'><br><h3><p style='text-align:center'>Daily Sales | <?php echo $this->Settings->site_name; ?> </p></h3><style> table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 2px;} tr:nth-child(even) {background-color: #dddddd;} </style>";
         content += document.getElementById("print_content").innerHTML;
         content += "</body>";
         content += "</html>";

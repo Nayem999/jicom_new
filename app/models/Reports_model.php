@@ -1619,5 +1619,127 @@ class Reports_model extends CI_Model
         $query = $this->db->get();
         return $query->result(); 
     }
+
+    public function getSummaryRpt($start_date = NULL, $end_date = NULL, $store_id = 0)
+    {
+        $data = array();
+        $this->db->select('sum(tec_payments.amount) as cash_amount');
+        $this->db->from('sales');
+        $this->db->join('payments', 'sales.id=payments.sale_id');
+        $this->db->where_in('sales.paid_by', array('cash'));
+        $this->db->where('sales.payment_status !=', 3);
+
+        if ($start_date && $end_date) {
+            $this->db->where('sales.date >=', $start_date . ' 00:00:00');
+            $this->db->where('sales.date <=', $end_date . ' 23:59:59');
+        }
+        if ($store_id) {
+            $this->db->where('sales.store_id', $store_id);
+        }
+
+        if (!$this->Admin) {
+            $this->db->where('sales.store_id', $this->session->userdata('store_id'));
+        }
+
+        $data['cashPos'] = $this->db->get()->row();
+
+
+
+        $this->db->select('sum(tec_payments.amount) as cash_amount');
+        $this->db->from('sales');
+        $this->db->join('payments', 'sales.id=payments.sale_id');
+        $this->db->where_in('sales.paid_by', array('TT','Cheque'));
+        $this->db->where('sales.payment_status !=', 3);
+
+        if ($start_date && $end_date) {
+            $this->db->where('sales.date >=', $start_date . ' 00:00:00');
+            $this->db->where('sales.date <=', $end_date . ' 23:59:59');
+        }
+        if ($store_id) {
+            $this->db->where('sales.store_id', $store_id);
+        }
+
+        if (!$this->Admin) {
+            $this->db->where('sales.store_id', $this->session->userdata('store_id'));
+        }
+
+        $data['ttPos'] = $this->db->get()->row();
+
+
+        
+        $this->db->select('sum(tec_today_collection.payment_amount) as payment_amount');
+        $this->db->from('today_collection');
+
+        if (!$this->Admin) {
+            $this->db->where('today_collection.store_id', $this->session->userdata('store_id'));
+        }
+
+        if ($start_date && $end_date) {
+            $this->db->where('today_collection.payment_date >=', $start_date . ' 00:00:00');
+            $this->db->where('today_collection.payment_date <=', $end_date . ' 23:59:59');
+        } elseif ($start_date) {
+            $this->db->where('today_collection.payment_date >=', $start_date . ' 00:00:00');
+            $this->db->where('today_collection.payment_date <=', $start_date . ' 23:59:59');
+        } else {
+            $this->db->like('today_collection.payment_date', date('Y-m-d'));
+        }
+
+        if ($store_id) {
+            $this->db->where('today_collection.store_id', $store_id);
+        }
+        $this->db->where('today_collection.paid_from', 2);
+        $this->db->where_in('today_collection.paid_by', array('cash', 'Cash'));
+
+        $data['cashCredit'] = $this->db->get()->row();
+       
+
+
+        $this->db->select('sum(tec_today_collection.payment_amount) as payment_amount');
+        $this->db->from('today_collection');
+
+        if (!$this->Admin) {
+            $this->db->where('today_collection.store_id', $this->session->userdata('store_id'));
+        }
+
+        if ($start_date && $end_date) {
+            $this->db->where('today_collection.payment_date >=', $start_date . ' 00:00:00');
+            $this->db->where('today_collection.payment_date <=', $end_date . ' 23:59:59');
+        } elseif ($start_date) {
+            $this->db->where('today_collection.payment_date >=', $start_date . ' 00:00:00');
+            $this->db->where('today_collection.payment_date <=', $start_date . ' 23:59:59');
+        } else {
+            $this->db->like('today_collection.payment_date', date('Y-m-d'));
+        }
+
+        if ($store_id) {
+            $this->db->where('today_collection.store_id', $store_id);
+        }
+        $this->db->where('today_collection.paid_from', 2);
+        $this->db->where_in('today_collection.paid_by', array('TT','Cheque'));
+
+        $data['ttCredit'] = $this->db->get()->row();
+
+
+
+        $this->db->select('sum(tec_expenses.amount) as expense_amount');
+        $this->db->from('expenses');
+
+        if ($start_date && $end_date) {
+            $this->db->where('expenses.date >=', $start_date . ' 00:00:00');
+            $this->db->where('expenses.date <=', $end_date . ' 23:59:59');
+        }
+
+        if ($store_id) {
+            $this->db->where('expenses.store_id', $store_id);
+        }
+
+        if (!$this->Admin) {
+            $this->db->where('expenses.store_id', $this->session->userdata('store_id'));
+        }
+
+        $data['expenseAmt'] = $this->db->get()->row();
+
+        return $data;
+    }
 }
 

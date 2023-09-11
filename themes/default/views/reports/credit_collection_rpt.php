@@ -118,21 +118,27 @@ if (isset($_POST['start_date'])) {
                             <br>
                             <table class="table table-bordered">
                                 <?php
-                                    $cash_amount = $expense_amount = $cah_bill = 0;
-                                    if(isset($cashCollection->cash_amount)){ $cash_amount=$cashCollection->cash_amount; }
-                                    $sub_total= $total_cash+$total_bank+$cash_amount;
-                                    if(isset($expensesCollection->expense_amount)){ $expense_amount=$expensesCollection->expense_amount; }
-                                    $cah_bill = $sub_total - $total_bank_tt;
-                                    $gand_total = $cah_bill - $expense_amount;
+                                    $cash_amount = $tt_amount = $cash_credit_amount = $tt_credit_amount = $expense_amount = 0;
+                                    if(isset($getSummaryRpt['cashPos']->cash_amount)){ $cash_amount = $getSummaryRpt['cashPos']->cash_amount; }
+                                    if(isset($getSummaryRpt['ttPos']->cash_amount)){ $tt_amount = $getSummaryRpt['ttPos']->cash_amount; }
+                                    if(isset($getSummaryRpt['cashCredit']->payment_amount)){ $cash_credit_amount = $getSummaryRpt['cashCredit']->payment_amount; }
+                                    if(isset($getSummaryRpt['ttCredit']->payment_amount)){ $tt_credit_amount = $getSummaryRpt['ttCredit']->payment_amount; }
+                                    if(isset($getSummaryRpt['expenseAmt']->expense_amount)){ $expense_amount = $getSummaryRpt['expenseAmt']->expense_amount; }
+                                    $cash_sale=$cash_amount+$tt_amount;
+                                    $cr_col=$cash_credit_amount+$tt_credit_amount;
+                                    $sub_total=$cash_amount+$tt_amount+$cash_credit_amount+$tt_credit_amount;
+                                    $total_tt=$tt_amount+$tt_credit_amount;
+                                    $cash_bill=$cash_amount+$cash_credit_amount; 
+                                    $grand_total=$cash_bill-$expense_amount; 
                                 ?>
                                 <tbody>
                                         <tr>
                                             <td>Cash Sale</td>
-                                            <td><?php echo $cash_amount;?></td>
+                                            <td><?php echo $cash_sale;?></td>
                                         </tr>
                                         <tr>
                                             <td>(+) CR Col</td>
-                                            <td><?php echo $total_cash+$total_bank;?></td>
+                                            <td><?php echo $cr_col;?></td>
                                         </tr>
                                         <tr>
                                             <td>Sub Total</td>
@@ -140,11 +146,11 @@ if (isset($_POST['start_date'])) {
                                         </tr>
                                         <tr>
                                             <td>(-) TT</td>
-                                            <td><?php echo $total_bank_tt;?></td>
+                                            <td><?php echo $total_tt;?></td>
                                         </tr>
                                         <tr>
                                             <td>CASH BILL</td>
-                                            <td><?php echo $cah_bill; ?></td>
+                                            <td><?php echo $cash_bill; ?></td>
                                         </tr>
                                         <tr>
                                             <td>EXPENSES</td>
@@ -152,7 +158,7 @@ if (isset($_POST['start_date'])) {
                                         </tr>
                                         <tr>
                                             <td>GRAND TOTAL</td>
-                                            <td><?php echo $gand_total;?></td>
+                                            <td><?php echo $grand_total;?></td>
                                         </tr>
                                 </tbody>
                             </table>
