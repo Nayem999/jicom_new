@@ -594,7 +594,11 @@ if ($modal) {
                 </div>
                 <div class="well well-sm">
                     <?= $Settings->footer; ?>
+                </div>
 
+                <div style="width:100%">
+                    <div style="float:left; text-decoration: underline; padding-top:50px;"><b>Customer Signature</b></div>
+                    <div style="float:right; text-decoration: underline; padding-top:50px;"><b>Authorised Signature</b></div>
                 </div>
 
             </div>
