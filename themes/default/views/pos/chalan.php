@@ -122,7 +122,7 @@ if ($modal) {
             }
 
             .row-item1 {
-                height: 225px;
+                height: 125px;
             }
 
             @media print {
@@ -225,7 +225,7 @@ if ($modal) {
                     ?>
 
                     <div class="inv-logo">
-                        <img src="<?= base_url('themes/default/assets/images/chalan.png') ?>" alt="<?= $Settings->site_name ?>" />
+                        <img src="<?= base_url('themes/default/assets/images/pos.png') ?>" alt="<?= $Settings->site_name ?>" />
                     </div>
                     <span style="text-align:center;">
                         <h2>Challan/ Invoice</h2>
@@ -309,12 +309,12 @@ if ($modal) {
                             }
 
                             foreach ($rows as $row) {
-                                $sequence = $this->site->getWhereDataByElement('pro_sequence', 'pro_id', 'sales_id', $row->product_id, $row->sale_id);
+                                // $sequence = $this->site->getWhereDataByElement('pro_sequence', 'pro_id', 'sales_id', $row->product_id, $row->sale_id);
                                 $i++;
                                 echo '<tr ' . $rowClass . ' >
-                        <td style="text-align:center">' . $i . '</td>
-                        <td class="text-left">' . product_name($row->product_name);
-                                echo '<br>';
+                                    <td style="text-align:center">' . $i . '</td>
+                                    <td class="text-left">' . product_name($row->product_name);
+                                /* echo '<br>';
                                 // print_r($sequence);
                                 if ($sequence) {
                                     foreach ($sequence as $key => $seque) {
@@ -322,7 +322,7 @@ if ($modal) {
                                             echo 'S/L No: (' . $seque->sequence . ') <br>';
                                         }
                                     }
-                                }
+                                } */
                                 echo '</td>';
                                 echo '<td class="text-center">' . str_replace('.00', '', $row->quantity) . '</td>';
                                 echo '<td class="text-center">';
@@ -344,81 +344,12 @@ if ($modal) {
                         </tbody>
 
 
-                        <!-- <?php
-
-
-                                if ($Settings->rounding) {
-
-                                    $round_total = $this->tec->roundNumber($inv->grand_total, $Settings->rounding);
-
-                                    $rounding = $this->tec->formatMoney($round_total - $inv->grand_total);
-
-                                ?> -->
-
-                        <!-- <tr>
-                        <td></td>
-                        <td colspan="4"><?= lang("rounding"); ?></td>
-                        <td colspan="1" class="text-right"><?= $rounding; ?></td>
-
-                    </tr> -->
-
-                        <!-- <tr>
-                        <td></td>
-
-                        <td colspan="4"><?= lang("grand_total"); ?></td>
-
-                        <td colspan="1" class="text-right"><?= $this->tec->formatMoney($inv->grand_total + $rounding); ?></td>
-
-                    </tr>-->
-
-
-
-
-
-
-                    <?php }
-
-
-
-                                /* if($retunVal->pos_balance>0){ ?>
-                    
-                    <?php }  */
-                    ?>
+                     
                     </tfoot>
 
                     </table>
 
 
-
-
-                    <!-- <div style="border: 1px solid black; width: 220px; padding: 8px">
-            <table class="tables">
-                <tbody>
-                    <tr>
-                        <td>Sales</td>
-                        <td style="text-align: right;"><?= $this->tec->formatMoney($inv->grand_total); ?></td>
-                    </tr>
-                    <tr>
-                        <td>Collected</td>
-                        <td style="text-align: right;"><?= $this->tec->formatMoney($inv->paid); ?></td>
-                    </tr>
-                    <tr>
-                        <td width="150px">Current Dues</td>
-                        <td style="text-align: right;"><?= $this->tec->formatMoney($currentDue); ?></td>
-                    </tr>
-                    <tr>
-                        <td width="150px">Previous Dues</td>
-                        <td style="text-align: right;"><?= $this->tec->formatMoney($tAdAmount - $currentDue); ?></td>
-                    </tr>                    
-                    <tr><td colspan="2" id="hrber"></td></tr>
-                     <tr>
-                        <td width="150px">Net OutStanding</td> 
-                        <td style="text-align: right;">
-                        <?= $this->tec->formatMoney($net); ?></td>
-                    </tr>
-                </tbody>
-            </table>             
-            </div>    -->
 
                     <?= $inv->note ? '<p class="text-center">' . $this->tec->decode_html($inv->note) . '</p>' : ''; ?>
 
@@ -468,21 +399,6 @@ if ($modal) {
                     </div>
 
                 <?php } ?>
-
-
-                <!-- <div class="warranty-contect" onClick="warranty()">
-    <div id="warrantydd"></div>
-     <label>Warranty</label>
-      <input type="radio" class="radioBtnClass" value="1" id="warranty" 
-       name="warranty" <?php if ($inv->warranty == 'War') {
-                            echo  'checked';
-                        } ?>  >Yes
-      <input type="radio" class="radioBtnClass"  <?php if ($inv->warranty == 'Not') {
-                                                        echo  'checked';
-                                                    } ?>  value="0" id="warranty-no" name="warranty">No
-    
-    </div> -->
-
 
                 <?php if (!$Settings->java_applet) { ?>
 

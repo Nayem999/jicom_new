@@ -202,7 +202,7 @@ if ($modal) {
                     // print_r($result);
                     ?>
                     <div class="inv-logo">
-                        <img src="<?= base_url('themes/default/assets/images/chalan.png') ?>" alt="<?= $Settings->site_name ?>" />
+                        <img src="<?= base_url('themes/default/assets/images/pos.png') ?>" alt="<?= $Settings->site_name ?>" />
                     </div>
                     <span style="text-align:center;">
                         <p>
