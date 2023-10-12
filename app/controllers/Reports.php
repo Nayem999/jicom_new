@@ -970,6 +970,8 @@ class Reports extends MY_Controller
         $store_id = $this->input->post('store_id') ? $this->input->post('store_id') : 0;
 
         $this->data['creditCollection'] = $this->reports_model->collect_rpt_without_pos($start_date, $end_date, $store_id);
+        $this->data['getSummaryRpt'] = $this->reports_model->getSummaryRpt($start_date, $end_date, $store_id);
+
 
         $this->data['start_date'] = $start_date;
         $this->data['end_date'] = $end_date;
@@ -990,6 +992,21 @@ class Reports extends MY_Controller
         $store_id = $data_arr[2] ? $data_arr[2] : 0;
 
         $creditCollection = $this->reports_model->collect_rpt_without_pos($start_date, $end_date, $store_id);
+        $getSummaryRpt = $this->reports_model->getSummaryRpt($start_date, $end_date, $store_id);
+
+        $cash_amount = $tt_amount = $cash_credit_amount = $tt_credit_amount = $expense_amount = 0;
+        if(isset($getSummaryRpt['cashPos']->cash_amount)){ $cash_amount = $getSummaryRpt['cashPos']->cash_amount; }
+        if(isset($getSummaryRpt['ttPos']->cash_amount)){ $tt_amount = $getSummaryRpt['ttPos']->cash_amount; }
+        if(isset($getSummaryRpt['cashCredit']->payment_amount)){ $cash_credit_amount = $getSummaryRpt['cashCredit']->payment_amount; }
+        if(isset($getSummaryRpt['ttCredit']->payment_amount)){ $tt_credit_amount = $getSummaryRpt['ttCredit']->payment_amount; }
+        if(isset($getSummaryRpt['expenseAmt']->expense_amount)){ $expense_amount = $getSummaryRpt['expenseAmt']->expense_amount; }
+        $cash_sale=$cash_amount+$tt_amount;
+        $cr_col=$cash_credit_amount+$tt_credit_amount;
+        $sub_total=$cash_amount+$tt_amount+$cash_credit_amount+$tt_credit_amount;
+        $total_tt=$tt_amount+$tt_credit_amount;
+        $cash_bill=$cash_amount+$cash_credit_amount; 
+        $grand_total=$cash_bill-$expense_amount; 
+
 
         $fileName = "collection_report_without_pos" . date('Y-m-d_h_i_s') . ".xls";
         $fields = array('Collection Report Without POS');
@@ -1025,6 +1042,35 @@ class Reports extends MY_Controller
             }
 
             $lineData = array('', '', '', 'Grand Total', $total_cash, $total_bank, '');
+            $excelData .= implode("\t", array_values($lineData)) . "\n";
+
+
+            
+            $lineData = array('', '', '', 'Grand Total', $total_cash, $total_bank, '');
+            $excelData .= implode("\t", array_values($lineData)) . "\n";
+
+            $lineData = array('', '');
+            $excelData .= implode("\t", array_values($lineData)) . "\n";
+
+            $lineData = array('', 'Cash Sale', $cash_sale);
+            $excelData .= implode("\t", array_values($lineData)) . "\n";
+
+            $lineData = array('', '(+) CR Col', $cr_col);
+            $excelData .= implode("\t", array_values($lineData)) . "\n";
+
+            $lineData = array('', 'Sub Total', $sub_total);
+            $excelData .= implode("\t", array_values($lineData)) . "\n";
+
+            $lineData = array('', '(-) TT', $total_tt);
+            $excelData .= implode("\t", array_values($lineData)) . "\n";
+
+            $lineData = array('', 'CASH BILL', $cash_bill);
+            $excelData .= implode("\t", array_values($lineData)) . "\n";
+
+            $lineData = array('', 'EXPENSES', $expense_amount);
+            $excelData .= implode("\t", array_values($lineData)) . "\n";
+
+            $lineData = array('', 'GRAND TOTAL', $grand_total);
             $excelData .= implode("\t", array_values($lineData)) . "\n";
         } else {
             $excelData .= 'No records found...' . "\n";

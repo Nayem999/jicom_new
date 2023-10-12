@@ -101,7 +101,6 @@ if (isset($_POST['start_date'])) {
 
                                         }
                                     ?>
-
                                 </tbody>
                                    
                                 <tfoot>
@@ -121,7 +120,7 @@ if (isset($_POST['start_date'])) {
                                     $cash_amount = $tt_amount = $cash_credit_amount = $tt_credit_amount = $expense_amount = 0;
                                     if(isset($getSummaryRpt['cashPos']->cash_amount)){ $cash_amount = $getSummaryRpt['cashPos']->cash_amount; }
                                     if(isset($getSummaryRpt['ttPos']->cash_amount)){ $tt_amount = $getSummaryRpt['ttPos']->cash_amount; }
-                                    if(isset($getSummaryRpt['cashCredit']->payment_amount)){ $cash_credit_amount = $getSummaryRpt['cashCredit']->payment_amount; }
+                                    if(isset($getSummaryRpt['cashCredit']->payment_amount)){ $cash_credit_amount = $getSummaryRpt['cashCredit']->payment_amount ?? 0; }
                                     if(isset($getSummaryRpt['ttCredit']->payment_amount)){ $tt_credit_amount = $getSummaryRpt['ttCredit']->payment_amount; }
                                     if(isset($getSummaryRpt['expenseAmt']->expense_amount)){ $expense_amount = $getSummaryRpt['expenseAmt']->expense_amount; }
                                     $cash_sale=$cash_amount+$tt_amount;

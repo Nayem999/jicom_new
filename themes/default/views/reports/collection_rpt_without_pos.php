@@ -13,7 +13,7 @@ if (isset($_POST['start_date'])) {
                 <div class="box-body">
                     <div class="panel-body">
                         <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button>
-                        <button type="button" style="width:120px; float:right; display:none;" class="btn btn-default btn-sm toggle_form pull-right" id="printWindow">Print</button>
+                        <button type="button" style="width:120px; float:right;" class="btn btn-default btn-sm toggle_form pull-right" id="printWindow">Print</button>
                         <?= form_open(""); ?>
                         <div class="row">
                             <div class="col-sm-3">
@@ -47,11 +47,11 @@ if (isset($_POST['start_date'])) {
                         <?= form_close(); ?>
                     </div>
                     <div class="table-responsive" id="print_content">
-                        <div class="col-xs-12">
+                        <div class="col-xs-9">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th> SL</th>       
+                                        <th> SL</th>
                                         <th> Date</th>
                                         <th> V. No</th>
                                         <th> Customer</th>
@@ -61,55 +61,111 @@ if (isset($_POST['start_date'])) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php 
-                                        $i=1;$total_cash=$total_bank=$total_bank_tt=0; $ck='';
-                                        foreach($creditCollection as $key=>$row)
-                                        {
-                                            ?>
-                                                <tr>
-                                                    <td><?=$i++;?></td>
-                                                    <td><?=date("d-M-Y",strtotime($row->payments_date));?></td>
-                                                    <td><a href='#' onClick="MyWindow=window.open('<?php echo site_url("collection/view/".$row->collection_id."/1"); ?> ', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;" title='<?=lang("view collection")?>' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a></td>
-                                                    <td><?=$row->customers_name;?></td>
-                                                    <td>
-                                                        <?php
-                                                        if($row->paid_by == "cash")
-                                                        {
-                                                            echo $row->payment_amount;
-                                                            $total_cash+=$row->payment_amount;
-                                                        }                                                    
-                                                        ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php
-                                                        if($row->paid_by != "cash")
-                                                        {
-                                                            echo $row->payment_amount;
-                                                            $total_bank+=$row->payment_amount;
-                                                        }                                                    
-                                                        ?>
-                                                    </td>
-                                                    <td><?=$row->bank_name;?></td>
-                                                </tr>
-                                            <?php
-                                            if($row->paid_by == "TT")
-                                            {
-                                                $total_bank_tt+=$row->payment_amount;
-                                            }
-
+                                    <?php
+                                    $i = 1;
+                                    $total_cash = $total_bank = $total_bank_tt = 0;
+                                    $ck = '';
+                                    foreach ($creditCollection as $key => $row) {
+                                    ?>
+                                        <tr>
+                                            <td><?= $i++; ?></td>
+                                            <td><?= date("d-M-Y", strtotime($row->payments_date)); ?></td>
+                                            <td><a href='#' onClick="MyWindow=window.open('<?php echo site_url("collection/view/" . $row->collection_id . "/1"); ?> ', 'MyWindow','toolbar=no,location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,width=350,height=600'); return false;" title='<?= lang("view collection") ?>' class='tip btn btn-primary btn-xs'><i class='fa fa-list'></i></a></td>
+                                            <td><?= $row->customers_name; ?></td>
+                                            <td>
+                                                <?php
+                                                if ($row->paid_by == "cash") {
+                                                    echo $row->payment_amount;
+                                                    $total_cash += $row->payment_amount;
+                                                }
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                if ($row->paid_by != "cash") {
+                                                    echo $row->payment_amount;
+                                                    $total_bank += $row->payment_amount;
+                                                }
+                                                ?>
+                                            </td>
+                                            <td><?= $row->bank_name; ?></td>
+                                        </tr>
+                                    <?php
+                                        if ($row->paid_by == "TT") {
+                                            $total_bank_tt += $row->payment_amount;
                                         }
+                                    }
                                     ?>
 
                                 </tbody>
-                                   
+
                                 <tfoot>
                                     <tr>
                                         <th class="text-center" colspan="4">Grand Total</th>
-                                        <th class="text-center"><?=$total_cash;?></th>
-                                        <th class="text-center"><?=$total_bank;?></th>
+                                        <th class="text-center"><?= $total_cash; ?></th>
+                                        <th class="text-center"><?= $total_bank; ?></th>
                                         <th class="text-center"></th>
                                     </tr>
                                 </tfoot>
+                            </table>
+                        </div>
+                        <div class="col-xs-3">
+                            <br>
+                            <table class="table table-bordered">
+                                <?php
+                                $cash_amount = $tt_amount = $cash_credit_amount = $tt_credit_amount = $expense_amount = 0;
+                                if (isset($getSummaryRpt['cashPos']->cash_amount)) {
+                                    $cash_amount = $getSummaryRpt['cashPos']->cash_amount;
+                                }
+                                if (isset($getSummaryRpt['ttPos']->cash_amount)) {
+                                    $tt_amount = $getSummaryRpt['ttPos']->cash_amount;
+                                }
+                                if (isset($getSummaryRpt['cashCredit']->payment_amount)) {
+                                    $cash_credit_amount = $getSummaryRpt['cashCredit']->payment_amount ?? 0;
+                                }
+                                if (isset($getSummaryRpt['ttCredit']->payment_amount)) {
+                                    $tt_credit_amount = $getSummaryRpt['ttCredit']->payment_amount;
+                                }
+                                if (isset($getSummaryRpt['expenseAmt']->expense_amount)) {
+                                    $expense_amount = $getSummaryRpt['expenseAmt']->expense_amount;
+                                }
+                                $cash_sale = $cash_amount + $tt_amount;
+                                $cr_col = $cash_credit_amount + $tt_credit_amount;
+                                $sub_total = $cash_amount + $tt_amount + $cash_credit_amount + $tt_credit_amount;
+                                $total_tt = $tt_amount + $tt_credit_amount;
+                                $cash_bill = $cash_amount + $cash_credit_amount;
+                                $grand_total = $cash_bill - $expense_amount;
+                                ?>
+                                <tbody>
+                                    <tr>
+                                        <td>Cash Sale</td>
+                                        <td><?php echo $cash_sale; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>(+) CR Col</td>
+                                        <td><?php echo $cr_col; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sub Total</td>
+                                        <td><?php echo $sub_total; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>(-) TT</td>
+                                        <td><?php echo $total_tt; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>CASH BILL</td>
+                                        <td><?php echo $cash_bill; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>EXPENSES</td>
+                                        <td><?php echo $expense_amount; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>GRAND TOTAL</td>
+                                        <td><?php echo $grand_total; ?></td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
 
@@ -151,7 +207,7 @@ if (isset($_POST['start_date'])) {
         $("#fileData_filter ").css("display", "block");
     });
     $("#excelWindow").click(function() {
-        var data = $("#start_date").val() + '_' + $("#end_date").val()+ '_' + $("#store_id").val();;
+        var data = $("#start_date").val() + '_' + $("#end_date").val() + '_' + $("#store_id").val();;
         var url = '<?= site_url('reports/excel_collection_rpt_without_pos/'); ?>' + '/' + data;
         location.replace(url);
     });
