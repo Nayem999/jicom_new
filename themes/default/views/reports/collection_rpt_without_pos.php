@@ -74,7 +74,7 @@ if (isset($_POST['start_date'])) {
                                             <td><?= $row->customers_name; ?></td>
                                             <td>
                                                 <?php
-                                                if ($row->paid_by == "cash") {
+                                                if ($row->paid_by == "cash" || $row->paid_by == "Cash") {
                                                     echo $row->payment_amount;
                                                     $total_cash += $row->payment_amount;
                                                 }
@@ -82,7 +82,7 @@ if (isset($_POST['start_date'])) {
                                             </td>
                                             <td>
                                                 <?php
-                                                if ($row->paid_by != "cash") {
+                                                if ($row->paid_by != "cash" && $row->paid_by != "Cash") {
                                                     echo $row->payment_amount;
                                                     $total_bank += $row->payment_amount;
                                                 }

@@ -1027,9 +1027,9 @@ class Reports extends MY_Controller
         if (count($creditCollection) > 0) {
 
             foreach ($creditCollection as $key => $row) {
-                $lineData = array($i++, date("d-M-Y", strtotime($row->payments_date)), $row->collection_id, $row->customers_name, ($row->paid_by == "cash") ? $row->payment_amount : 0, ($row->paid_by == "cash") ? 0 : $row->payment_amount, $row->bank_name);
+                $lineData = array($i++, date("d-M-Y", strtotime($row->payments_date)), $row->collection_id, $row->customers_name, ($row->paid_by == "cash" || $row->paid_by == "Cash") ? $row->payment_amount : 0, ($row->paid_by != "cash" &&  $row->paid_by != "Cash") ? $row->payment_amount : 0, $row->bank_name);
 
-                if ($row->paid_by == "cash") {
+                if ($row->paid_by == "cash" || $row->paid_by == "Cash") {
                     $total_cash += $row->payment_amount;
                 } else {
                     $total_bank += $row->payment_amount;
