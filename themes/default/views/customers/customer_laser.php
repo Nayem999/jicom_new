@@ -18,26 +18,17 @@
                     <b class="box-title">Phone : <?php echo $customer[0]->phone; ?></b>
                     <div class="padding">
                         <button type="button" style="width:120px; float:right" class="btn btn-default btn-sm pull-right" id="excelWindow">Download Report</button>
-                        <button type="button" onclick="printIt()" style="width:120px; float:right; display:none;" class="btn btn-default btn-sm toggle_form pull-right" id="daily_sales">Print report</button>
+                        <button type="button" onclick="printIt()" style="width:120px; float:right; " class="btn btn-default btn-sm toggle_form pull-right" id="daily_sales">Print report</button>
                     </div>
                 </div>
                 <div class="box-body">
 
-
-
-
-
                     <div id="form" class="panel panel-warning">
-
                         <div class="panel-body">
-
                             <?= form_open("customers/customer_laser/".$customer_id); ?>
-
                             <div class="row">
                                 <div class="col-sm-3">
-
                                     <div class="form-group">
-
                                         <label class="control-label" for="start_date"><?= lang("start_date"); ?></label>
 
                                         <?= form_input('start_date', $start_date, 'class="form-control datepicker" id="start_date"'); ?>
